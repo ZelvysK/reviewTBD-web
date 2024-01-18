@@ -20,7 +20,7 @@ export const Pagination = ({
       {Array.from({ length: totalPages }, (_, index) => (
         <input
           key={index}
-          onClick={() => onPageChange(index + 1)}
+          onChange={() => onPageChange(index + 1)}
           className="join-item btn btn-square"
           type="radio"
           name="options"

@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
+import { ErrorBoundary } from "./components/error-boundary";
 import { Layout } from "./components/layout";
-import { StudioList } from "./components/studio/studio-list";
+import { SingleStudio, StudioList } from "./components/studio";
 
 type Route = {
   name: string;
@@ -18,15 +19,16 @@ export const router = createBrowserRouter([
   {
     path: "/",
     element: <Layout />,
+    errorElement: <ErrorBoundary />,
     children: [
       {
         path: "/",
         element: <StudioList />,
       },
-      // {
-      //   path: "/studio/:studioId",
-      //   element: <SingleStudio />,
-      // },
+      {
+        path: "/studio/:studioId",
+        element: <SingleStudio />,
+      },
     ],
   },
 ]);
