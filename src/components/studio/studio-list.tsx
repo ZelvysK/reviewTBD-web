@@ -43,6 +43,11 @@ export const StudioList = () => {
 
   return (
     <div className="bg-secondary/30 shadow-xl rounded-xl flex flex-col gap-2 p-2">
+      <div className="flex">
+        <Link to={`/studio/add`} className="btn btn-active btn-neutral">
+          Add Studio
+        </Link>
+      </div>
       <Select
         className="text-black"
         options={options}

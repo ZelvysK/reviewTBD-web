@@ -8,6 +8,7 @@ import { MovieList } from "./components/entries/movie/movie-list";
 import { SingleAnime } from "./components/entries/anime/single-anime";
 import { SingleGame } from "./components/entries/game/single-game";
 import { SingleMovie } from "./components/entries/movie/single-movie";
+import { AddStudio } from "./components/studio/add-studio";
 
 type Route = {
   name: string;
@@ -70,6 +71,10 @@ export const router = createBrowserRouter([
       {
         path: "/movie/:movieId",
         element: <SingleMovie />,
+      },
+      {
+        path: "/studio/add",
+        element: <AddStudio />,
       },
     ],
   },
