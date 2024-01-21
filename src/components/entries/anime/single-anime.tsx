@@ -18,6 +18,14 @@ export const SingleAnime = () => {
     return <Loader />;
   }
 
+  if (!data && !loading) {
+    return (
+      <div className="bg-secondary/30 shadow-xl rounded-xl flex flex-col gap-2 p-2">
+        <h3 className="font-bold">Sorry, anime data not added!</h3>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-secondary/30 shadow-xl rounded-xl flex flex-col gap-2 p-2">
       <div className="hero-content">
@@ -27,6 +35,7 @@ export const SingleAnime = () => {
         />
         <div>
           <h1 className="text-5xl font-bold">{data?.title}</h1>
+          <div className="font-semibold">{data?.description}</div>
         </div>
       </div>
     </div>

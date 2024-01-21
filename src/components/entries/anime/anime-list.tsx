@@ -22,6 +22,14 @@ export const AnimeList = () => {
     return <Loader />;
   }
 
+  if (data.result.length === 0 || (!data && !loading)) {
+    return (
+      <div className="bg-secondary/30 shadow-xl rounded-xl flex flex-col gap-2 p-2">
+        <h3 className="font-bold">Sorry, anime data not added!</h3>
+      </div>
+    );
+  }
+
   return (
     <div className="card card-side bg-secondary/30 shadow-xl flex flex-col gap-2 p-3 mt-2">
       {data.result.map((item) => {

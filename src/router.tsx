@@ -24,11 +24,11 @@ export const routes: Route[] = [
     url: "/anime",
   },
   {
-    name: "Game",
+    name: "Games",
     url: "/game",
   },
   {
-    name: "Movie",
+    name: "Movies",
     url: "/movie",
   },
 ];
