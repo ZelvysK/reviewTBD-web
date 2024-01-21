@@ -29,6 +29,7 @@ export const SingleStudio = () => {
           <h1 className="text-5xl font-bold">
             {data?.name + " " + data?.type}
           </h1>
+          <div className="font-semibold">{data?.description}</div>
         </div>
       </div>
     </div>
