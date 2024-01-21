@@ -8,7 +8,7 @@ export interface Studio {
   name: string;
   description: string;
   imageUrl: string;
-  foundedDate: string;
+  dateCreated: string;
   type: StudioType;
 }
 
@@ -20,4 +20,31 @@ export interface PaginatedResult<T> {
   offset: number;
   total: number;
   result: T[];
+}
+
+export interface Anime {
+  id: string;
+  title: string;
+  description: string;
+  coverImageUrl: string;
+  animeStudioId: string;
+  dateCreated: string;
+}
+
+export interface Game {
+  id: string;
+  title: string;
+  description: string;
+  coverImageUrl: string;
+  dateCreated: string;
+  gameCreatorId: string;
+}
+
+export interface Movie {
+  id: string;
+  title: string;
+  description: string;
+  coverUrl: string;
+  dateCreated: string;
+  movieStudioId: string;
 }

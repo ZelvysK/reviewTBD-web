@@ -57,7 +57,7 @@ export const StudioList = () => {
             <div className="font-bold">
               {item.name} | {item.type}
             </div>
-            <div>{item.foundedDate}</div>
+            <div>{item.dateCreated}</div>
           </Link>
         );
       })}
