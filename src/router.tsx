@@ -73,7 +73,7 @@ export const router = createBrowserRouter([
         element: <SingleMovie />,
       },
       {
-        path: "/studio/add",
+        path: "/studio/create",
         element: <AddStudio />,
       },
     ],

@@ -8,16 +8,11 @@ import {
   PaginatedResult,
   Studio,
   StudioType,
-  StudioTypes,
+  StudioOptions,
 } from "../../types";
 import { getUrl } from "../../utils/navigation";
 import { Loader } from "../loader";
 import { Pagination } from "../pagination";
-
-const options: Option<StudioType>[] = StudioTypes.map((item) => ({
-  value: item,
-  label: item,
-}));
 
 export const StudioList = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -44,13 +39,13 @@ export const StudioList = () => {
   return (
     <div className="bg-secondary/30 shadow-xl rounded-xl flex flex-col gap-2 p-2">
       <div className="flex">
-        <Link to={`/studio/add`} className="btn btn-active btn-neutral">
+        <Link to={`/studio/create`} className="btn btn-active btn-neutral">
           Add Studio
         </Link>
       </div>
       <Select
         className="text-black"
-        options={options}
+        options={StudioOptions}
         placeholder="Filter by studio type if you want 🫡"
         onChange={(item) => setStudioType(item)}
         defaultValue={studioType}

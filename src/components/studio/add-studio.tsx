@@ -1,33 +1,36 @@
 import { useState } from "react";
 import Select, { SingleValue } from "react-select";
-import { Option, StudioType, StudioTypes } from "../../types";
+import { Option, StudioOptions, StudioType } from "../../types";
 import useAxios from "axios-hooks";
 import { getUrl } from "../../utils/navigation";
 
-const options: Option<StudioType>[] = StudioTypes.map((item) => ({
-  value: item,
-  label: item,
-}));
-
 export const AddStudio = () => {
+  // const [studioType, setStudioType] =
+  //   useState<SingleValue<Option<StudioType>>>(null);
   const [studioType, setStudioType] =
     useState<SingleValue<Option<StudioType>>>(null);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const [dateCreated, setDateCreated] = useState("");
 
-  const [{ data, loading, error }, executePost] = useAxios(
+  const [{ loading, error }, executePost] = useAxios(
     {
-      url: getUrl("studio/add"),
+      url: getUrl("studio"),
       method: "post",
     },
     { manual: true }
   );
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
     const postData = {
-      Name: "Title",
-      Description: "Description",
-      ImageUrl: "ImageUrl",
-      DateFounded: "DateCreated",
-      StudioType: "StudioType",
+      Name: title,
+      Description: description,
+      ImageUrl: imageUrl,
+      DateFounded: dateCreated,
+      StudioType: studioType ? studioType.value : null,
     };
 
     await executePost({ data: postData });
@@ -45,7 +48,7 @@ export const AddStudio = () => {
         </div>
         <Select
           className="text-black"
-          options={options}
+          options={StudioOptions}
           placeholder="Select studio type"
           onChange={(item) => setStudioType(item)}
           defaultValue={studioType}
@@ -58,6 +61,8 @@ export const AddStudio = () => {
           type="text"
           placeholder="Name"
           className="input input-bordered w-full max-w-xs"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
         />
         <label className="form-control">
           <div className="label">
@@ -66,6 +71,8 @@ export const AddStudio = () => {
           <textarea
             className="textarea textarea-bordered h-24"
             placeholder="Description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
           ></textarea>
         </label>
         <div className="label">
@@ -75,21 +82,29 @@ export const AddStudio = () => {
           type="text"
           placeholder="URL"
           className="input input-bordered w-full max-w-xs"
+          value={imageUrl}
+          onChange={(e) => setImageUrl(e.target.value)}
         />
         <div className="label">
           <span className="label-text">Date Founded:</span>
         </div>
         <input
           type="text"
-          placeholder="Date"
+          placeholder="Date (YYYY-MM-DD)"
           className="input input-bordered w-full max-w-xs"
+          value={dateCreated}
+          onChange={(e) => setDateCreated(e.target.value)}
         />
         <button
           type="submit"
-          className="btn btn-active btn-ghost"
+          className="btn btn-active btn-ghost mt-4 w-80"
           disabled={loading}
         >
-          {loading ? "Loading..." : "Submit"}
+          {loading ? (
+            <span className="loading loading-spinner"></span>
+          ) : (
+            "Submit"
+          )}
         </button>
       </form>
     </div>
