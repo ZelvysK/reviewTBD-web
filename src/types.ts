@@ -12,6 +12,8 @@ export interface Studio {
   type: StudioType;
 }
 
+export type NewStudio = Omit<Studio, "id">;
+
 export const StudioTypes = ["Anime", "Game", "Movie"] as const;
 export type StudioType = (typeof StudioTypes)[number];
 

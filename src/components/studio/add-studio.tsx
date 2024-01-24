@@ -1,15 +1,19 @@
 import { useState } from "react";
 import Select, { SingleValue } from "react-select";
-import { Option, StudioOptions, StudioType } from "../../types";
+import {
+  NewStudio,
+  Option,
+  StudioOptions,
+  StudioType,
+  StudioTypes,
+} from "../../types";
 import useAxios from "axios-hooks";
 import { getUrl } from "../../utils/navigation";
 
 export const AddStudio = () => {
-  // const [studioType, setStudioType] =
-  //   useState<SingleValue<Option<StudioType>>>(null);
   const [studioType, setStudioType] =
-    useState<SingleValue<Option<StudioType>>>(null);
-  const [title, setTitle] = useState("");
+    useState<SingleValue<Option<StudioType>>>();
+  const [name, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [dateCreated, setDateCreated] = useState("");
@@ -25,12 +29,17 @@ export const AddStudio = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const postData = {
-      Name: title,
-      Description: description,
-      ImageUrl: imageUrl,
-      DateFounded: dateCreated,
-      StudioType: studioType ? studioType.value : null,
+    if (!studioType || !StudioTypes.includes(studioType.value)) {
+      console.error("Invalid studio type");
+      return;
+    }
+
+    const postData: NewStudio = {
+      name: name,
+      description: description,
+      imageUrl: imageUrl,
+      dateCreated: dateCreated,
+      type: studioType.value,
     };
 
     await executePost({ data: postData });
@@ -61,7 +70,7 @@ export const AddStudio = () => {
           type="text"
           placeholder="Name"
           className="input input-bordered w-full max-w-xs"
-          value={title}
+          value={name}
           onChange={(e) => setTitle(e.target.value)}
         />
         <label className="form-control">
