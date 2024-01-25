@@ -12,8 +12,15 @@ export interface Studio {
   type: StudioType;
 }
 
+export type NewStudio = Omit<Studio, "id">;
+
 export const StudioTypes = ["Anime", "Game", "Movie"] as const;
 export type StudioType = (typeof StudioTypes)[number];
+
+export const StudioOptions: Option<StudioType>[] = StudioTypes.map((item) => ({
+  value: item,
+  label: item,
+}));
 
 export interface PaginatedResult<T> {
   limit: number;

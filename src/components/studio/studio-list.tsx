@@ -7,31 +7,65 @@ import {
   Option,
   PaginatedResult,
   Studio,
+  StudioOptions,
   StudioType,
-  StudioTypes,
 } from "../../types";
 import { getUrl } from "../../utils/navigation";
 import { Loader } from "../loader";
 import { Pagination } from "../pagination";
 
-const options: Option<StudioType>[] = StudioTypes.map((item) => ({
-  value: item,
-  label: item,
-}));
-
 export const StudioList = () => {
-  const [currentPage, setCurrentPage] = useState(1);
+  const [term, setTerm] = useState<string>();
   const [studioType, setStudioType] =
     useState<SingleValue<Option<StudioType>>>(null);
 
-  const [{ data, loading, error }] = useAxios<PaginatedResult<Studio>>({
-    url: getUrl("studio"),
-    params: {
-      limit: PAGE_SIZE,
-      offset: (currentPage - 1) * PAGE_SIZE,
-      studioType: studioType?.value,
+  return (
+    <div className="bg-secondary/30 shadow-xl rounded-xl flex flex-col gap-2 p-2">
+      <div className="flex gap-2">
+        <Link to={`/studio/create`} className="btn btn-active btn-neutral">
+          Add Studio
+        </Link>
+        <input
+          type="text"
+          value={term}
+          onChange={(e) => setTerm(e.target.value)}
+          placeholder="Search away..."
+          className="input input-bordered w-full max-w-xs"
+        />
+      </div>
+      <Select
+        className="text-black"
+        options={StudioOptions}
+        placeholder="Filter by studio type if you want 🫡"
+        onChange={(item) => setStudioType(item)}
+        defaultValue={studioType}
+        isClearable={!!studioType}
+      />
+      <StudioTable type={studioType?.value} term={term} />
+    </div>
+  );
+};
+
+interface Props {
+  type?: StudioType;
+  term?: string;
+}
+
+const StudioTable = ({ type, term }: Props) => {
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const [{ data, loading, error }] = useAxios<PaginatedResult<Studio>>(
+    {
+      url: getUrl("studio"),
+      params: {
+        limit: PAGE_SIZE,
+        offset: (currentPage - 1) * PAGE_SIZE,
+        studioType: type,
+        term,
+      },
     },
-  });
+    { useCache: false }
+  );
 
   if (error) {
     throw new Error(error.message);
@@ -42,15 +76,7 @@ export const StudioList = () => {
   }
 
   return (
-    <div className="bg-secondary/30 shadow-xl rounded-xl flex flex-col gap-2 p-2">
-      <Select
-        className="text-black"
-        options={options}
-        placeholder="Filter by studio type if you want 🫡"
-        onChange={(item) => setStudioType(item)}
-        defaultValue={studioType}
-        isClearable={!!studioType}
-      />
+    <>
       {data.result.map((item) => {
         return (
           <Link to={`/studio/${item.id}`} key={item.id} className="flex gap-2">
@@ -66,6 +92,6 @@ export const StudioList = () => {
         currentPage={currentPage}
         onPageChange={setCurrentPage}
       />
-    </div>
+    </>
   );
 };
