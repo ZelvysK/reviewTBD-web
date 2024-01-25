@@ -1,4 +1,6 @@
+import useAxios from "axios-hooks";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Select, { SingleValue } from "react-select";
 import {
   NewStudio,
@@ -7,10 +9,15 @@ import {
   StudioType,
   StudioTypes,
 } from "../../types";
-import useAxios from "axios-hooks";
 import { getUrl } from "../../utils/navigation";
 
+type CreateStudioResponse = {
+  id: string;
+  message: string;
+};
+
 export const AddStudio = () => {
+  const navigate = useNavigate();
   const [studioType, setStudioType] =
     useState<SingleValue<Option<StudioType>>>();
   const [name, setTitle] = useState("");
@@ -18,7 +25,7 @@ export const AddStudio = () => {
   const [imageUrl, setImageUrl] = useState("");
   const [dateCreated, setDateCreated] = useState("");
 
-  const [{ loading, error }, executePost] = useAxios(
+  const [{ loading, error }, executePost] = useAxios<CreateStudioResponse>(
     {
       url: getUrl("studio"),
       method: "post",
@@ -29,20 +36,29 @@ export const AddStudio = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!studioType || !StudioTypes.includes(studioType.value)) {
-      console.error("Invalid studio type");
+    const type = studioType?.value;
+
+    if (!type) {
       return;
     }
 
+    if (!StudioTypes.includes(type)) {
+      throw new Error("Invalid studio type");
+    }
+
     const postData: NewStudio = {
-      name: name,
-      description: description,
-      imageUrl: imageUrl,
-      dateCreated: dateCreated,
-      type: studioType.value,
+      name,
+      description,
+      imageUrl,
+      dateCreated,
+      type,
     };
 
-    await executePost({ data: postData });
+    const { data } = await executePost({ data: postData });
+
+    const { id } = data;
+
+    navigate(`../../studio/${id}`);
 
     if (error) {
       throw new Error(error.message);
