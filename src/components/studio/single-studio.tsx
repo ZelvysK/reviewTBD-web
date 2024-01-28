@@ -6,7 +6,6 @@ import { Loader } from "../loader";
 import { Modal } from "../modal";
 
 const MODAL_DELETE_ID = "delete-studio-modal";
-const MODAL_PUT_ID = "put-studio-modal";
 
 export const SingleStudio = () => {
   const navigate = useNavigate();
@@ -23,14 +22,6 @@ export const SingleStudio = () => {
     { manual: true }
   );
 
-  const [_put, executePut] = useAxios(
-    {
-      url: getUrl(["studio", studioId]),
-      method: "put",
-    },
-    { manual: true }
-  );
-
   const handleDelete = async () => {
     const response = await executeDelete();
 
@@ -38,16 +29,6 @@ export const SingleStudio = () => {
 
     if (response.status === 204) {
       navigate("../../");
-    }
-  };
-
-  const handlePut = async () => {
-    const response = await executePut();
-
-    console.log(response);
-
-    if (response.status === 200) {
-      navigate(getUrl(["studio", studioId]));
     }
   };
 
@@ -72,7 +53,10 @@ export const SingleStudio = () => {
         <label htmlFor={MODAL_DELETE_ID} className="btn btn-outline btn-error">
           Delete studio
         </label>
-        <Link to={`/studio/update`} className="btn btn-active btn-neutral">
+        <Link
+          to={`/studio/update/${data.id}`}
+          className="btn btn-active btn-neutral"
+        >
           Update Studio
         </Link>
       </div>
@@ -80,11 +64,6 @@ export const SingleStudio = () => {
         id={MODAL_DELETE_ID}
         text="Do you really want to delete the studio?"
         onConfirm={handleDelete}
-      />
-      <Modal
-        id={MODAL_PUT_ID}
-        text="Do you really want to update the studio?"
-        onConfirm={handlePut}
       />
     </div>
   );

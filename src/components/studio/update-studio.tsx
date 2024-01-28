@@ -1,15 +1,16 @@
 import useAxios from "axios-hooks";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Select, { SingleValue } from "react-select";
 import {
-  NewStudio,
   Option,
+  Studio,
   StudioOptions,
   StudioType,
   StudioTypes,
 } from "../../types";
 import { getUrl } from "../../utils/navigation";
+import { Loader } from "../loader";
 
 type UpdateStudioResponse = {
   id: string;
@@ -26,14 +27,24 @@ export const UpdateStudio = () => {
   const [name, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [imageUrl, setImageUrl] = useState("");
+  const { studioId } = useParams();
 
-  const [{ loading, error }, executePut] = useAxios<UpdateStudioResponse>(
-    {
-      url: getUrl("studio"),
-      method: "put",
-    },
-    { manual: true }
+  const [{ data, loading, error }] = useAxios<Studio>(
+    getUrl(["studio", studioId])
   );
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  const [{ loading: updateLoading, error: updateError }, executePut] =
+    useAxios<UpdateStudioResponse>(
+      {
+        url: getUrl("studio"),
+        method: "put",
+      },
+      { manual: true }
+    );
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -57,13 +68,17 @@ export const UpdateStudio = () => {
 
     const { data } = await executePut({ data: putData });
 
-    if (error) {
-      throw new Error(error.message);
+    if (updateError) {
+      throw new Error(updateError.message);
     }
     const { id } = data;
 
     navigate(`../../studio/${id}`);
   };
+
+  if (!data || loading) {
+    return <Loader />;
+  }
 
   return (
     <div className="flex gap-48">
@@ -85,18 +100,18 @@ export const UpdateStudio = () => {
           </div>
           <input
             type="text"
-            placeholder="Name"
+            placeholder={data.name}
             className="input input-bordered w-full max-w-xs"
             value={name}
             onChange={(e) => setTitle(e.target.value)}
           />
           <label className="form-control">
             <div className="label">
-              <span className="label-text">Description</span>
+              <span className="label-text">Description:</span>
             </div>
             <textarea
               className="textarea textarea-bordered h-24"
-              placeholder="Description"
+              placeholder={data.description}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             ></textarea>
@@ -106,7 +121,7 @@ export const UpdateStudio = () => {
           </div>
           <input
             type="text"
-            placeholder="URL"
+            placeholder={data.imageUrl}
             className="input input-bordered w-full max-w-xs"
             value={imageUrl}
             onChange={(e) => setImageUrl(e.target.value)}
@@ -115,9 +130,9 @@ export const UpdateStudio = () => {
           <button
             type="submit"
             className="btn btn-active btn-ghost mt-4 w-80"
-            disabled={loading}
+            disabled={updateLoading}
           >
-            {loading ? (
+            {updateLoading ? (
               <span className="loading loading-spinner"></span>
             ) : (
               "Update"

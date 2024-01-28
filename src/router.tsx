@@ -78,7 +78,7 @@ export const router = createBrowserRouter([
         element: <AddStudio />,
       },
       {
-        path: "/studio/update",
+        path: "/studio/update/:studioId",
         element: <UpdateStudio />,
       },
     ],
