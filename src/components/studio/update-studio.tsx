@@ -40,7 +40,7 @@ export const UpdateStudio = () => {
   const [{ loading: updateLoading, error: updateError }, executePut] =
     useAxios<UpdateStudioResponse>(
       {
-        url: getUrl("studio"),
+        url: getUrl(["studio", "update", studioId]),
         method: "put",
       },
       { manual: true }
@@ -71,9 +71,8 @@ export const UpdateStudio = () => {
     if (updateError) {
       throw new Error(updateError.message);
     }
-    const { id } = data;
 
-    navigate(`../../studio/${id}`);
+    navigate(`../../studio/${studioId}`);
   };
 
   if (!data || loading) {
