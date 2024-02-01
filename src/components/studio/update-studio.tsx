@@ -1,79 +1,70 @@
-import useAxios from "axios-hooks";
-import { useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import useAxios, { clearCache } from "axios-hooks";
+import { Controller, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
-import Select, { SingleValue } from "react-select";
-import {
-  Option,
-  Studio,
-  StudioOptions,
-  StudioType,
-  StudioTypes,
-} from "../../types";
+import { z } from "zod";
+import { Studio, StudioTypes } from "../../types";
 import { getUrl } from "../../utils/navigation";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "../form/select";
 import { Loader } from "../loader";
 
-type UpdateStudioResponse = {
-  id: string;
-  type: StudioType;
-  name: string;
-  description: string;
-  imageUrl: string;
-};
+const schema = z.object({
+  type: z.enum(StudioTypes),
+  name: z.string().min(3),
+  description: z.string().min(4),
+  imageUrl: z.string().url(),
+  dateCreated: z.string(),
+});
+
+type UpdateStudioForm = z.infer<typeof schema>;
 
 export const UpdateStudio = () => {
   const navigate = useNavigate();
-  const [studioType, setStudioType] =
-    useState<SingleValue<Option<StudioType>>>();
-  const [name, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
   const { studioId } = useParams();
 
   const [{ data, loading, error }] = useAxios<Studio>(
     getUrl(["studio", studioId])
   );
 
+  const [_, executeUpdate] = useAxios(
+    {
+      url: getUrl(["studio", studioId]),
+      method: "put",
+    },
+    { manual: true }
+  );
+
+  const onSubmit = async (data: UpdateStudioForm) => {
+    try {
+      const response = await executeUpdate({ data: { id: studioId, ...data } });
+
+      if (response.status === 200) {
+        clearCache();
+        navigate(`../../studio/${studioId}`);
+        toast.success("Studio updated successfully");
+      }
+    } catch (error) {
+      toast.error("Failed");
+    }
+  };
+
+  const { handleSubmit, register, control } = useForm<UpdateStudioForm>({
+    resolver: zodResolver(schema),
+    values: data,
+  });
+
   if (error) {
     throw new Error(error.message);
   }
-
-  const [{ loading: updateLoading, error: updateError }, executePut] =
-    useAxios<UpdateStudioResponse>(
-      {
-        url: getUrl(["studio", "update", studioId]),
-        method: "put",
-      },
-      { manual: true }
-    );
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    const type = studioType?.value;
-
-    if (!type) {
-      return;
-    }
-
-    if (!StudioTypes.includes(type)) {
-      throw new Error("Invalid studio type");
-    }
-
-    const putData = {
-      name,
-      description,
-      imageUrl,
-      type,
-    };
-
-    const { data } = await executePut({ data: putData });
-
-    if (updateError) {
-      throw new Error(updateError.message);
-    }
-
-    navigate(`../../studio/${studioId}`);
-  };
 
   if (!data || loading) {
     return <Loader />;
@@ -82,61 +73,75 @@ export const UpdateStudio = () => {
   return (
     <div className="flex gap-48">
       <div className="form-control w-full max-w-xs">
-        <form onSubmit={handleSubmit}>
-          <div className="label">
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="flex flex-col gap-2">
             <span className="label-text">Studio type:</span>
-          </div>
-          <Select
-            className="text-black"
-            options={StudioOptions}
-            placeholder="Select studio type"
-            onChange={(item) => setStudioType(item)}
-            defaultValue={studioType}
-            isClearable={!!studioType}
-          />
-          <div className="label">
-            <span className="label-text">Name:</span>
-          </div>
-          <input
-            type="text"
-            placeholder={data.name}
-            className="input input-bordered w-full max-w-xs"
-            value={name}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-          <label className="form-control">
+            <Controller
+              defaultValue={data.type}
+              control={control}
+              name="type"
+              render={({ field }) => {
+                return (
+                  <Select onValueChange={field.onChange} {...field}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select studio type" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-base-100">
+                      <SelectGroup>
+                        <SelectLabel>Studio types</SelectLabel>
+                        {StudioTypes.map((item) => (
+                          <SelectItem key={item} value={item}>
+                            {item}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                );
+              }}
+            />
+
+            <div className="label">
+              <span className="label-text">Name:</span>
+            </div>
+            <input
+              {...register("name")}
+              type="text"
+              placeholder="Name"
+              className="input input-bordered input-sm w-full max-w-xs"
+            />
+
             <div className="label">
               <span className="label-text">Description:</span>
             </div>
             <textarea
-              className="textarea textarea-bordered h-24"
-              placeholder={data.description}
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            ></textarea>
-          </label>
-          <div className="label">
-            <span className="label-text">Image URL:</span>
-          </div>
-          <input
-            type="text"
-            placeholder={data.imageUrl}
-            className="input input-bordered w-full max-w-xs"
-            value={imageUrl}
-            onChange={(e) => setImageUrl(e.target.value)}
-          />
+              {...register("description")}
+              placeholder="Enter description..."
+              className="textarea textarea-bordered"
+            />
 
-          <button
-            type="submit"
-            className="btn btn-active btn-ghost mt-4 w-80"
-            disabled={updateLoading}
-          >
-            {updateLoading ? (
-              <span className="loading loading-spinner"></span>
-            ) : (
-              "Update"
-            )}
-          </button>
+            <div className="label">
+              <span className="label-text">Image URL:</span>
+            </div>
+            <input
+              {...register("imageUrl")}
+              type="text"
+              placeholder="Image URL"
+              className="input input-bordered input-sm w-full max-w-xs"
+            />
+
+            <div className="label">
+              <span className="label-text">Date created:</span>
+            </div>
+            <input
+              {...register("dateCreated")}
+              type="date"
+              className="input input-bordered input-sm w-full max-w-xs"
+            />
+            <button type="submit" className="btn btn-primary">
+              Submit
+            </button>
+          </div>
         </form>
       </div>
     </div>

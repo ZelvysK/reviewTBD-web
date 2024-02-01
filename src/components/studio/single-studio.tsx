@@ -50,15 +50,19 @@ export const SingleStudio = () => {
       <div>
         <h1 className="text-5xl font-bold">{data?.name + " " + data?.type}</h1>
         <div className="font-semibold">{data?.description}</div>
-        <label htmlFor={MODAL_DELETE_ID} className="btn btn-outline btn-error">
-          Delete studio
-        </label>
+        <div className="font-semibold">{data?.imageUrl}</div>
+        <div className="font-semibold">{data?.dateCreated}</div>
+      </div>
+      <div className="flex gap-2">
         <Link
           to={`/studio/update/${data.id}`}
           className="btn btn-active btn-neutral"
         >
           Update Studio
         </Link>
+        <label htmlFor={MODAL_DELETE_ID} className="btn btn-outline btn-error">
+          Delete studio
+        </label>
       </div>
       <Modal
         id={MODAL_DELETE_ID}
