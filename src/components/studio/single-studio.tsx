@@ -1,11 +1,11 @@
 import useAxios from "axios-hooks";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Studio } from "../../types";
 import { getUrl } from "../../utils/navigation";
 import { Loader } from "../loader";
 import { Modal } from "../modal";
 
-const MODAL_ID = "delete-studio-modal";
+const MODAL_DELETE_ID = "delete-studio-modal";
 
 export const SingleStudio = () => {
   const navigate = useNavigate();
@@ -14,7 +14,7 @@ export const SingleStudio = () => {
     getUrl(["studio", studioId])
   );
 
-  const [_, executeDelete] = useAxios(
+  const [_delete, executeDelete] = useAxios(
     {
       url: getUrl(["studio", studioId]),
       method: "delete",
@@ -50,12 +50,22 @@ export const SingleStudio = () => {
       <div>
         <h1 className="text-5xl font-bold">{data?.name + " " + data?.type}</h1>
         <div className="font-semibold">{data?.description}</div>
-        <label htmlFor={MODAL_ID} className="btn btn-outline btn-error">
+        <div className="font-semibold">{data?.imageUrl}</div>
+        <div className="font-semibold">{data?.dateCreated}</div>
+      </div>
+      <div className="flex gap-2">
+        <Link
+          to={`/studio/update/${data.id}`}
+          className="btn btn-active btn-neutral"
+        >
+          Update Studio
+        </Link>
+        <label htmlFor={MODAL_DELETE_ID} className="btn btn-outline btn-error">
           Delete studio
         </label>
       </div>
       <Modal
-        id={MODAL_ID}
+        id={MODAL_DELETE_ID}
         text="Do you really want to delete the studio?"
         onConfirm={handleDelete}
       />
