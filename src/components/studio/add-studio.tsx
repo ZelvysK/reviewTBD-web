@@ -1,5 +1,5 @@
 import useAxios from "axios-hooks";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { StudioTypes } from "../../types";
 import { getUrl } from "../../utils/navigation";
 import { z } from "zod";
@@ -26,16 +26,10 @@ const schema = z.object({
 
 type CreateStudioForm = z.infer<typeof schema>;
 
-// type CreateStudioResponse = {
-//   id: string;
-//   message: string;
-// };
-
 export const AddStudio = () => {
   const navigate = useNavigate();
-  const { studioId } = useParams();
 
-  const [_, executePost] = useAxios<CreateStudioForm>(
+  const [_, executePost] = useAxios(
     {
       url: getUrl("studio"),
       method: "post",
@@ -45,11 +39,14 @@ export const AddStudio = () => {
 
   const onSubmit = async (data: CreateStudioForm) => {
     try {
-      const response = await executePost({ data: { id: studioId, ...data } });
+      const response = await executePost({ data: { ...data } });
 
-      if (response.status === 200) {
-        navigate(`../../studio/${studioId}`);
-        toast.success("Studio created successfully");
+      const { id } = response.data;
+      console.log(response);
+
+      if (response.status === 201) {
+        navigate(`../../studio/${id}`);
+        toast.success("Studio updated successfully");
       }
     } catch (error) {
       toast.error("Failed");
@@ -59,38 +56,6 @@ export const AddStudio = () => {
   const { handleSubmit, register, control } = useForm<CreateStudioForm>({
     resolver: zodResolver(schema),
   });
-
-  // const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-
-  //   const type = studioType?.value;
-
-  //   if (!type) {
-  //     return;
-  //   }
-
-  //   if (!StudioTypes.includes(type)) {
-  //     throw new Error("Invalid studio type");
-  //   }
-
-  //   const postData: NewStudio = {
-  //     name,
-  //     description,
-  //     imageUrl,
-  //     dateCreated,
-  //     type,
-  //   };
-
-  //   const { data } = await executePost({ data: postData });
-
-  //   const { id } = data;
-
-  //   navigate(`../../studio/${id}`);
-
-  //   if (error) {
-  //     throw new Error(error.message);
-  //   }
-  // };
 
   return (
     <div className="flex gap-48">
