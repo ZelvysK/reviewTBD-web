@@ -8,36 +8,60 @@ import { Pagination } from "../../pagination";
 import { Link } from "react-router-dom";
 
 export const GameList = () => {
+  const [term, setTerm] = useState<string>();
+
+  return (
+    <div className="bg-secondary/30 shadow-xl rounded-xl flex flex-col gap-2 p-2">
+      <div className="flex gap-2">
+        <Link to={`/game/create`} className="btn btn-active btn-neutral">
+          Add Game
+        </Link>
+        <input
+          type="text"
+          value={term}
+          onChange={(e) => setTerm(e.target.value)}
+          placeholder="Search away..."
+          className="input input-bordered w-full max-w-xs"
+        />
+      </div>
+      <GameTable term={term} />
+    </div>
+  );
+};
+interface Props {
+  term?: string;
+}
+
+const GameTable = ({ term }: Props) => {
   const [currentPage, setCurrentPage] = useState(1);
 
-  const [{ data, loading }] = useAxios<PaginatedResult<Game>>({
-    url: getUrl("game"),
-    params: {
-      limit: PAGE_SIZE,
-      offset: (currentPage - 1) * PAGE_SIZE,
+  const [{ data, loading, error }] = useAxios<PaginatedResult<Game>>(
+    {
+      url: getUrl("game"),
+      params: {
+        limit: PAGE_SIZE,
+        offset: (currentPage - 1) * PAGE_SIZE,
+        term,
+      },
     },
-  });
+    { useCache: false }
+  );
+
+  if (error) {
+    throw new Error(error.message);
+  }
 
   if (!data || loading) {
     return <Loader />;
   }
 
-  if (data.result.length === 0 || (!data && !loading)) {
-    return (
-      <div className="bg-secondary/30 shadow-xl rounded-xl flex flex-col gap-2 p-2">
-        <h3 className="font-bold">Sorry, game data not added!</h3>
-      </div>
-    );
-  }
-
   return (
-    <div className="card card-side bg-secondary/30 shadow-xl flex flex-col gap-2 p-3 mt-2">
+    <>
       {data.result.map((item) => {
         return (
           <Link to={`/game/${item.id}`} key={item.id} className="flex gap-2">
-            <div className="font-bold">
-              {item.title} | {item.dateCreated}
-            </div>
+            <div className="font-bold">{item.title}</div>
+            <div>| {item.dateCreated}</div>
           </Link>
         );
       })}
@@ -46,6 +70,6 @@ export const GameList = () => {
         currentPage={currentPage}
         onPageChange={setCurrentPage}
       />
-    </div>
+    </>
   );
 };
