@@ -1,50 +1,62 @@
-import useAxios from "axios-hooks";
-import { useNavigate } from "react-router-dom";
+import useAxios, { clearCache } from "axios-hooks";
+import { useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
+import { Game } from "../../../types";
 import { getUrl } from "../../../utils/navigation";
 import toast from "react-hot-toast";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { Loader } from "../../loader";
 
 const schema = z.object({
   title: z.string().min(3),
   description: z.string().min(4),
-  coverUrl: z.string().url(),
+  coverImageUrl: z.string().url(),
   dateCreated: z.string(),
-  movieStudioId: z.string(),
 });
 
-type CreateMovieForm = z.infer<typeof schema>;
+type UpdateGameForm = z.infer<typeof schema>;
 
-export const AddMovie = () => {
+export const UpdateGame = () => {
   const navigate = useNavigate();
+  const { gameId } = useParams();
 
-  const [_, executePost] = useAxios(
+  const [{ data, loading, error }] = useAxios<Game>(getUrl(["game", gameId]));
+
+  const [_, executeUpdate] = useAxios(
     {
-      url: getUrl("movie"),
-      method: "post",
+      url: getUrl(["game", gameId]),
+      method: "put",
     },
     { manual: true }
   );
 
-  const onSubmit = async (data: CreateMovieForm) => {
+  const onSubmit = async (data: UpdateGameForm) => {
     try {
-      const response = await executePost({ data });
+      const response = await executeUpdate({ data: { id: gameId, ...data } });
 
-      const { id } = response.data;
-
-      if (response.status === 201) {
-        navigate(`../../movie/${id}`);
-        toast.success("Movie updated successfully");
+      if (response.status === 200) {
+        clearCache();
+        navigate(`../../game/${gameId}`);
+        toast.success("Game updated successfully");
       }
     } catch (error) {
       toast.error("Failed");
     }
   };
 
-  const { handleSubmit, register } = useForm<CreateMovieForm>({
+  const { handleSubmit, register } = useForm<UpdateGameForm>({
     resolver: zodResolver(schema),
+    values: data,
   });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  if (!data || loading) {
+    return <Loader />;
+  }
 
   return (
     <div className="flex gap-48">
@@ -74,7 +86,7 @@ export const AddMovie = () => {
               <span className="label-text">Image URL:</span>
             </div>
             <input
-              {...register("coverUrl")}
+              {...register("coverImageUrl")}
               type="text"
               placeholder="Image URL"
               className="input input-bordered input-sm w-full max-w-xs"

@@ -1,50 +1,64 @@
-import useAxios from "axios-hooks";
-import { useNavigate } from "react-router-dom";
+import useAxios, { clearCache } from "axios-hooks";
+import { useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
+import { Anime } from "../../../types";
 import { getUrl } from "../../../utils/navigation";
 import toast from "react-hot-toast";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { Loader } from "../../loader";
 
 const schema = z.object({
   title: z.string().min(3),
   description: z.string().min(4),
-  coverUrl: z.string().url(),
+  coverImageUrl: z.string().url(),
   dateCreated: z.string(),
-  movieStudioId: z.string(),
 });
 
-type CreateMovieForm = z.infer<typeof schema>;
+type UpdateAnimeForm = z.infer<typeof schema>;
 
-export const AddMovie = () => {
+export const UpdateAnime = () => {
   const navigate = useNavigate();
+  const { animeId } = useParams();
 
-  const [_, executePost] = useAxios(
+  const [{ data, loading, error }] = useAxios<Anime>(
+    getUrl(["anime", animeId])
+  );
+
+  const [_, executeUpdate] = useAxios(
     {
-      url: getUrl("movie"),
-      method: "post",
+      url: getUrl(["anime", animeId]),
+      method: "put",
     },
     { manual: true }
   );
 
-  const onSubmit = async (data: CreateMovieForm) => {
+  const onSubmit = async (data: UpdateAnimeForm) => {
     try {
-      const response = await executePost({ data });
+      const response = await executeUpdate({ data: { id: animeId, ...data } });
 
-      const { id } = response.data;
-
-      if (response.status === 201) {
-        navigate(`../../movie/${id}`);
-        toast.success("Movie updated successfully");
+      if (response.status === 200) {
+        clearCache();
+        navigate(`../../anime/${animeId}`);
+        toast.success("Anime updated successfully");
       }
     } catch (error) {
       toast.error("Failed");
     }
   };
 
-  const { handleSubmit, register } = useForm<CreateMovieForm>({
+  const { handleSubmit, register } = useForm<UpdateAnimeForm>({
     resolver: zodResolver(schema),
+    values: data,
   });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  if (!data || loading) {
+    return <Loader />;
+  }
 
   return (
     <div className="flex gap-48">
@@ -74,7 +88,7 @@ export const AddMovie = () => {
               <span className="label-text">Image URL:</span>
             </div>
             <input
-              {...register("coverUrl")}
+              {...register("coverImageUrl")}
               type="text"
               placeholder="Image URL"
               className="input input-bordered input-sm w-full max-w-xs"

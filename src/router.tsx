@@ -13,6 +13,9 @@ import { UpdateStudio } from "./components/studio/update-studio";
 import { AddAnime } from "./components/entries/anime/add-anime";
 import { AddGame } from "./components/entries/game/add-game";
 import { AddMovie } from "./components/entries/movie/add-movie";
+import { UpdateAnime } from "./components/entries/anime/update-anime";
+import { UpdateGame } from "./components/entries/game/update-game";
+import { UpdateMovie } from "./components/entries/movie/update-movie";
 
 type Route = {
   name: string;
@@ -89,12 +92,24 @@ export const router = createBrowserRouter([
         element: <AddAnime />,
       },
       {
+        path: "/anime/update/:animeId",
+        element: <UpdateAnime />,
+      },
+      {
         path: "/game/create",
         element: <AddGame />,
       },
       {
+        path: "/game/update/:gameId",
+        element: <UpdateGame />,
+      },
+      {
         path: "/movie/create",
         element: <AddMovie />,
+      },
+      {
+        path: "/movie/update/:movieId",
+        element: <UpdateMovie />,
       },
     ],
   },

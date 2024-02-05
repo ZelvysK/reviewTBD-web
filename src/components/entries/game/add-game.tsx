@@ -21,7 +21,7 @@ export const AddGame = () => {
 
   const [_, executePost] = useAxios(
     {
-      url: getUrl("anime"),
+      url: getUrl("game"),
       method: "post",
     },
     { manual: true }
@@ -34,8 +34,8 @@ export const AddGame = () => {
       const { id } = response.data;
 
       if (response.status === 201) {
-        navigate(`../../anime/${id}`);
-        toast.success("Anime updated successfully");
+        navigate(`../../game/${id}`);
+        toast.success("Game updated successfully");
       }
     } catch (error) {
       toast.error("Failed");
