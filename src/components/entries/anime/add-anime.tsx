@@ -1,10 +1,20 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import useAxios from "axios-hooks";
+import { Controller, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
+import { PaginatedResult, Studio } from "../../../types";
 import { getUrl } from "../../../utils/navigation";
-import toast from "react-hot-toast";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "../../form/select";
 
 const schema = z.object({
   title: z.string().min(3),
@@ -27,6 +37,20 @@ export const AddAnime = () => {
     { manual: true }
   );
 
+  const [{ data }] = useAxios<PaginatedResult<Studio>>(
+    {
+      url: getUrl("studio"),
+      params: {
+        limit: 9999,
+        offset: 0,
+        studioType: "anime",
+      },
+    },
+    { useCache: false }
+  );
+
+  const options = data?.result;
+
   const onSubmit = async (data: CreateAnimeForm) => {
     try {
       const response = await executePost({ data });
@@ -42,7 +66,7 @@ export const AddAnime = () => {
     }
   };
 
-  const { handleSubmit, register } = useForm<CreateAnimeForm>({
+  const { handleSubmit, register, control } = useForm<CreateAnimeForm>({
     resolver: zodResolver(schema),
   });
 
@@ -59,6 +83,33 @@ export const AddAnime = () => {
               type="text"
               placeholder="Title"
               className="input input-bordered input-sm w-full max-w-xs"
+            />
+
+            <div className="label">
+              <span className="label-text">Studio:</span>
+            </div>
+            <Controller
+              control={control}
+              name="animeStudioId"
+              render={({ field }) => {
+                return (
+                  <Select onValueChange={field.onChange} {...field}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select studio" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-base-100">
+                      <SelectGroup>
+                        <SelectLabel>Studios</SelectLabel>
+                        {options?.map((item) => (
+                          <SelectItem key={item.id} value={item.id}>
+                            {item.name}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                );
+              }}
             />
 
             <div className="label">

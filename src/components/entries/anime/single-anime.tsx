@@ -56,7 +56,9 @@ export const SingleAnime = () => {
         className="max-w-sm rounded-lg shadow-2xl object-scale-down h-75 w-48"
       />
       <div>
-        <h1 className="text-5xl font-bold">{data?.title}</h1>
+        <h1 className="text-5xl font-bold">
+          {data?.title} | {data.animeStudio?.name}
+        </h1>
         <div className="font-semibold">{data?.description}</div>
         <div className="font-semibold">{data?.coverImageUrl}</div>
         <div className="font-semibold">{data?.dateCreated}</div>
