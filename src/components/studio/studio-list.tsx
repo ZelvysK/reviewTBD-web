@@ -28,7 +28,7 @@ export const StudioList = () => {
         <input
           type="text"
           value={term}
-          onChange={(e) => setTerm(e.target.value)}
+          onChange={(e) => setTerm(e.target.value.trim())}
           placeholder="Search away..."
           className="input input-bordered w-full max-w-xs"
         />

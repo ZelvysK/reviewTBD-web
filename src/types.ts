@@ -36,6 +36,7 @@ export interface Anime {
   coverImageUrl: string;
   animeStudioId: string;
   dateCreated: string;
+  animeStudio?: Studio;
 }
 
 export interface Game {

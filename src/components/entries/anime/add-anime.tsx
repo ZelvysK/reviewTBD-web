@@ -1,10 +1,11 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import useAxios from "axios-hooks";
-import { useNavigate } from "react-router-dom";
-import { StudioTypes } from "../../types";
-import { getUrl } from "../../utils/navigation";
-import { z } from "zod";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { z } from "zod";
+import { PaginatedResult, Studio } from "../../../types";
+import { getUrl } from "../../../utils/navigation";
 import {
   Select,
   SelectContent,
@@ -13,46 +14,59 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "../form/select";
-import { zodResolver } from "@hookform/resolvers/zod";
+} from "../../form/select";
 
 const schema = z.object({
-  type: z.enum(StudioTypes),
-  name: z.string().min(3),
+  title: z.string().min(3),
   description: z.string().min(4),
-  imageUrl: z.string().url(),
+  coverImageUrl: z.string().url(),
   dateCreated: z.string(),
+  animeStudioId: z.string(),
 });
 
-type CreateStudioForm = z.infer<typeof schema>;
+type CreateAnimeForm = z.infer<typeof schema>;
 
-export const AddStudio = () => {
+export const AddAnime = () => {
   const navigate = useNavigate();
 
   const [_, executePost] = useAxios(
     {
-      url: getUrl("studio"),
+      url: getUrl("anime"),
       method: "post",
     },
     { manual: true }
   );
 
-  const onSubmit = async (data: CreateStudioForm) => {
+  const [{ data }] = useAxios<PaginatedResult<Studio>>(
+    {
+      url: getUrl("studio"),
+      params: {
+        limit: 9999,
+        offset: 0,
+        studioType: "anime",
+      },
+    },
+    { useCache: false }
+  );
+
+  const options = data?.result;
+
+  const onSubmit = async (data: CreateAnimeForm) => {
     try {
       const response = await executePost({ data });
 
       const { id } = response.data;
 
       if (response.status === 201) {
-        navigate(`../../studio/${id}`);
-        toast.success("Studio updated successfully");
+        navigate(`../../anime/${id}`);
+        toast.success("Anime updated successfully");
       }
     } catch (error) {
       toast.error("Failed");
     }
   };
 
-  const { handleSubmit, register, control } = useForm<CreateStudioForm>({
+  const { handleSubmit, register, control } = useForm<CreateAnimeForm>({
     resolver: zodResolver(schema),
   });
 
@@ -61,23 +75,34 @@ export const AddStudio = () => {
       <div className="form-control w-full max-w-xs">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="flex flex-col gap-2">
-            <span className="label-text">Studio type:</span>
+            <div className="label">
+              <span className="label-text">Title:</span>
+            </div>
+            <input
+              {...register("title")}
+              type="text"
+              placeholder="Title"
+              className="input input-bordered input-sm w-full max-w-xs"
+            />
+
+            <div className="label">
+              <span className="label-text">Studio:</span>
+            </div>
             <Controller
-              defaultValue={StudioTypes[0]}
               control={control}
-              name="type"
+              name="animeStudioId"
               render={({ field }) => {
                 return (
                   <Select onValueChange={field.onChange} {...field}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select studio type" />
+                      <SelectValue placeholder="Select studio" />
                     </SelectTrigger>
                     <SelectContent className="bg-base-100">
                       <SelectGroup>
-                        <SelectLabel>Studio types</SelectLabel>
-                        {StudioTypes.map((item) => (
-                          <SelectItem key={item} value={item}>
-                            {item}
+                        <SelectLabel>Studios</SelectLabel>
+                        {options?.map((item) => (
+                          <SelectItem key={item.id} value={item.id}>
+                            {item.name}
                           </SelectItem>
                         ))}
                       </SelectGroup>
@@ -85,15 +110,6 @@ export const AddStudio = () => {
                   </Select>
                 );
               }}
-            />
-            <div className="label">
-              <span className="label-text">Name:</span>
-            </div>
-            <input
-              {...register("name")}
-              type="text"
-              placeholder="Name"
-              className="input input-bordered input-sm w-full max-w-xs"
             />
 
             <div className="label">
@@ -109,7 +125,7 @@ export const AddStudio = () => {
               <span className="label-text">Image URL:</span>
             </div>
             <input
-              {...register("imageUrl")}
+              {...register("coverImageUrl")}
               type="text"
               placeholder="Image URL"
               className="input input-bordered input-sm w-full max-w-xs"
