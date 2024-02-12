@@ -16,6 +16,10 @@ import { AddMovie } from "./components/entries/movie/add-movie";
 import { UpdateAnime } from "./components/entries/anime/update-anime";
 import { UpdateGame } from "./components/entries/game/update-game";
 import { UpdateMovie } from "./components/entries/movie/update-movie";
+import { MediaList } from "./components/entries/media/media-list";
+import { SingleMedia } from "./components/entries/media/single-media";
+import { AddMedia } from "./components/entries/media/add-media";
+import { UpdateMedia } from "./components/entries/media/update-media";
 
 type Route = {
   name: string;
@@ -26,6 +30,10 @@ export const routes: Route[] = [
   {
     name: "Studios",
     url: "/",
+  },
+  {
+    name: "Media",
+    url: "/media",
   },
   {
     name: "Anime",
@@ -56,6 +64,30 @@ export const router = createBrowserRouter([
         element: <SingleStudio />,
       },
       {
+        path: "/studio/create",
+        element: <AddStudio />,
+      },
+      {
+        path: "/studio/update/:studioId",
+        element: <UpdateStudio />,
+      },
+      {
+        path: "/media",
+        element: <MediaList />,
+      },
+      {
+        path: "/media/:mediaId",
+        element: <SingleMedia />,
+      },
+      {
+        path: "/media/create",
+        element: <AddMedia />,
+      },
+      {
+        path: "/media/update/:mediaId",
+        element: <UpdateMedia />,
+      },
+      {
         path: "/anime",
         element: <AnimeList />,
       },
@@ -78,14 +110,6 @@ export const router = createBrowserRouter([
       {
         path: "/movie/:movieId",
         element: <SingleMovie />,
-      },
-      {
-        path: "/studio/create",
-        element: <AddStudio />,
-      },
-      {
-        path: "/studio/update/:studioId",
-        element: <UpdateStudio />,
       },
       {
         path: "/anime/create",
