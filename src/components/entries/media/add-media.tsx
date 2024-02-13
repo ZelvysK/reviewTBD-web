@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Media, MediaTypes, PaginatedResult, Studio } from "../../../types";
+import { MediaTypes, PaginatedResult, Studio } from "../../../types";
 import { useNavigate } from "react-router-dom";
 import useAxios from "axios-hooks";
 import { getUrl } from "../../../utils/navigation";
@@ -17,7 +17,7 @@ import {
 } from "../../form/select";
 
 const schema = z.object({
-  type: z.enum(MediaTypes),
+  mediaType: z.enum(MediaTypes),
   name: z.string().min(3),
   description: z.string().min(4),
   coverImageUrl: z.string().url(),
@@ -93,7 +93,7 @@ export const AddMedia = () => {
             <Controller
               defaultValue={MediaTypes[0]}
               control={control}
-              name="type"
+              name="mediaType"
               render={({ field }) => {
                 return (
                   <Select onValueChange={field.onChange} {...field}>

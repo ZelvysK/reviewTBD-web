@@ -18,7 +18,7 @@ import {
 } from "../../form/select";
 
 const schema = z.object({
-  type: z.enum(MediaTypes),
+  mediaType: z.enum(MediaTypes),
   name: z.string().min(3),
   description: z.string().min(4),
   coverImageUrl: z.string().url(),
@@ -102,9 +102,9 @@ export const UpdateMedia = () => {
 
             <span className="label-text">Media type:</span>
             <Controller
-              defaultValue={mediaData.type}
+              defaultValue={mediaData.mediaType}
               control={control}
-              name="type"
+              name="mediaType"
               render={({ field }) => {
                 return (
                   <Select onValueChange={field.onChange} {...field}>

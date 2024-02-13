@@ -24,7 +24,7 @@ export const StudioOptions: Option<StudioType>[] = StudioTypes.map((item) => ({
 
 export interface Media {
   id: string;
-  type: MediaType;
+  mediaType: MediaType;
   name: string;
   description: string;
   coverImageUrl: string;
