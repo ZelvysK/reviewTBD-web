@@ -35,6 +35,8 @@ export interface Media {
   dateModified: string;
 }
 
+export type NewMedia = Omit<Media, "id">;
+
 export const MediaTypes = ["Anime", "Game", "Movie"] as const;
 export type MediaType = (typeof MediaTypes)[number];
 
@@ -48,32 +50,4 @@ export interface PaginatedResult<T> {
   offset: number;
   total: number;
   result: T[];
-}
-
-export interface Anime {
-  id: string;
-  title: string;
-  description: string;
-  coverImageUrl: string;
-  animeStudioId: string;
-  dateCreated: string;
-  animeStudio?: Studio;
-}
-
-export interface Game {
-  id: string;
-  title: string;
-  description: string;
-  coverImageUrl: string;
-  dateCreated: string;
-  gameCreatorId: string;
-}
-
-export interface Movie {
-  id: string;
-  title: string;
-  description: string;
-  coverUrl: string;
-  dateCreated: string;
-  movieStudioId: string;
 }

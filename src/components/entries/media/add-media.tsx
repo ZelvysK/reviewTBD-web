@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Media, MediaTypes, PaginatedResult } from "../../../types";
+import { Media, MediaTypes, PaginatedResult, Studio } from "../../../types";
 import { useNavigate } from "react-router-dom";
 import useAxios from "axios-hooks";
 import { getUrl } from "../../../utils/navigation";
@@ -40,13 +40,12 @@ export const AddMedia = () => {
     }
   );
 
-  const [{ data }] = useAxios<PaginatedResult<Media>>(
+  const [{ data }] = useAxios<PaginatedResult<Studio>>(
     {
-      url: getUrl("media"),
+      url: getUrl("studio"),
       params: {
         limit: 9999,
         offset: 0,
-        studioType: "anime",
       },
     },
     { useCache: false }
@@ -99,7 +98,7 @@ export const AddMedia = () => {
                 return (
                   <Select onValueChange={field.onChange} {...field}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select studio type" />
+                      <SelectValue placeholder="Select media type" />
                     </SelectTrigger>
                     <SelectContent className="bg-base-100">
                       <SelectGroup>
@@ -133,7 +132,7 @@ export const AddMedia = () => {
                         <SelectLabel>Studios</SelectLabel>
                         {options?.map((item) => (
                           <SelectItem key={item.id} value={item.id}>
-                            {item.name}
+                            {item.name} | {item.type}
                           </SelectItem>
                         ))}
                       </SelectGroup>
