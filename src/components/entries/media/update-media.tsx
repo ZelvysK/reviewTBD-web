@@ -1,11 +1,12 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import useAxios from "axios-hooks";
-import { Controller, useForm } from "react-hook-form";
-import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
 import { z } from "zod";
-import { PaginatedResult, Studio } from "../../../types";
+import { Media, MediaTypes, PaginatedResult, Studio } from "../../../types";
+import { useNavigate, useParams } from "react-router-dom";
+import useAxios, { clearCache } from "axios-hooks";
 import { getUrl } from "../../../utils/navigation";
+import toast from "react-hot-toast";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader } from "../../loader";
 import {
   Select,
   SelectContent,
@@ -17,27 +18,33 @@ import {
 } from "../../form/select";
 
 const schema = z.object({
-  title: z.string().min(3),
+  type: z.enum(MediaTypes),
+  name: z.string().min(3),
   description: z.string().min(4),
   coverImageUrl: z.string().url(),
   dateCreated: z.string(),
-  animeStudioId: z.string(),
+  studioId: z.string(),
 });
 
-type CreateAnimeForm = z.infer<typeof schema>;
+type UpdateMediaForm = z.infer<typeof schema>;
 
-export const AddAnime = () => {
+export const UpdateMedia = () => {
   const navigate = useNavigate();
+  const { mediaId } = useParams();
 
-  const [_, executePost] = useAxios(
+  const [{ data: mediaData, loading, error }] = useAxios<Media>(
+    getUrl(["media", mediaId])
+  );
+
+  const [_, executeUpdate] = useAxios(
     {
-      url: getUrl("anime"),
-      method: "post",
+      url: getUrl(["media", mediaId]),
+      method: "put",
     },
     { manual: true }
   );
 
-  const [{ data }] = useAxios<PaginatedResult<Studio>>(
+  const [{ data: studioData }] = useAxios<PaginatedResult<Studio>>(
     {
       url: getUrl("studio"),
       params: {
@@ -49,26 +56,34 @@ export const AddAnime = () => {
     { useCache: false }
   );
 
-  const options = data?.result;
+  const options = studioData?.result;
 
-  const onSubmit = async (data: CreateAnimeForm) => {
+  const onSubmit = async (data: UpdateMediaForm) => {
     try {
-      const response = await executePost({ data });
+      const response = await executeUpdate({ data: { id: mediaId, ...data } });
 
-      const { id } = response.data;
-
-      if (response.status === 201) {
-        navigate(`../../anime/${id}`);
-        toast.success("Anime updated successfully");
+      if (response.status === 200) {
+        clearCache();
+        navigate(`../../media/${mediaId}`);
+        toast.success("Media updated successfully");
       }
     } catch (error) {
       toast.error("Failed");
     }
   };
 
-  const { handleSubmit, register, control } = useForm<CreateAnimeForm>({
+  const { handleSubmit, register, control } = useForm<UpdateMediaForm>({
     resolver: zodResolver(schema),
+    values: mediaData,
   });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  if (!mediaData || loading) {
+    return <Loader />;
+  }
 
   return (
     <div className="flex gap-48">
@@ -76,13 +91,39 @@ export const AddAnime = () => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="flex flex-col gap-2">
             <div className="label">
-              <span className="label-text">Title:</span>
+              <span className="label-text">Name:</span>
             </div>
             <input
-              {...register("title")}
+              {...register("name")}
               type="text"
-              placeholder="Title"
+              placeholder="Name"
               className="input input-bordered input-sm w-full max-w-xs"
+            />
+
+            <span className="label-text">Media type:</span>
+            <Controller
+              defaultValue={mediaData.type}
+              control={control}
+              name="type"
+              render={({ field }) => {
+                return (
+                  <Select onValueChange={field.onChange} {...field}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select studio type" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-base-100">
+                      <SelectGroup>
+                        <SelectLabel>Media types</SelectLabel>
+                        {MediaTypes.map((item) => (
+                          <SelectItem key={item} value={item}>
+                            {item}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                );
+              }}
             />
 
             <div className="label">
@@ -90,7 +131,7 @@ export const AddAnime = () => {
             </div>
             <Controller
               control={control}
-              name="animeStudioId"
+              name="studioId"
               render={({ field }) => {
                 return (
                   <Select onValueChange={field.onChange} {...field}>

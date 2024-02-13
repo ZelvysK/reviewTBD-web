@@ -1,23 +1,27 @@
 import useAxios from "axios-hooks";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { Game } from "../../../types";
+import { Media } from "../../../types";
 import { getUrl } from "../../../utils/navigation";
 import { Loader } from "../../loader";
 import { Modal } from "../../modal";
 
-const MODAL_DELETE_ID = "delete-game-modal";
+const MODAL_DELETE_ID = "delete-media-modal";
 
-export const SingleGame = () => {
+export const SingleMedia = () => {
   const navigate = useNavigate();
-  const { gameId } = useParams();
-  const [{ data, loading, error }] = useAxios<Game>(getUrl(["game", gameId]));
+  const { mediaId } = useParams();
+  const [{ data, loading, error }] = useAxios<Media>(
+    getUrl(["media", mediaId])
+  );
 
   const [_delete, executeDelete] = useAxios(
     {
-      url: getUrl(["game", gameId]),
+      url: getUrl(["media", mediaId]),
       method: "delete",
     },
-    { manual: true }
+    {
+      manual: true,
+    }
   );
 
   const handleDelete = async () => {
@@ -26,7 +30,7 @@ export const SingleGame = () => {
     console.log(response);
 
     if (response.status === 204) {
-      navigate("../../game");
+      navigate("../../");
     }
   };
 
@@ -38,14 +42,6 @@ export const SingleGame = () => {
     return <Loader />;
   }
 
-  if (!data && !loading) {
-    return (
-      <div className="bg-secondary/30 shadow-xl rounded-xl flex flex-col gap-2 p-2">
-        <h3 className="font-bold">Sorry, game data not added!</h3>
-      </div>
-    );
-  }
-
   return (
     <div className="bg-secondary/30 shadow-xl rounded-xl flex flex-col gap-2 p-2">
       <img
@@ -54,25 +50,25 @@ export const SingleGame = () => {
         className="max-w-sm rounded-lg shadow-2xl object-scale-down h-75 w-48"
       />
       <div>
-        <h1 className="text-5xl font-bold">{data?.title}</h1>
+        <h1 className="text-5xl font-bold">{data?.name + " |" + data?.type}</h1>
         <div className="font-semibold">{data?.description}</div>
         <div className="font-semibold">{data?.coverImageUrl}</div>
         <div className="font-semibold">{data?.dateCreated}</div>
       </div>
       <div className="flex gap-2">
         <Link
-          to={`/game/update/${data.id}`}
+          to={`/media/update/${data.id}`}
           className="btn btn-active btn-neutral"
         >
-          Update
+          Update Studio
         </Link>
         <label htmlFor={MODAL_DELETE_ID} className="btn btn-outline btn-error">
-          Delete
+          Delete studio
         </label>
       </div>
       <Modal
         id={MODAL_DELETE_ID}
-        text="Do you really want to delete the game?"
+        text={`Do you really want to delete ${data.name}?`}
         onConfirm={handleDelete}
       />
     </div>
