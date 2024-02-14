@@ -80,7 +80,7 @@ const MediaTable = ({ type, term }: Props) => {
         return (
           <Link to={`/media/${item.id}`} key={item.id} className="flex gap-2">
             <div className="font-bold">{item.name}</div>
-            <div>| {item.type}</div>
+            <div>| {item.mediaType}</div>
           </Link>
         );
       })}
