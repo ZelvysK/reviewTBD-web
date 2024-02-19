@@ -8,6 +8,8 @@ import { MediaList } from "./components/entries/media/media-list";
 import { SingleMedia } from "./components/entries/media/single-media";
 import { AddMedia } from "./components/entries/media/add-media";
 import { UpdateMedia } from "./components/entries/media/update-media";
+import { Login } from "./components/entries/user/login";
+import { Register } from "./components/entries/user/register";
 
 type Route = {
   name: string;
@@ -62,6 +64,14 @@ export const router = createBrowserRouter([
       {
         path: "/media/update/:mediaId",
         element: <UpdateMedia />,
+      },
+      {
+        path: "/login",
+        element: <Login />,
+      },
+      {
+        path: "/register",
+        element: <Register />,
       },
     ],
   },

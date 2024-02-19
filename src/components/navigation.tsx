@@ -18,6 +18,20 @@ export const Navigation = () => {
           })}
         </ul>
       </div>
+      <div className="navbar-end flex">
+        <ul className="menu menu-horizontal px-1">
+          <li>
+            <Link to={"/login"} className="btn btn-ghost text-base">
+              Login
+            </Link>
+          </li>
+          <li>
+            <Link to={"/register"} className="btn btn-ghost text-base">
+              Register
+            </Link>
+          </li>
+        </ul>
+      </div>
     </div>
   );
 };
