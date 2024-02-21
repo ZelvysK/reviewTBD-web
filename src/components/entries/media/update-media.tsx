@@ -16,6 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../form/select";
+import { useAuth } from "../../../hooks/useAuth";
 
 const schema = z.object({
   mediaType: z.enum(MediaTypes),
@@ -31,15 +32,18 @@ type UpdateMediaForm = z.infer<typeof schema>;
 export const UpdateMedia = () => {
   const navigate = useNavigate();
   const { mediaId } = useParams();
+  const { headers } = useAuth();
 
-  const [{ data: mediaData, loading, error }] = useAxios<Media>(
-    getUrl(["media", mediaId])
-  );
+  const [{ data: mediaData, loading, error }] = useAxios<Media>({
+    url: getUrl(["media", mediaId]),
+    headers,
+  });
 
   const [_, executeUpdate] = useAxios(
     {
       url: getUrl(["media", mediaId]),
       method: "put",
+      headers,
     },
     { manual: true }
   );
@@ -52,6 +56,7 @@ export const UpdateMedia = () => {
         offset: 0,
         studioType: "anime",
       },
+      headers,
     },
     { useCache: false }
   );

@@ -15,6 +15,7 @@ import {
   SelectValue,
 } from "../form/select";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useAuth } from "../../hooks/useAuth";
 
 const schema = z.object({
   type: z.enum(StudioTypes),
@@ -28,11 +29,13 @@ type CreateStudioForm = z.infer<typeof schema>;
 
 export const AddStudio = () => {
   const navigate = useNavigate();
+  const { headers } = useAuth();
 
   const [_, executePost] = useAxios(
     {
       url: getUrl("studio"),
       method: "post",
+      headers,
     },
     { manual: true }
   );

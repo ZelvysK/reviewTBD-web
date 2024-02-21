@@ -21,6 +21,7 @@ export const SingleStudio = () => {
     {
       url: getUrl(["studio", studioId]),
       method: "delete",
+      headers,
     },
     { manual: true }
   );

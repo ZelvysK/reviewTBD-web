@@ -4,20 +4,24 @@ import { Media } from "../../../types";
 import { getUrl } from "../../../utils/navigation";
 import { Loader } from "../../loader";
 import { Modal } from "../../modal";
+import { useAuth } from "../../../hooks/useAuth";
 
 const MODAL_DELETE_ID = "delete-media-modal";
 
 export const SingleMedia = () => {
   const navigate = useNavigate();
   const { mediaId } = useParams();
-  const [{ data, loading, error }] = useAxios<Media>(
-    getUrl(["media", mediaId])
-  );
+  const { headers } = useAuth();
+  const [{ data, loading, error }] = useAxios<Media>({
+    url: getUrl(["media", mediaId]),
+    headers,
+  });
 
   const [_delete, executeDelete] = useAxios(
     {
       url: getUrl(["media", mediaId]),
       method: "delete",
+      headers,
     },
     {
       manual: true,

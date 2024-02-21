@@ -1,9 +1,13 @@
 import { Link } from "react-router-dom";
 import { routes } from "../router";
 import { useAuth } from "../hooks/useAuth";
+import { RESET } from "jotai/utils";
+import { useAtom } from "jotai";
+import { authAtom } from "../auth";
 
 export const Navigation = () => {
   const { user } = useAuth();
+  const [_, setAuthData] = useAtom(authAtom);
 
   return (
     <div className="navbar bg-secondary/60">
@@ -24,9 +28,19 @@ export const Navigation = () => {
       <div className="navbar-end flex">
         <ul className="menu menu-horizontal px-1">
           {user && (
-            <li className="flex items-center justify-center">
-              Hello, {user.email}!
-            </li>
+            <>
+              <li className="flex items-center justify-center">
+                Hello, {user.email}!
+              </li>
+              <li className="px-2">
+                <button
+                  className="btn btn-ghost text-base bg-red-700 w-16 border-warning"
+                  onClick={() => setAuthData(RESET)}
+                >
+                  Logout
+                </button>
+              </li>
+            </>
           )}
           {!user && (
             <>

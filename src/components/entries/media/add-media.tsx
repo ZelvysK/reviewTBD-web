@@ -15,6 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../form/select";
+import { useAuth } from "../../../hooks/useAuth";
 
 const schema = z.object({
   mediaType: z.enum(MediaTypes),
@@ -29,11 +30,13 @@ type CreateMediaFrom = z.infer<typeof schema>;
 
 export const AddMedia = () => {
   const navigate = useNavigate();
+  const { headers } = useAuth();
 
   const [_, executePost] = useAxios(
     {
       url: getUrl("media"),
       method: "post",
+      headers,
     },
     {
       manual: true,
@@ -47,6 +50,7 @@ export const AddMedia = () => {
         limit: 9999,
         offset: 0,
       },
+      headers,
     },
     { useCache: false }
   );

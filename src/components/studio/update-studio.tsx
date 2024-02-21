@@ -16,6 +16,7 @@ import {
   SelectValue,
 } from "../form/select";
 import { Loader } from "../loader";
+import { useAuth } from "../../hooks/useAuth";
 
 const schema = z.object({
   type: z.enum(StudioTypes),
@@ -30,15 +31,18 @@ type UpdateStudioForm = z.infer<typeof schema>;
 export const UpdateStudio = () => {
   const navigate = useNavigate();
   const { studioId } = useParams();
+  const { headers } = useAuth();
 
-  const [{ data, loading, error }] = useAxios<Studio>(
-    getUrl(["studio", studioId])
-  );
+  const [{ data, loading, error }] = useAxios<Studio>({
+    url: getUrl(["studio", studioId]),
+    headers,
+  });
 
   const [_, executeUpdate] = useAxios(
     {
       url: getUrl(["studio", studioId]),
       method: "put",
+      headers,
     },
     { manual: true }
   );

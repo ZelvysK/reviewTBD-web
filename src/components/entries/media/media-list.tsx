@@ -13,6 +13,7 @@ import { PAGE_SIZE } from "../../../api";
 import { Loader } from "../../loader";
 import { Pagination } from "../../pagination";
 import Select, { SingleValue } from "react-select";
+import { useAuth } from "../../../hooks/useAuth";
 
 export const MediaList = () => {
   const [term, setTerm] = useState<string>();
@@ -53,6 +54,7 @@ interface Props {
 
 const MediaTable = ({ type, term }: Props) => {
   const [currentPage, setCurrentPage] = useState(1);
+  const { headers } = useAuth();
 
   const [{ data, loading, error }] = useAxios<PaginatedResult<Media>>(
     {
@@ -63,6 +65,7 @@ const MediaTable = ({ type, term }: Props) => {
         mediaType: type,
         term,
       },
+      headers,
     },
     { useCache: false }
   );

@@ -34,6 +34,10 @@ export const router = createBrowserRouter([
     errorElement: <ErrorBoundary />,
     children: [
       {
+        path: "/login",
+        element: <Login />,
+      },
+      {
         path: "/",
         element: <StudioList />,
       },
@@ -64,10 +68,6 @@ export const router = createBrowserRouter([
       {
         path: "/media/update/:mediaId",
         element: <UpdateMedia />,
-      },
-      {
-        path: "/login",
-        element: <Login />,
       },
       {
         path: "/register",
