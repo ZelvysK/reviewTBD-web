@@ -13,6 +13,7 @@ import {
 import { getUrl } from "../../utils/navigation";
 import { Loader } from "../loader";
 import { Pagination } from "../pagination";
+import { useAuth } from "../../hooks/useAuth";
 
 export const StudioList = () => {
   const [term, setTerm] = useState<string>();
@@ -53,19 +54,17 @@ interface Props {
 
 const StudioTable = ({ type, term }: Props) => {
   const [currentPage, setCurrentPage] = useState(1);
-
-  const [{ data, loading, error }] = useAxios<PaginatedResult<Studio>>(
-    {
-      url: getUrl("studio"),
-      params: {
-        limit: PAGE_SIZE,
-        offset: (currentPage - 1) * PAGE_SIZE,
-        studioType: type,
-        term,
-      },
+  const { headers } = useAuth();
+  const [{ data, loading, error }] = useAxios<PaginatedResult<Studio>>({
+    url: getUrl("studio"),
+    params: {
+      limit: PAGE_SIZE,
+      offset: (currentPage - 1) * PAGE_SIZE,
+      studioType: type,
+      term,
     },
-    { useCache: false }
-  );
+    headers,
+  });
 
   if (error) {
     throw new Error(error.message);

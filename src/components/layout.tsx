@@ -1,8 +1,12 @@
 import { Toaster } from "react-hot-toast";
 import { Outlet } from "react-router-dom";
 import { Navigation } from "./navigation";
+import { useAtom } from "jotai";
+import { authAtom } from "../auth";
 
 export const Layout = () => {
+  const [authData, setAuthData] = useAtom(authAtom);
+
   return (
     <>
       <Navigation />

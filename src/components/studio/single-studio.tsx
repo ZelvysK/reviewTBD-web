@@ -4,15 +4,18 @@ import { Studio } from "../../types";
 import { getUrl } from "../../utils/navigation";
 import { Loader } from "../loader";
 import { Modal } from "../modal";
+import { useAuth } from "../../hooks/useAuth";
 
 const MODAL_DELETE_ID = "delete-studio-modal";
 
 export const SingleStudio = () => {
   const navigate = useNavigate();
+  const { headers } = useAuth();
   const { studioId } = useParams();
-  const [{ data, loading, error }] = useAxios<Studio>(
-    getUrl(["studio", studioId])
-  );
+  const [{ data, loading, error }] = useAxios<Studio>({
+    url: getUrl(["studio", studioId]),
+    headers,
+  });
 
   const [_delete, executeDelete] = useAxios(
     {

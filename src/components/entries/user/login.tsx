@@ -5,6 +5,8 @@ import { getUrl } from "../../../utils/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
+import { AuthData, authAtom } from "../../../auth";
+import { useAtom } from "jotai";
 
 const schema = z.object({
   email: z.string().email(),
@@ -15,8 +17,9 @@ type LoginForm = z.infer<typeof schema>;
 
 export const Login = () => {
   const navigate = useNavigate();
+  const [authData, setAuthData] = useAtom(authAtom);
 
-  const [_, executePost] = useAxios(
+  const [_, executeLogin] = useAxios<AuthData>(
     {
       url: getUrl("login"),
       method: "post",
@@ -28,9 +31,10 @@ export const Login = () => {
 
   const onSubmit = async (data: LoginForm) => {
     try {
-      const response = await executePost({ data });
+      const response = await executeLogin({ data });
 
       if (response.status === 200) {
+        setAuthData(response.data);
         navigate("../../");
         toast.success("Login successful");
       }

@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
 import { routes } from "../router";
+import { useAuth } from "../hooks/useAuth";
 
 export const Navigation = () => {
+  const { user } = useAuth();
+
   return (
     <div className="navbar bg-secondary/60">
       <div className="navbar-start">
@@ -20,16 +23,25 @@ export const Navigation = () => {
       </div>
       <div className="navbar-end flex">
         <ul className="menu menu-horizontal px-1">
-          <li>
-            <Link to={"/login"} className="btn btn-ghost text-base">
-              Login
-            </Link>
-          </li>
-          <li>
-            <Link to={"/register"} className="btn btn-ghost text-base">
-              Register
-            </Link>
-          </li>
+          {user && (
+            <li className="flex items-center justify-center">
+              Hello, {user.email}!
+            </li>
+          )}
+          {!user && (
+            <>
+              <li>
+                <Link to={"/login"} className="btn btn-ghost text-base">
+                  Login
+                </Link>
+              </li>
+              <li>
+                <Link to={"/register"} className="btn btn-ghost text-base">
+                  Register
+                </Link>
+              </li>
+            </>
+          )}
         </ul>
       </div>
     </div>
