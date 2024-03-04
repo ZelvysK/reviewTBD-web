@@ -51,3 +51,10 @@ export interface PaginatedResult<T> {
   total: number;
   result: T[];
 }
+
+export interface User {
+  id: string;
+  username: string;
+  email: string;
+  phoneNumber: string;
+}

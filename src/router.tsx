@@ -10,6 +10,9 @@ import { AddMedia } from "./components/entries/media/add-media";
 import { UpdateMedia } from "./components/entries/media/update-media";
 import { Login } from "./components/entries/user/login";
 import { Register } from "./components/entries/user/register";
+import { UserList } from "./components/entries/user/user-list";
+import { SingleUser } from "./components/entries/user/single-user";
+import { UpdateUser } from "./components/entries/user/update-user";
 
 type Route = {
   name: string;
@@ -24,6 +27,10 @@ export const routes: Route[] = [
   {
     name: "Media",
     url: "/media",
+  },
+  {
+    name: "Users",
+    url: "/user",
   },
 ];
 
@@ -72,6 +79,18 @@ export const router = createBrowserRouter([
       {
         path: "/register",
         element: <Register />,
+      },
+      {
+        path: "/user",
+        element: <UserList />,
+      },
+      {
+        path: "/user/:userId",
+        element: <SingleUser />,
+      },
+      {
+        path: "/user/update/:userId",
+        element: <UpdateUser />,
       },
     ],
   },

@@ -9,7 +9,8 @@ import { AuthData, authAtom } from "../../../auth";
 import { useAtom } from "jotai";
 
 const schema = z.object({
-  email: z.string().email(),
+  // username: z.string(),
+  email: z.string(),
   password: z.string(),
 });
 
@@ -57,8 +58,8 @@ export const Login = () => {
             </div>
             <input
               {...register("email")}
-              type="email"
-              placeholder="Email"
+              type="text"
+              placeholder="Email/Username"
               className="input input-bordered input-sm w-full max-w-xs"
             />
 
