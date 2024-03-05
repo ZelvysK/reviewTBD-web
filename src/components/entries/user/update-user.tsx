@@ -10,9 +10,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader } from "../../loader";
 
 const schema = z.object({
-  username: z.string().min(3),
-  email: z.string().email(),
-  phoneNumber: z.string(),
+  username: z.string().min(3).nullable(),
+  email: z.string().email().nullable(),
+  phoneNumber: z.string().nullable(),
 });
 
 type UpdateUserForm = z.infer<typeof schema>;
@@ -29,7 +29,7 @@ export const UpdateUser = () => {
 
   const [_, executeUpdate] = useAxios(
     {
-      url: getUrl(["user", userId]),
+      url: getUrl(["user", "update", userId]),
       method: "put",
       headers,
     },
@@ -50,7 +50,7 @@ export const UpdateUser = () => {
     }
   };
 
-  const { handleSubmit, register, control } = useForm<UpdateUserForm>({
+  const { handleSubmit, register } = useForm<UpdateUserForm>({
     resolver: zodResolver(schema),
     values: data,
   });
