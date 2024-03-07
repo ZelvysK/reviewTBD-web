@@ -1,13 +1,9 @@
 import { Link } from "react-router-dom";
-import { routes } from "../router";
 import { useAuth } from "../hooks/useAuth";
-import { RESET } from "jotai/utils";
-import { useAtom } from "jotai";
-import { authAtom } from "../auth";
+import { routes } from "../router";
 
 export const Navigation = () => {
-  const { user } = useAuth();
-  const [_, setAuthData] = useAtom(authAtom);
+  const { user, logout } = useAuth();
 
   return (
     <div className="navbar bg-secondary/60">
@@ -30,12 +26,12 @@ export const Navigation = () => {
           {user && (
             <>
               <li className="flex items-center justify-center">
-                Hello, {user.email}!
+                Hello, {user.userName}! | {user.role}
               </li>
               <li className="px-2">
                 <button
                   className="btn btn-ghost text-base bg-red-700 w-16 border-warning"
-                  onClick={() => setAuthData(RESET)}
+                  onClick={logout}
                 >
                   Logout
                 </button>

@@ -17,6 +17,11 @@ export const authAtom = atomWithStorage<AuthData | undefined>(
 
 export const userAtom = atom<UserData | undefined>(undefined);
 
+type Role = "User" | "Admin";
+
 export type UserData = {
+  userName: string;
   email: string;
+  phoneNumber?: string;
+  role: Role;
 };

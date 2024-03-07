@@ -59,7 +59,9 @@ const UserTable = ({ term }: Props) => {
       {data.result.map((item) => {
         return (
           <Link to={`/user/${item.id}`} key={item.id} className="flex gap-2">
-            <div className="font-bold">{item.username}</div>
+            <div className="font-bold">{item.userName}</div>
+            <div>{item.email}</div>
+            <div>{item.phoneNumber}</div>
           </Link>
         );
       })}

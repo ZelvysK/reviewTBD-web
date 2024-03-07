@@ -1,8 +1,8 @@
-import { useAtom } from "jotai";
-import { UserData, authAtom, userAtom } from "../auth";
 import useAxios from "axios-hooks";
-import { getUrl } from "../utils/navigation";
+import { useAtom } from "jotai";
 import { useEffect } from "react";
+import { UserData, authAtom, userAtom } from "../auth";
+import { getUrl } from "../utils/navigation";
 
 export const useAuth = () => {
   const [authData, setAuthData] = useAtom(authAtom);
@@ -14,7 +14,7 @@ export const useAuth = () => {
 
   const [_, getUser] = useAxios<UserData>(
     {
-      url: getUrl(["manage", "info"]),
+      url: getUrl(["user", "me"]),
       headers,
     },
     {
@@ -34,8 +34,14 @@ export const useAuth = () => {
     fetch();
   }, [authData]);
 
+  const logout = () => {
+    setAuthData(undefined);
+    setUserData(undefined);
+  };
+
   return {
     headers,
     user: userData,
+    logout,
   };
 };
