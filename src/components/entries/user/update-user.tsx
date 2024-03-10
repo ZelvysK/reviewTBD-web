@@ -39,8 +39,6 @@ export const UpdateUser = () => {
 
   const onSubmit = async (data: UpdateUserFormData) => {
     try {
-      console.log(data);
-
       const response = await executeUpdate({ data: { id: userId, ...data } });
 
       if (response.status === 200) {

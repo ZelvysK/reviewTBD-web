@@ -57,4 +57,12 @@ export interface User {
   userName: string;
   email: string;
   phoneNumber: string;
+  role: RoleType;
 }
+
+export const RoleTypes = ["User", "Admin"] as const;
+export type RoleType = (typeof RoleTypes)[number];
+export const RoleOptions: Option<RoleType>[] = RoleTypes.map((item) => ({
+  value: item,
+  label: item,
+}));

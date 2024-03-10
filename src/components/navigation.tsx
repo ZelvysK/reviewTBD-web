@@ -26,7 +26,9 @@ export const Navigation = () => {
           {user && (
             <>
               <li className="flex items-center justify-center">
-                Hello, {user.userName}! | {user.role}
+                <Link to={`/user/me`}>
+                  Hello, {user.userName}! | {user.role}
+                </Link>
               </li>
               <li className="px-2">
                 <button

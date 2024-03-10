@@ -34,9 +34,20 @@ export const ErrorBoundary = () => {
       </p>
 
       {isUnauthorizedError(errorMessage) && (
-        <button onClick={() => navigate("/login")} className="btn btn-primary">
-          Please login
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={() => navigate("/login")}
+            className="btn btn-primary"
+          >
+            Please login
+          </button>
+          <button
+            onClick={() => navigate("/register")}
+            className="btn btn-outline"
+          >
+            Or Register
+          </button>
+        </div>
       )}
 
       <p>{errorMessage}</p>

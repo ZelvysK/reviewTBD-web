@@ -66,10 +66,10 @@ export const SingleMedia = () => {
           to={`/media/update/${data.id}`}
           className="btn btn-active btn-neutral"
         >
-          Update Studio
+          Update media
         </Link>
         <label htmlFor={MODAL_DELETE_ID} className="btn btn-outline btn-error">
-          Delete studio
+          Delete media
         </label>
       </div>
       <Modal

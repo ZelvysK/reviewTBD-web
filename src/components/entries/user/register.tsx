@@ -45,7 +45,7 @@ export const Register = () => {
   });
 
   return (
-    <div className="flex gap-48">
+    <div className="flex gap-48 items-center justify-center">
       <div className="form-control w-full max-w-xs">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="flex flex-col gap-2">
