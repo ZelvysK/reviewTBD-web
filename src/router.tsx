@@ -13,6 +13,7 @@ import { Register } from "./components/entries/user/register";
 import { UserList } from "./components/entries/user/user-list";
 import { SingleUser } from "./components/entries/user/single-user";
 import { UpdateUser } from "./components/entries/user/update-user";
+import { UpdatePassword } from "./components/entries/user/update-password";
 
 type Route = {
   name: string;
@@ -91,6 +92,10 @@ export const router = createBrowserRouter([
       {
         path: "/user/update/:userId",
         element: <UpdateUser />,
+      },
+      {
+        path: "/user/changePassword/:userId",
+        element: <UpdatePassword />,
       },
     ],
   },

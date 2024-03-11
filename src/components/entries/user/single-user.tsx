@@ -36,6 +36,14 @@ export const SingleUser = () => {
         >
           Update User
         </Link>
+        {/* {data.role === "Admin" && (
+          <Link
+            to={`/user/adminupdate/${data.id}`}
+            className="btn btn-active btn-neutral"
+          >
+            Change role
+          </Link>
+        )} */}
       </div>
     </div>
   );
