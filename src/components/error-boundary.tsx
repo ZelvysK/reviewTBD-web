@@ -3,6 +3,7 @@ import {
   useNavigate,
   useRouteError,
 } from "react-router-dom";
+// import { Tabs, TabsContent, TabsList, TabsTrigger } from "../utils/tabs";
 
 const isUnauthorizedError = (errorMessage: string) =>
   errorMessage.includes("401");
@@ -34,20 +35,34 @@ export const ErrorBoundary = () => {
       </p>
 
       {isUnauthorizedError(errorMessage) && (
-        <div className="flex gap-2">
-          <button
-            onClick={() => navigate("/login")}
-            className="btn btn-primary"
-          >
-            Please login
-          </button>
-          <button
-            onClick={() => navigate("/register")}
-            className="btn btn-outline"
-          >
-            Or Register
-          </button>
-        </div>
+        <>
+          {/* <Tabs defaultValue="login" className="w-[400px]">
+            <TabsList>
+              <TabsTrigger value="login">Account</TabsTrigger>
+              <TabsTrigger value="register">Password</TabsTrigger>
+            </TabsList>
+            <TabsContent value="login">
+              Make changes to your account here.
+            </TabsContent>
+            <TabsContent value="register">
+              Change your password here.
+            </TabsContent>
+          </Tabs> */}
+          <div className="flex gap-2">
+            <button
+              onClick={() => navigate("/login")}
+              className="btn btn-primary"
+            >
+              Login
+            </button>
+            <button
+              onClick={() => navigate("/register")}
+              className="btn btn-outline"
+            >
+              Register
+            </button>
+          </div>
+        </>
       )}
 
       <p>{errorMessage}</p>

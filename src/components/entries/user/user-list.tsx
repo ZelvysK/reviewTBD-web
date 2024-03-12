@@ -7,6 +7,8 @@ import { PAGE_SIZE } from "../../../api";
 import { Loader } from "../../loader";
 import { Link } from "react-router-dom";
 import { Pagination } from "../../pagination";
+import { Skeleton } from "../../../utils/skeleton";
+import { Avatar, AvatarFallback, AvatarImage } from "../../../utils/avatar";
 
 export const UserList = () => {
   const [term, setTerm] = useState<string>();
@@ -59,8 +61,19 @@ const UserTable = ({ term }: Props) => {
       {data.result.map((item) => {
         return (
           <Link to={`/user/${item.id}`} key={item.id} className="flex gap-2">
-            <div className="font-bold">{item.userName}</div>
-            <div>{item.email}</div>
+            <div className="flex items-center space-x-4 w-16">
+              <Skeleton className="h-12 w-12 rounded-full" />
+              <Avatar>
+                <AvatarImage src="https://github.com/shadcn.png" />
+                <AvatarFallback>CN</AvatarFallback>
+              </Avatar>
+              <div className="space-y-2">
+                <Skeleton className="h-1 w-[250px]" />
+                {item.userName}
+                <Skeleton className="h-1 w-[200px]" />
+                {item.email}
+              </div>
+            </div>
           </Link>
         );
       })}
