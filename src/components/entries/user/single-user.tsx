@@ -2,7 +2,7 @@ import useAxios from "axios-hooks";
 import { Link, useParams } from "react-router-dom";
 import { getUrl } from "../../../utils/navigation";
 import { Loader } from "../../loader";
-import { useAuth } from "../../../hooks/useAuth";
+import { useAuth } from "../../../hooks/use-auth";
 import { User } from "../../../types";
 
 export const SingleUser = () => {

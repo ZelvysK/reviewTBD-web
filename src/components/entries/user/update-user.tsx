@@ -5,7 +5,7 @@ import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
-import { useAuth } from "../../../hooks/useAuth";
+import { useAuth } from "../../../hooks/use-auth";
 import { RoleTypes, User } from "../../../types";
 import { getUrl } from "../../../utils/navigation";
 import { Loader } from "../../loader";
@@ -17,8 +17,8 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "../../form/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../utils/tabs";
+} from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const schema = z.object({
   userName: z.string().min(3),
@@ -32,7 +32,7 @@ type UpdateUserFormData = z.infer<typeof schema>;
 export const UpdateUser = () => {
   const navigate = useNavigate();
   const { userId } = useParams();
-  const { headers } = useAuth();
+  const { headers, user } = useAuth();
 
   const [{ data, loading, error }] = useAxios<User>({
     url: getUrl(["user", userId]),
@@ -73,10 +73,10 @@ export const UpdateUser = () => {
   return (
     <div className="flex gap-48">
       <div className="form-control w-full max-w-xs">
-        {data.role === "User" && (
+        {user?.role === "User" && (
           <UpdateUserForm user={data} submitData={onSubmit} />
         )}
-        {data.role === "Admin" && (
+        {user?.role === "Admin" && (
           <UpdateUserFormTabs user={data} submitData={onSubmit} />
         )}
       </div>

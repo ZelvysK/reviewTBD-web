@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
-import { useAuth } from "../../../hooks/useAuth";
+import { useAuth } from "../../../hooks/use-auth";
 import useAxios from "axios-hooks";
 import { User } from "../../../types";
 import { getUrl } from "../../../utils/navigation";

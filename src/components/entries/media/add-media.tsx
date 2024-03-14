@@ -14,8 +14,8 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "../../form/select";
-import { useAuth } from "../../../hooks/useAuth";
+} from "@/components/ui/select";
+import { useAuth } from "../../../hooks/use-auth";
 
 const schema = z.object({
   mediaType: z.enum(MediaTypes),

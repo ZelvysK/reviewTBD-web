@@ -1,16 +1,7 @@
-import {
-  isRouteErrorResponse,
-  useNavigate,
-  useRouteError,
-} from "react-router-dom";
-// import { Tabs, TabsContent, TabsList, TabsTrigger } from "../utils/tabs";
-
-const isUnauthorizedError = (errorMessage: string) =>
-  errorMessage.includes("401");
+import { isRouteErrorResponse, useRouteError } from "react-router-dom";
 
 export const ErrorBoundary = () => {
   const error = useRouteError();
-  const navigate = useNavigate();
 
   let errorMessage: string;
 
@@ -33,37 +24,6 @@ export const ErrorBoundary = () => {
       <p className="text-2xl font-bold">
         Something went terribly wrong... 😰💦🍆
       </p>
-
-      {isUnauthorizedError(errorMessage) && (
-        <>
-          {/* <Tabs defaultValue="login" className="w-[400px]">
-            <TabsList>
-              <TabsTrigger value="login">Account</TabsTrigger>
-              <TabsTrigger value="register">Password</TabsTrigger>
-            </TabsList>
-            <TabsContent value="login">
-              Make changes to your account here.
-            </TabsContent>
-            <TabsContent value="register">
-              Change your password here.
-            </TabsContent>
-          </Tabs> */}
-          <div className="flex gap-2">
-            <button
-              onClick={() => navigate("/login")}
-              className="btn btn-primary"
-            >
-              Login
-            </button>
-            <button
-              onClick={() => navigate("/register")}
-              className="btn btn-outline"
-            >
-              Register
-            </button>
-          </div>
-        </>
-      )}
 
       <p>{errorMessage}</p>
     </div>

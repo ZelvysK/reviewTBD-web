@@ -20,6 +20,7 @@ export const userAtom = atom<UserData | undefined>(undefined);
 type Role = "User" | "Admin";
 
 export type UserData = {
+  id: string;
   userName: string;
   email: string;
   phoneNumber?: string;

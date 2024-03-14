@@ -14,9 +14,9 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "../form/select";
+} from "@/components/ui/select";
 import { Loader } from "../loader";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../../hooks/use-auth";
 
 const schema = z.object({
   type: z.enum(StudioTypes),

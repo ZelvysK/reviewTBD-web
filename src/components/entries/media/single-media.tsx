@@ -4,7 +4,7 @@ import { Media } from "../../../types";
 import { getUrl } from "../../../utils/navigation";
 import { Loader } from "../../loader";
 import { Modal } from "../../modal";
-import { useAuth } from "../../../hooks/useAuth";
+import { useAuth } from "../../../hooks/use-auth";
 
 const MODAL_DELETE_ID = "delete-media-modal";
 

@@ -13,7 +13,7 @@ import { PAGE_SIZE } from "../../../api";
 import { Loader } from "../../loader";
 import { Pagination } from "../../pagination";
 import Select, { SingleValue } from "react-select";
-import { useAuth } from "../../../hooks/useAuth";
+import { useAuth } from "../../../hooks/use-auth";
 
 export const MediaList = () => {
   const [term, setTerm] = useState<string>();
@@ -81,7 +81,11 @@ const MediaTable = ({ type, term }: Props) => {
     <>
       {data.result.map((item) => {
         return (
-          <Link to={`/media/${item.id}`} key={item.id} className="flex gap-2">
+          <Link
+            to={`/media/${item.id}`}
+            key={item.id}
+            className="flex gap-2 w-fit"
+          >
             <div className="font-bold">{item.name}</div>
             <div>| {item.mediaType}</div>
           </Link>

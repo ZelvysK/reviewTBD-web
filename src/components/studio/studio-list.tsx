@@ -13,7 +13,7 @@ import {
 import { getUrl } from "../../utils/navigation";
 import { Loader } from "../loader";
 import { Pagination } from "../pagination";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../../hooks/use-auth";
 
 export const StudioList = () => {
   const [term, setTerm] = useState<string>();
