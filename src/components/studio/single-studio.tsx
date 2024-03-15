@@ -12,10 +12,13 @@ export const SingleStudio = () => {
   const navigate = useNavigate();
   const { headers } = useAuth();
   const { studioId } = useParams();
-  const [{ data, loading, error }] = useAxios<Studio>({
-    url: getUrl(["studio", studioId]),
-    headers,
-  });
+  const [{ data, loading, error }] = useAxios<Studio>(
+    {
+      url: getUrl(["studio", studioId]),
+      headers,
+    },
+    { useCache: false, manual: !headers.Ready }
+  );
 
   const [_delete, executeDelete] = useAxios(
     {

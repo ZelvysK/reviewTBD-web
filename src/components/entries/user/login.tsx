@@ -101,7 +101,11 @@ export const Login = () => {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input placeholder="Email" {...field} />
+                      <Input
+                        {...field}
+                        value={field.value ?? ""}
+                        placeholder="Email"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -115,9 +119,10 @@ export const Login = () => {
                     <FormLabel>Password</FormLabel>
                     <FormControl>
                       <Input
+                        {...field}
+                        value={field.value ?? ""}
                         type="password"
                         placeholder="Password"
-                        {...field}
                       />
                     </FormControl>
                     <FormMessage />
@@ -141,7 +146,11 @@ export const Login = () => {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input placeholder="Email" {...field} />
+                      <Input
+                        {...field}
+                        value={field.value ?? ""}
+                        placeholder="Email"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -155,9 +164,10 @@ export const Login = () => {
                     <FormLabel>Password</FormLabel>
                     <FormControl>
                       <Input
+                        {...field}
+                        value={field.value ?? ""}
                         type="password"
                         placeholder="Password"
-                        {...field}
                       />
                     </FormControl>
                     <FormMessage />
@@ -169,36 +179,6 @@ export const Login = () => {
           </Form>
         </TabsContent>
       </Tabs>
-
-      {/* <div className="form-control w-full max-w-xs ">
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="flex flex-col gap-2">
-            <div className="label">
-              <span className="label-text">Email:</span>
-            </div>
-            <input
-              {...register("email")}
-              type="text"
-              placeholder="Email/Username"
-              className="input input-bordered input-sm w-full max-w-xs"
-            />
-
-            <div className="label">
-              <span className="label-text">Password:</span>
-            </div>
-            <input
-              {...register("password")}
-              type="password"
-              placeholder="Password"
-              className="input input-bordered input-sm w-full max-w-xs"
-            />
-
-            <button type="submit" className="btn btn-primary">
-              Login
-            </button>
-          </div>
-        </form>
-      </div> */}
     </div>
   );
 };

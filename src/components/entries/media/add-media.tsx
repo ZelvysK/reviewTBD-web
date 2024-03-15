@@ -52,7 +52,7 @@ export const AddMedia = () => {
       },
       headers,
     },
-    { useCache: false }
+    { useCache: false, manual: !headers.Ready }
   );
 
   const options = data?.result;

@@ -17,21 +17,21 @@ import { UpdatePassword } from "./components/entries/user/update-password";
 
 type Route = {
   name: string;
-  url: string;
+  href: string;
 };
 
 export const routes: Route[] = [
   {
     name: "Studios",
-    url: "/",
+    href: "/",
   },
   {
     name: "Media",
-    url: "/media",
+    href: "/media",
   },
   {
     name: "Users",
-    url: "/user",
+    href: "/user",
   },
 ];
 

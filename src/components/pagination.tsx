@@ -1,3 +1,9 @@
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+} from "@/components/ui/pagination";
 import { PAGE_SIZE } from "../api";
 
 interface Props {
@@ -7,7 +13,7 @@ interface Props {
   onPageChange: (value: React.SetStateAction<number>) => void;
 }
 
-export const Pagination = ({
+export const PageList = ({
   pageSize = PAGE_SIZE,
   totalItems,
   currentPage,
@@ -16,18 +22,19 @@ export const Pagination = ({
   const totalPages = Math.ceil(totalItems / pageSize);
 
   return (
-    <div className="join mx-auto">
-      {Array.from({ length: totalPages }, (_, index) => (
-        <input
-          key={index}
-          onChange={() => onPageChange(index + 1)}
-          className="join-item btn btn-square"
-          type="radio"
-          name="options"
-          aria-label={(index + 1).toString()}
-          checked={index + 1 === currentPage}
-        />
-      ))}
-    </div>
+    <Pagination>
+      <PaginationContent>
+        {Array.from({ length: totalPages }, (_, index) => (
+          <PaginationItem key={index}>
+            <PaginationLink
+              onClick={() => onPageChange(index + 1)}
+              isActive={index + 1 === currentPage}
+            >
+              {(index + 1).toString()}
+            </PaginationLink>
+          </PaginationItem>
+        ))}
+      </PaginationContent>
+    </Pagination>
   );
 };

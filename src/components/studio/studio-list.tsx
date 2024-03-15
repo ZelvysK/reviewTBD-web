@@ -1,48 +1,75 @@
+import { useDebounce } from "@/hooks/use-debounce";
 import useAxios from "axios-hooks";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import Select, { SingleValue } from "react-select";
 import { PAGE_SIZE } from "../../api";
-import {
-  Option,
-  PaginatedResult,
-  Studio,
-  StudioOptions,
-  StudioType,
-} from "../../types";
+import { useAuth } from "../../hooks/use-auth";
+import { PaginatedResult, Studio, StudioType, StudioTypes } from "../../types";
 import { getUrl } from "../../utils/navigation";
 import { Loader } from "../loader";
-import { Pagination } from "../pagination";
-import { useAuth } from "../../hooks/use-auth";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { PageList } from "../pagination";
 
 export const StudioList = () => {
   const [term, setTerm] = useState<string>();
-  const [studioType, setStudioType] =
-    useState<SingleValue<Option<StudioType>>>(null);
+  const debouncedTerm = useDebounce(term);
+  const [studioType, setStudioType] = useState<StudioType>();
 
   return (
     <div className="bg-secondary/30 shadow-xl rounded-xl flex flex-col gap-2 p-2">
       <div className="flex gap-2">
-        <Link to={`/studio/create`} className="btn btn-active btn-neutral">
-          Add Studio
+        <Link to={`/studio/create`}>
+          <Button>Add Studio</Button>
         </Link>
-        <input
+        <Input
           type="text"
-          value={term}
+          value={term ?? ""}
           onChange={(e) => setTerm(e.target.value.trim())}
           placeholder="Search away..."
-          className="input input-bordered w-full max-w-xs"
         />
+        <Select
+          value={studioType ?? ""}
+          onValueChange={(val) => setStudioType(val as StudioType)}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Select studio type" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Studio type</SelectLabel>
+              {StudioTypes.map((studioType) => {
+                return (
+                  <SelectItem key={studioType} value={studioType}>
+                    {studioType}
+                  </SelectItem>
+                );
+              })}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+        <Button
+          onClick={() => {
+            setTerm(undefined);
+            setStudioType(undefined);
+          }}
+          variant="outline"
+        >
+          Clear Filters
+        </Button>
       </div>
-      <Select
-        className="text-black"
-        options={StudioOptions}
-        placeholder="Filter by studio type if you want 🫡"
-        onChange={(item) => setStudioType(item)}
-        defaultValue={studioType}
-        isClearable={!!studioType}
-      />
-      <StudioTable type={studioType?.value} term={term} />
+
+      <StudioTable type={studioType} term={debouncedTerm} />
     </div>
   );
 };
@@ -55,16 +82,19 @@ interface Props {
 const StudioTable = ({ type, term }: Props) => {
   const [currentPage, setCurrentPage] = useState(1);
   const { headers } = useAuth();
-  const [{ data, loading, error }] = useAxios<PaginatedResult<Studio>>({
-    url: getUrl("studio"),
-    params: {
-      limit: PAGE_SIZE,
-      offset: (currentPage - 1) * PAGE_SIZE,
-      studioType: type,
-      term,
+  const [{ data, loading, error }] = useAxios<PaginatedResult<Studio>>(
+    {
+      url: getUrl("studio"),
+      params: {
+        limit: PAGE_SIZE,
+        offset: (currentPage - 1) * PAGE_SIZE,
+        studioType: type,
+        term,
+      },
+      headers,
     },
-    headers,
-  });
+    { useCache: false, manual: !headers.Ready }
+  );
 
   if (error) {
     throw new Error(error.message);
@@ -86,7 +116,7 @@ const StudioTable = ({ type, term }: Props) => {
           </Link>
         );
       })}
-      <Pagination
+      <PageList
         totalItems={data.total}
         currentPage={currentPage}
         onPageChange={setCurrentPage}

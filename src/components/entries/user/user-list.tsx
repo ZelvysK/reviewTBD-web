@@ -1,16 +1,16 @@
-import { useState } from "react";
-import { useAuth } from "../../../hooks/use-auth";
 import useAxios from "axios-hooks";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { PAGE_SIZE } from "../../../api";
+import { useAuth } from "../../../hooks/use-auth";
 import { PaginatedResult, User } from "../../../types";
 import { getUrl } from "../../../utils/navigation";
-import { PAGE_SIZE } from "../../../api";
 import { Loader } from "../../loader";
-import { Link } from "react-router-dom";
-import { Pagination } from "../../pagination";
+import { PageList } from "../../pagination";
 
-import { useDebounce } from "../../../hooks/use-debounce";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useDebounce } from "../../../hooks/use-debounce";
 
 export const UserList = () => {
   const [term, setTerm] = useState<string>();
@@ -48,7 +48,7 @@ const UserTable = ({ term }: Props) => {
       },
       headers,
     },
-    { useCache: false }
+    { useCache: false, manual: !headers.Ready }
   );
 
   if (error) {
@@ -85,7 +85,7 @@ const UserTable = ({ term }: Props) => {
         })}
       </div>
 
-      <Pagination
+      <PageList
         totalItems={data.total}
         currentPage={currentPage}
         onPageChange={setCurrentPage}

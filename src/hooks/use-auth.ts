@@ -12,12 +12,12 @@ export const useAuth = () => {
 
   const headers = {
     Authorization: `Bearer ${authData?.accessToken}`,
+    Ready: !!authData?.accessToken,
   };
 
-  const [_user, getUser] = useAxios<UserData>(
+  const [_user, executeMe] = useAxios<UserData>(
     {
       url: getUrl(["user", "me"]),
-      headers,
     },
     {
       manual: true,
@@ -34,40 +34,66 @@ export const useAuth = () => {
     }
   );
 
+  const [_refresh, executeRefresh] = useAxios<AuthData>(
+    {
+      url: getUrl("refresh"),
+      method: "post",
+    },
+    {
+      manual: true,
+    }
+  );
+
   useEffect(() => {
-    const fetch = async () => {
-      if (!authData) {
-        navigate("/login");
-      }
-
-      if (authData?.accessToken && !userData) {
-        const response = await getUser();
-
-        if (response.status !== 200) {
-          navigate("/login");
-        }
-
-        setUserData(response.data);
-      }
-    };
-
-    fetch();
-  }, [authData]);
+    if (userData === null || authData === null) {
+      navigate("/login");
+    }
+  }, [userData, authData]);
 
   const logout = () => {
-    setAuthData(undefined);
-    setUserData(undefined);
+    setAuthData(null);
+    setUserData(null);
   };
 
   const login = async (email: string, password: string) => {
-    const response = await executeLogin({
+    const loginResponse = await executeLogin({
       data: {
         email,
         password,
       },
     });
 
-    setAuthData(response.data);
+    if (loginResponse.status !== 200) {
+      throw new Error("Failed to login");
+    }
+
+    const meResponse = await executeMe({
+      headers: {
+        Authorization: `Bearer ${loginResponse.data.accessToken}`,
+      },
+    });
+
+    if (meResponse.status !== 200) {
+      throw new Error("Failed to fetch user after succesful login");
+    }
+
+    setAuthData(loginResponse.data);
+    setUserData(meResponse.data);
+  };
+
+  const refresh = async () => {
+    const refreshResponse = await executeRefresh({
+      data: {
+        refreshToken: authData?.refreshToken,
+      },
+    });
+
+    if (refreshResponse.status !== 200) {
+      navigate("/login");
+    }
+
+    setAuthData(refreshResponse.data);
+    navigate("/");
   };
 
   return {
@@ -75,5 +101,6 @@ export const useAuth = () => {
     user: userData,
     logout,
     login,
+    refresh,
   };
 };

@@ -58,7 +58,7 @@ export const UpdateMedia = () => {
       },
       headers,
     },
-    { useCache: false }
+    { useCache: false, manual: !headers.Ready }
   );
 
   const options = studioData?.result;

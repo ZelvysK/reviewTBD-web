@@ -1,19 +1,19 @@
 import useAxios from "axios-hooks";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import Select, { SingleValue } from "react-select";
+import { PAGE_SIZE } from "../../../api";
+import { useAuth } from "../../../hooks/use-auth";
 import {
   Media,
-  MediaType,
-  PaginatedResult,
-  Option,
   MediaOptions,
+  MediaType,
+  Option,
+  PaginatedResult,
 } from "../../../types";
 import { getUrl } from "../../../utils/navigation";
-import { PAGE_SIZE } from "../../../api";
 import { Loader } from "../../loader";
-import { Pagination } from "../../pagination";
-import Select, { SingleValue } from "react-select";
-import { useAuth } from "../../../hooks/use-auth";
+import { PageList } from "../../pagination";
 
 export const MediaList = () => {
   const [term, setTerm] = useState<string>();
@@ -67,7 +67,7 @@ const MediaTable = ({ type, term }: Props) => {
       },
       headers,
     },
-    { useCache: false }
+    { useCache: false, manual: !headers.Ready }
   );
 
   if (error) {
@@ -91,7 +91,7 @@ const MediaTable = ({ type, term }: Props) => {
           </Link>
         );
       })}
-      <Pagination
+      <PageList
         totalItems={data.total}
         currentPage={currentPage}
         onPageChange={setCurrentPage}

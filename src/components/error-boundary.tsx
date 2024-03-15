@@ -1,7 +1,12 @@
+import { useAuth } from "@/hooks/use-auth";
+import { useEffect } from "react";
 import { isRouteErrorResponse, useRouteError } from "react-router-dom";
+
+const isUnauthorized = (error: string) => error.includes("401");
 
 export const ErrorBoundary = () => {
   const error = useRouteError();
+  const { refresh } = useAuth();
 
   let errorMessage: string;
 
@@ -15,6 +20,16 @@ export const ErrorBoundary = () => {
     console.error(error);
     errorMessage = "Unknown error";
   }
+
+  useEffect(() => {
+    const handleUnauthrized = async () => {
+      if (isUnauthorized(errorMessage)) {
+        await refresh();
+      }
+    };
+
+    handleUnauthrized();
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col justify-center items-center gap-5">
