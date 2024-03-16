@@ -9,7 +9,6 @@ import { getUrl } from "../../utils/navigation";
 import { Loader } from "../loader";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-
 import {
   Select,
   SelectContent,
@@ -108,7 +107,11 @@ const StudioTable = ({ type, term }: Props) => {
     <>
       {data.result.map((item) => {
         return (
-          <Link to={`/studio/${item.id}`} key={item.id} className="flex gap-2">
+          <Link
+            to={`/studio/${item.id}`}
+            key={item.id}
+            className="flex gap-2 bg-secondary/50 rounded-md p-2 hover:opacity-80 transition-all duration-200"
+          >
             <div className="font-bold">
               {item.name} | {item.type}
             </div>

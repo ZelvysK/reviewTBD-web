@@ -1,48 +1,81 @@
 import useAxios from "axios-hooks";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import Select, { SingleValue } from "react-select";
 import { PAGE_SIZE } from "../../../api";
 import { useAuth } from "../../../hooks/use-auth";
+import { Media, MediaType, MediaTypes, PaginatedResult } from "../../../types";
 import {
-  Media,
-  MediaOptions,
-  MediaType,
-  Option,
-  PaginatedResult,
-} from "../../../types";
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { getUrl } from "../../../utils/navigation";
 import { Loader } from "../../loader";
 import { PageList } from "../../pagination";
+import { Input } from "@/components/ui/input";
+import { useDebounce } from "@/hooks/use-debounce";
+import { Button } from "@/components/ui/button";
 
 export const MediaList = () => {
   const [term, setTerm] = useState<string>();
-  const [mediaType, setMediaType] =
-    useState<SingleValue<Option<MediaType>>>(null);
+  const debouncedTerm = useDebounce(term);
+  const [mediaType, setMediaType] = useState<MediaType>();
 
   return (
     <div className="bg-secondary/30 shadow-xl rounded-xl flex flex-col gap-2 p-2">
       <div className="flex gap-2">
-        <Link to={`/media/create`} className="btn btn-active btn-neutral">
-          Add Media
+        <Link to={`/media/create`}>
+          <Button>Add Media</Button>
         </Link>
-        <input
+        <Input
           type="text"
-          value={term}
-          onChange={(e) => setTerm(e.target.value)}
+          value={term ?? ""}
+          onChange={(e) => setTerm(e.target.value.trim())}
           placeholder="Search away..."
-          className="input input-bordered w-full max-w-xs"
         />
+        <Select
+          value={mediaType ?? ""}
+          onValueChange={(val) => setMediaType(val as MediaType)}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Select media type" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Media type</SelectLabel>
+              {MediaTypes.map((mediaType) => {
+                return (
+                  <SelectItem key={mediaType} value={mediaType}>
+                    {mediaType}
+                  </SelectItem>
+                );
+              })}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+        <Button
+          onClick={() => {
+            setTerm(undefined);
+            setMediaType(undefined);
+          }}
+          variant="outline"
+        >
+          Clear Filters
+        </Button>
       </div>
-      <Select
+      {/* <Select
         className="text-black"
         options={MediaOptions}
         placeholder="Filter by media type if you want 🫡"
         onChange={(item) => setMediaType(item)}
         defaultValue={mediaType}
         isClearable={!!mediaType}
-      />
-      <MediaTable type={mediaType?.value} term={term} />
+      /> */}
+      <MediaTable type={mediaType} term={debouncedTerm} />
     </div>
   );
 };

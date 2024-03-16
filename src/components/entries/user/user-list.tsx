@@ -11,6 +11,8 @@ import { PageList } from "../../pagination";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useDebounce } from "../../../hooks/use-debounce";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 export const UserList = () => {
   const [term, setTerm] = useState<string>();
@@ -18,13 +20,22 @@ export const UserList = () => {
 
   return (
     <div className="bg-secondary/30 shadow-xl rounded-xl flex flex-col gap-2 p-2">
-      <input
-        type="text"
-        value={term}
-        onChange={(e) => setTerm(e.target.value)}
-        placeholder="Search away..."
-        className="input input-bordered w-full max-w-xs"
-      />
+      <div className="flex gap-2">
+        <Input
+          type="text"
+          value={term}
+          onChange={(e) => setTerm(e.target.value)}
+          placeholder="Search away..."
+        />
+        <Button
+          onClick={() => {
+            setTerm(undefined);
+          }}
+          variant="outline"
+        >
+          Clear Filters
+        </Button>
+      </div>
       <UserTable term={debouncedTerm} />
     </div>
   );

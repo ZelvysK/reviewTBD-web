@@ -3,10 +3,19 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { Studio } from "../../types";
 import { getUrl } from "../../utils/navigation";
 import { Loader } from "../loader";
-import { Modal } from "../modal";
 import { useAuth } from "../../hooks/use-auth";
-
-const MODAL_DELETE_ID = "delete-studio-modal";
+import { Button } from "../ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export const SingleStudio = () => {
   const navigate = useNavigate();
@@ -57,25 +66,33 @@ export const SingleStudio = () => {
       <div>
         <h1 className="text-5xl font-bold">{data?.name + " |" + data?.type}</h1>
         <div className="font-semibold">{data?.description}</div>
-        <div className="font-semibold">{data?.imageUrl}</div>
         <div className="font-semibold">{data?.dateCreated}</div>
       </div>
       <div className="flex gap-2">
-        <Link
-          to={`/studio/update/${data.id}`}
-          className="btn btn-active btn-neutral"
-        >
-          Update Studio
+        <Link to={`/studio/update/${data.id}`}>
+          <Button> Update Studio</Button>
         </Link>
-        <label htmlFor={MODAL_DELETE_ID} className="btn btn-outline btn-error">
-          Delete studio
-        </label>
+        <AlertDialog>
+          <AlertDialogTrigger>
+            <Button variant="outline">Delete studio</Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete this
+                entry and remove its data from our servers.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handleDelete}>
+                Continue
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
-      <Modal
-        id={MODAL_DELETE_ID}
-        text="Do you really want to delete the studio?"
-        onConfirm={handleDelete}
-      />
     </div>
   );
 };
