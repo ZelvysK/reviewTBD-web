@@ -23,16 +23,11 @@ import { Button } from "../ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { cn } from "@/lib/utils";
-import { CalendarIcon, Calendar } from "lucide-react";
-import { format } from "path";
 
 const schema = z.object({
   type: z.enum(StudioTypes),

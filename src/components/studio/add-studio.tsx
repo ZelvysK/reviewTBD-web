@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { StudioTypes } from "../../types";
 import { getUrl } from "../../utils/navigation";
 import { z } from "zod";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import {
   Select,
@@ -16,6 +16,17 @@ import {
 } from "@/components/ui/select";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuth } from "../../hooks/use-auth";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../ui/form";
+import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
+import { Button } from "../ui/button";
 
 const schema = z.object({
   type: z.enum(StudioTypes),
@@ -55,70 +66,14 @@ export const AddStudio = () => {
     }
   };
 
-  const { handleSubmit, register, control } = useForm<CreateStudioForm>({
+  const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
   });
 
   return (
     <div className="flex gap-48">
       <div className="form-control w-full max-w-xs">
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="flex flex-col gap-2">
-            <span className="label-text">Studio type:</span>
-            <Controller
-              defaultValue={StudioTypes[0]}
-              control={control}
-              name="type"
-              render={({ field }) => {
-                return (
-                  <Select onValueChange={field.onChange} {...field}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select studio type" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-base-100">
-                      <SelectGroup>
-                        <SelectLabel>Studio types</SelectLabel>
-                        {StudioTypes.map((item) => (
-                          <SelectItem key={item} value={item}>
-                            {item}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                );
-              }}
-            />
-            <div className="label">
-              <span className="label-text">Name:</span>
-            </div>
-            <input
-              {...register("name")}
-              type="text"
-              placeholder="Name"
-              className="input input-bordered input-sm w-full max-w-xs"
-            />
-
-            <div className="label">
-              <span className="label-text">Description:</span>
-            </div>
-            <textarea
-              {...register("description")}
-              placeholder="Enter description..."
-              className="textarea textarea-bordered"
-            />
-
-            <div className="label">
-              <span className="label-text">Image URL:</span>
-            </div>
-            <input
-              {...register("imageUrl")}
-              type="text"
-              placeholder="Image URL"
-              className="input input-bordered input-sm w-full max-w-xs"
-            />
-
-            <div className="label">
+        {/* <div className="label">
               <span className="label-text">Date created:</span>
             </div>
             <input
@@ -126,11 +81,87 @@ export const AddStudio = () => {
               type="date"
               className="input input-bordered input-sm w-full max-w-xs"
             />
-            <button type="submit" className="btn btn-primary">
-              Submit
-            </button>
-          </div>
-        </form>
+             */}
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <FormField
+              control={form.control}
+              name="type"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Type</FormLabel>
+                  <FormControl>
+                    <Select onValueChange={field.onChange} {...field}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select studio type" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-base-100">
+                        <SelectGroup>
+                          <SelectLabel>Studio types</SelectLabel>
+                          {StudioTypes.map((item) => (
+                            <SelectItem key={item} value={item}>
+                              {item}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Name..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Enter description..."
+                      className="textarea textarea-bordered"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="imageUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Image URL</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      placeholder="Image URL"
+                      className="input input-bordered input-sm w-full max-w-xs"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit">Submit</Button>
+          </form>
+        </Form>
       </div>
     </div>
   );
