@@ -42,7 +42,7 @@ export const StudioList = () => {
           onValueChange={(val) => setStudioType(val as StudioType)}
         >
           <SelectTrigger>
-            <SelectValue placeholder="Select studio type" />
+            <SelectValue placeholder="Filter by studio type if you want 🫡" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>

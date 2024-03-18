@@ -1,5 +1,11 @@
 import { z } from "zod";
-import { Media, MediaTypes, PaginatedResult, Studio } from "../../../types";
+import {
+  Media,
+  MediaTypes,
+  PaginatedResult,
+  Studio,
+  StudioTypes,
+} from "../../../types";
 import { useNavigate, useParams } from "react-router-dom";
 import useAxios, { clearCache } from "axios-hooks";
 import { getUrl } from "../../../utils/navigation";
@@ -17,6 +23,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useAuth } from "../../../hooks/use-auth";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { register } from "module";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
 
 const schema = z.object({
   mediaType: z.enum(MediaTypes),
@@ -77,7 +95,12 @@ export const UpdateMedia = () => {
     }
   };
 
-  const { handleSubmit, register, control } = useForm<UpdateMediaForm>({
+  // const { handleSubmit, register, control } = useForm<UpdateMediaForm>({
+  //   resolver: zodResolver(schema),
+  //   values: mediaData,
+  // });
+
+  const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     values: mediaData,
   });
@@ -93,103 +116,126 @@ export const UpdateMedia = () => {
   return (
     <div className="flex gap-48">
       <div className="form-control w-full max-w-xs">
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="flex flex-col gap-2">
-            <div className="label">
-              <span className="label-text">Name:</span>
-            </div>
-            <input
-              {...register("name")}
-              type="text"
-              placeholder="Name"
-              className="input input-bordered input-sm w-full max-w-xs"
-            />
-
-            <span className="label-text">Media type:</span>
-            <Controller
-              defaultValue={mediaData.mediaType}
-              control={control}
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <FormField
+              control={form.control}
               name="mediaType"
-              render={({ field }) => {
-                return (
-                  <Select onValueChange={field.onChange} {...field}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select studio type" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-base-100">
-                      <SelectGroup>
-                        <SelectLabel>Media types</SelectLabel>
-                        {MediaTypes.map((item) => (
-                          <SelectItem key={item} value={item}>
-                            {item}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                );
-              }}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Type</FormLabel>
+                  <FormControl>
+                    <Select onValueChange={field.onChange} {...field}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select meida type" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-base-100">
+                        <SelectGroup>
+                          <SelectLabel>Media types</SelectLabel>
+                          {MediaTypes.map((item) => (
+                            <SelectItem key={item} value={item}>
+                              {item}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
 
-            <div className="label">
-              <span className="label-text">Studio:</span>
-            </div>
-            <Controller
-              control={control}
+            <FormField
+              control={form.control}
               name="studioId"
-              render={({ field }) => {
-                return (
-                  <Select onValueChange={field.onChange} {...field}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select studio" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-base-100">
-                      <SelectGroup>
-                        <SelectLabel>Studios</SelectLabel>
-                        {options?.map((item) => (
-                          <SelectItem key={item.id} value={item.id}>
-                            {item.name}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                );
-              }}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Studio</FormLabel>
+                  <FormControl>
+                    <Select onValueChange={field.onChange} {...field}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select studio" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-base-100">
+                        <SelectGroup>
+                          <SelectLabel>Studios</SelectLabel>
+                          {options?.map((item) => (
+                            <SelectItem key={item.id} value={item.id}>
+                              {item.name} | {item.type}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
 
-            <div className="label">
-              <span className="label-text">Description:</span>
-            </div>
-            <textarea
-              {...register("description")}
-              placeholder="Enter description..."
-              className="textarea textarea-bordered"
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Name..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
 
-            <div className="label">
-              <span className="label-text">Image URL:</span>
-            </div>
-            <input
-              {...register("coverImageUrl")}
-              type="text"
-              placeholder="Image URL"
-              className="input input-bordered input-sm w-full max-w-xs"
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Enter description..."
+                      className="textarea textarea-bordered"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
 
-            <div className="label">
+            <FormField
+              control={form.control}
+              name="coverImageUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Image URL</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      placeholder="Image URL"
+                      className="input input-bordered input-sm w-full max-w-xs"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* <div className="label">
               <span className="label-text">Date created:</span>
             </div>
             <input
               {...register("dateCreated")}
               type="date"
               className="input input-bordered input-sm w-full max-w-xs"
-            />
-            <button type="submit" className="btn btn-primary">
-              Submit
-            </button>
-          </div>
-        </form>
+            /> */}
+            <Button type="submit">Submit</Button>
+          </form>
+        </Form>
       </div>
     </div>
   );

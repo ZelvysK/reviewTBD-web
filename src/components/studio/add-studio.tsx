@@ -23,7 +23,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../ui/form";
+} from "@/components/ui/form";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
@@ -59,7 +59,7 @@ export const AddStudio = () => {
 
       if (response.status === 201) {
         navigate(`../../studio/${id}`);
-        toast.success("Studio updated successfully");
+        toast.success("Studio added successfully");
       }
     } catch (error) {
       toast.error("Failed");

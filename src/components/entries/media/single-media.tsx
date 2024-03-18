@@ -3,10 +3,19 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { Media } from "../../../types";
 import { getUrl } from "../../../utils/navigation";
 import { Loader } from "../../loader";
-import { Modal } from "../../modal";
 import { useAuth } from "../../../hooks/use-auth";
-
-const MODAL_DELETE_ID = "delete-media-modal";
+import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export const SingleMedia = () => {
   const navigate = useNavigate();
@@ -58,25 +67,33 @@ export const SingleMedia = () => {
           {data?.name + " |" + data?.mediaType}
         </h1>
         <div className="font-semibold">{data?.description}</div>
-        <div className="font-semibold">{data?.coverImageUrl}</div>
         <div className="font-semibold">{data?.dateCreated}</div>
       </div>
       <div className="flex gap-2">
-        <Link
-          to={`/media/update/${data.id}`}
-          className="btn btn-active btn-neutral"
-        >
-          Update media
+        <Link to={`/media/update/${data.id}`}>
+          <Button>Update media</Button>
         </Link>
-        <label htmlFor={MODAL_DELETE_ID} className="btn btn-outline btn-error">
-          Delete media
-        </label>
+        <AlertDialog>
+          <AlertDialogTrigger>
+            <Button variant="outline">Delete media</Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete this
+                entry and remove its data from our servers.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handleDelete}>
+                Continue
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
-      <Modal
-        id={MODAL_DELETE_ID}
-        text={`Do you really want to delete ${data.name}?`}
-        onConfirm={handleDelete}
-      />
     </div>
   );
 };

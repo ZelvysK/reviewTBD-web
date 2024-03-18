@@ -1,7 +1,7 @@
 import { ErrorMessage } from "@hookform/error-message";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useAxios from "axios-hooks";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
@@ -19,6 +19,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 const schema = z.object({
   userName: z.string().min(3),
@@ -73,12 +83,11 @@ export const UpdateUser = () => {
   return (
     <div className="flex gap-48">
       <div className="form-control w-full max-w-xs">
-        {user?.role === "User" && (
-          <UpdateUserForm user={data} submitData={onSubmit} />
-        )}
-        {user?.role === "Admin" && (
+        {user?.role === "User" ||
+          ("Admin" && <UpdateUserForm user={data} submitData={onSubmit} />)}
+        {/* {user?.role === "Admin" && (
           <UpdateUserFormTabs user={data} submitData={onSubmit} />
-        )}
+        )} */}
       </div>
     </div>
   );
@@ -90,48 +99,232 @@ interface Props {
 }
 
 const UpdateUserForm = ({ user, submitData: submit }: Props) => {
-  const { formState, handleSubmit, register, control } =
-    useForm<UpdateUserFormData>({
-      resolver: zodResolver(schema),
-      values: user,
-    });
+  const form = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
+    values: user,
+  });
 
   return (
-    <form onSubmit={handleSubmit(submit)}>
-      <div className="flex flex-col gap-2">
-        <div className="label">
-          <span className="label-text">Username:</span>
-        </div>
-        <input
-          {...register("userName")}
-          type="text"
-          placeholder="Username..."
-          className="input input-bordered input-sm w-full max-w-xs"
-        />
-        <ErrorMessage
-          name="userName"
-          errors={formState.errors}
-          render={({ message }) => <p className="text-error">{message}</p>}
-        />
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(submit)}>
+        <div className="flex flex-col gap-2">
+          <FormField
+            control={form.control}
+            name="userName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Username</FormLabel>
+                <FormControl>
+                  <Input placeholder="Username..." {...field} />
+                </FormControl>
+                <FormMessage>
+                  <ErrorMessage
+                    name="userName"
+                    errors={form.formState.errors}
+                    render={({ message }) => (
+                      <p className="text-error">{message}</p>
+                    )}
+                  />
+                </FormMessage>
+              </FormItem>
+            )}
+          />
 
-        {user.role === "Admin" && (
-          <>
-            <div className="label">
-              <span className="label-text">Role:</span>
-            </div>
-            <Controller
-              defaultValue={user.role}
-              control={control}
+          {user.role === "Admin" && (
+            <FormField
+              control={form.control}
               name="role"
-              render={({ field }) => {
-                return (
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Role</FormLabel>
+                  <FormControl>
+                    <Select onValueChange={field.onChange} {...field}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select role" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-base-100">
+                        <SelectGroup>
+                          <SelectLabel>Roles</SelectLabel>
+                          {RoleTypes.map((item) => (
+                            <SelectItem key={item} value={item}>
+                              {item}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage>
+                    <ErrorMessage
+                      name="role"
+                      errors={form.formState.errors}
+                      render={({ message }) => (
+                        <p className="text-error">{message}</p>
+                      )}
+                    />
+                  </FormMessage>
+                </FormItem>
+              )}
+            />
+          )}
+
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input placeholder="Email..." {...field} />
+                </FormControl>
+                <FormMessage>
+                  <ErrorMessage
+                    name="email"
+                    errors={form.formState.errors}
+                    render={({ message }) => (
+                      <p className="text-error">{message}</p>
+                    )}
+                  />
+                </FormMessage>
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="phoneNumber"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Phone number</FormLabel>
+                <FormControl>
+                  <Input placeholder="Phone number..." {...field} />
+                </FormControl>
+                <FormMessage>
+                  <ErrorMessage
+                    name="phoneNumber"
+                    errors={form.formState.errors}
+                    render={({ message }) => (
+                      <p className="text-error">{message}</p>
+                    )}
+                  />
+                </FormMessage>
+              </FormItem>
+            )}
+          />
+
+          <Button type="submit">Submit</Button>
+
+          <Link to={`/user/changePassword/${user.id}`}>
+            <Button variant="secondary"> Change password </Button>
+          </Link>
+        </div>
+      </form>
+    </Form>
+  );
+};
+
+const UpdateUserFormTabs = ({ user, submitData: submit }: Props) => {
+  const form = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
+    values: user,
+  });
+
+  return (
+    <>
+      <Tabs defaultValue="user" className="w-[400px]">
+        <TabsList className="border border-white">
+          <TabsTrigger value="user">User Update</TabsTrigger>
+          {user?.role === "Admin" && (
+            <TabsTrigger value="admin">Admin Update</TabsTrigger>
+          )}
+        </TabsList>
+        <TabsContent value="user">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(submit)}>
+              <FormField
+                control={form.control}
+                name="userName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Username</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Username..." {...field} />
+                    </FormControl>
+                    <FormMessage>
+                      <ErrorMessage
+                        name="userName"
+                        errors={form.formState.errors}
+                        render={({ message }) => (
+                          <p className="text-error">{message}</p>
+                        )}
+                      />
+                    </FormMessage>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Email..." {...field} />
+                    </FormControl>
+                    <FormMessage>
+                      <ErrorMessage
+                        name="email"
+                        errors={form.formState.errors}
+                        render={({ message }) => (
+                          <p className="text-error">{message}</p>
+                        )}
+                      />
+                    </FormMessage>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="phoneNumber"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Phone number</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Phone number..." {...field} />
+                    </FormControl>
+                    <FormMessage>
+                      <ErrorMessage
+                        name="phoneNumber"
+                        errors={form.formState.errors}
+                        render={({ message }) => (
+                          <p className="text-error">{message}</p>
+                        )}
+                      />
+                    </FormMessage>
+                  </FormItem>
+                )}
+              />
+            </form>
+          </Form>
+        </TabsContent>
+
+        <TabsContent value="admin">
+          <FormField
+            control={form.control}
+            name="role"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Role</FormLabel>
+                <FormControl>
                   <Select onValueChange={field.onChange} {...field}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select user role" />
+                      <SelectValue placeholder="Select role" />
                     </SelectTrigger>
                     <SelectContent className="bg-base-100">
                       <SelectGroup>
-                        <SelectLabel>User roles</SelectLabel>
+                        <SelectLabel>Roles</SelectLabel>
                         {RoleTypes.map((item) => (
                           <SelectItem key={item} value={item}>
                             {item}
@@ -140,172 +333,26 @@ const UpdateUserForm = ({ user, submitData: submit }: Props) => {
                       </SelectGroup>
                     </SelectContent>
                   </Select>
-                );
-              }}
-            />
-            <ErrorMessage
-              name="role"
-              errors={formState.errors}
-              render={({ message }) => <p className="text-error">{message}</p>}
-            />
-          </>
-        )}
-
-        <div className="label">
-          <span className="label-text">Email:</span>
-        </div>
-        <input
-          type="email"
-          {...register("email")}
-          placeholder="Email..."
-          className="input input-bordered input-sm w-full max-w-xs"
-        />
-        <ErrorMessage
-          name="email"
-          errors={formState.errors}
-          render={({ message }) => <p className="text-error">{message}</p>}
-        />
-
-        <div className="label">
-          <span className="label-text">Phone number:</span>
-        </div>
-        <input
-          {...register("phoneNumber")}
-          type="text"
-          placeholder="Phone number..."
-          className="input input-bordered input-sm w-full max-w-xs"
-        />
-        <ErrorMessage
-          name="phoneNumber"
-          errors={formState.errors}
-          render={({ message }) => <p className="text-error">{message}</p>}
-        />
-
-        <button type="submit" className="btn btn-primary">
-          Submit
-        </button>
-
-        <Link to={`/user/changePassword/${user.id}`} className="btn btn-info">
-          Change password
-        </Link>
-      </div>
-    </form>
-  );
-};
-
-const UpdateUserFormTabs = ({ user, submitData: submit }: Props) => {
-  const { formState, handleSubmit, register, control } =
-    useForm<UpdateUserFormData>({
-      resolver: zodResolver(schema),
-      values: user,
-    });
-
-  return (
-    <>
-      <Tabs defaultValue="user" className="w-[400px]">
-        <TabsList className="border border-white">
-          <TabsTrigger value="user">User Update</TabsTrigger>
-          <TabsTrigger value="admin">Admin Update</TabsTrigger>
-        </TabsList>
-        <TabsContent value="user">
-          <form onSubmit={handleSubmit(submit)}>
-            <div className="flex flex-col gap-2">
-              <div className="label">
-                <span className="label-text">Username:</span>
-              </div>
-              <input
-                {...register("userName")}
-                type="text"
-                placeholder="Username..."
-                className="input input-bordered input-sm w-full max-w-xs"
-              />
-              <ErrorMessage
-                name="userName"
-                errors={formState.errors}
-                render={({ message }) => (
-                  <p className="text-error">{message}</p>
-                )}
-              />
-
-              <div className="label">
-                <span className="label-text">Email:</span>
-              </div>
-              <input
-                type="email"
-                {...register("email")}
-                placeholder="Email..."
-                className="input input-bordered input-sm w-full max-w-xs"
-              />
-              <ErrorMessage
-                name="email"
-                errors={formState.errors}
-                render={({ message }) => (
-                  <p className="text-error">{message}</p>
-                )}
-              />
-
-              <div className="label">
-                <span className="label-text">Phone number:</span>
-              </div>
-              <input
-                {...register("phoneNumber")}
-                type="text"
-                placeholder="Phone number..."
-                className="input input-bordered input-sm w-full max-w-xs"
-              />
-              <ErrorMessage
-                name="phoneNumber"
-                errors={formState.errors}
-                render={({ message }) => (
-                  <p className="text-error">{message}</p>
-                )}
-              />
-            </div>
-          </form>
-        </TabsContent>
-
-        <TabsContent value="admin">
-          <div className="label">
-            <span className="label-text">Role:</span>
-          </div>
-          <Controller
-            defaultValue={user.role}
-            control={control}
-            name="role"
-            render={({ field }) => {
-              return (
-                <Select onValueChange={field.onChange} {...field}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select user role" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-base-100">
-                    <SelectGroup>
-                      <SelectLabel>User roles</SelectLabel>
-                      {RoleTypes.map((item) => (
-                        <SelectItem key={item} value={item}>
-                          {item}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              );
-            }}
-          />
-          <ErrorMessage
-            name="role"
-            errors={formState.errors}
-            render={({ message }) => <p className="text-error">{message}</p>}
+                </FormControl>
+                <FormMessage>
+                  <ErrorMessage
+                    name="role"
+                    errors={form.formState.errors}
+                    render={({ message }) => (
+                      <p className="text-error">{message}</p>
+                    )}
+                  />
+                </FormMessage>
+              </FormItem>
+            )}
           />
         </TabsContent>
       </Tabs>
       <div className="flex flex-col gap-2 mt-3">
-        <button type="submit" className="btn btn-primary">
-          Submit
-        </button>
+        <Button type="submit">Submit</Button>
 
-        <Link to={`/user/changePassword/${user.id}`} className="btn btn-info">
-          Change password
+        <Link to={`/user/changePassword/${user.id}`}>
+          <Button variant="outline">Change password</Button>
         </Link>
       </div>
     </>

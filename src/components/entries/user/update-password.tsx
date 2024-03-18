@@ -9,6 +9,15 @@ import { Loader } from "../../loader";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ErrorMessage } from "@hookform/error-message";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 
 const schema = z.object({
   currentPassword: z.string(),
@@ -58,44 +67,59 @@ export const UpdatePassword = () => {
     return <Loader />;
   }
 
-  const { formState, handleSubmit, register } = useForm<UpdatePasswordForm>({
+  const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
   });
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="flex flex-col gap-2">
-        <div className="label">
-          <span className="label-text">Current Password:</span>
-        </div>
-        <input
-          {...register("currentPassword")}
-          type="password"
-          placeholder="Current Password..."
-          className="input input-bordered input-sm w-full max-w-xs"
-        />
-        <ErrorMessage
-          name="currentPassword"
-          errors={formState.errors}
-          render={({ message }) => <p className="text-error">{message}</p>}
-        />
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="flex flex-col gap-2">
-          <div className="label">
-            <span className="label-text">New Password:</span>
-          </div>
-          <input
-            {...register("newPassword")}
-            type="password"
-            placeholder="New Password..."
-            className="input input-bordered input-sm w-full max-w-xs"
+          <FormField
+            control={form.control}
+            name="currentPassword"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Current password</FormLabel>
+                <FormControl>
+                  <Input placeholder="Current password..." {...field} />
+                </FormControl>
+                <FormMessage>
+                  <ErrorMessage
+                    name="currentPassword"
+                    errors={form.formState.errors}
+                    render={({ message }) => (
+                      <p className="text-error">{message}</p>
+                    )}
+                  />
+                </FormMessage>
+              </FormItem>
+            )}
           />
-          <ErrorMessage
+
+          <FormField
+            control={form.control}
             name="newPassword"
-            errors={formState.errors}
-            render={({ message }) => <p className="text-error">{message}</p>}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>New password</FormLabel>
+                <FormControl>
+                  <Input placeholder="New password..." {...field} />
+                </FormControl>
+                <FormMessage>
+                  <ErrorMessage
+                    name="newPassword"
+                    errors={form.formState.errors}
+                    render={({ message }) => (
+                      <p className="text-error">{message}</p>
+                    )}
+                  />
+                </FormMessage>
+              </FormItem>
+            )}
           />
         </div>
-      </div>
-    </form>
+      </form>
+    </Form>
   );
 };

@@ -4,6 +4,7 @@ import { getUrl } from "../../../utils/navigation";
 import { Loader } from "../../loader";
 import { useAuth } from "../../../hooks/use-auth";
 import { User } from "../../../types";
+import { Button } from "@/components/ui/button";
 
 export const SingleUser = () => {
   const { userId } = useParams();
@@ -30,11 +31,8 @@ export const SingleUser = () => {
         <div className="font-semibold">{data?.email}</div>
       </div>
       <div className="flex gap-2">
-        <Link
-          to={`/user/update/${data?.id}`}
-          className="btn btn-active btn-neutral"
-        >
-          Update User
+        <Link to={`/user/update/${data?.id}`}>
+          <Button>Update User </Button>
         </Link>
         {/* {data.role === "Admin" && (
           <Link

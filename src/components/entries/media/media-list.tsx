@@ -42,7 +42,7 @@ export const MediaList = () => {
           onValueChange={(val) => setMediaType(val as MediaType)}
         >
           <SelectTrigger>
-            <SelectValue placeholder="Select media type" />
+            <SelectValue placeholder="Filter by media type if you want 🫡" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
@@ -67,14 +67,6 @@ export const MediaList = () => {
           Clear Filters
         </Button>
       </div>
-      {/* <Select
-        className="text-black"
-        options={MediaOptions}
-        placeholder="Filter by media type if you want 🫡"
-        onChange={(item) => setMediaType(item)}
-        defaultValue={mediaType}
-        isClearable={!!mediaType}
-      /> */}
       <MediaTable type={mediaType} term={debouncedTerm} />
     </div>
   );
