@@ -25,6 +25,7 @@ const loginSchema = z.object({
 });
 
 const registerSchema = z.object({
+  username: z.string(),
   email: z.string().email(),
   password: z
     .string()
@@ -139,6 +140,22 @@ export const Login = () => {
               onSubmit={registerForm.handleSubmit(onRegister)}
               className="space-y-6"
             >
+              <FormField
+                control={registerForm.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Username</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Username..."
+                        {...field}
+                        value={field.value ?? ""}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={registerForm.control}
                 name="email"

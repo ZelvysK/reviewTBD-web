@@ -82,7 +82,12 @@ export const UpdatePassword = () => {
               <FormItem>
                 <FormLabel>Current password</FormLabel>
                 <FormControl>
-                  <Input placeholder="Current password..." {...field} />
+                  <Input
+                    placeholder="Current password..."
+                    {...field}
+                    value={field.value ?? ""}
+                    type="password"
+                  />
                 </FormControl>
                 <FormMessage>
                   <ErrorMessage
@@ -104,7 +109,12 @@ export const UpdatePassword = () => {
               <FormItem>
                 <FormLabel>New password</FormLabel>
                 <FormControl>
-                  <Input placeholder="New password..." {...field} />
+                  <Input
+                    placeholder="New password..."
+                    {...field}
+                    value={field.value ?? ""}
+                    type="password"
+                  />
                 </FormControl>
                 <FormMessage>
                   <ErrorMessage

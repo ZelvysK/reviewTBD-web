@@ -112,7 +112,11 @@ export const UpdateStudio = () => {
                 <FormItem>
                   <FormLabel>Type</FormLabel>
                   <FormControl>
-                    <Select onValueChange={field.onChange} {...field}>
+                    <Select
+                      onValueChange={field.onChange}
+                      {...field}
+                      value={field.value ?? ""}
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Select studio type" />
                       </SelectTrigger>
@@ -139,7 +143,11 @@ export const UpdateStudio = () => {
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Name..." {...field} />
+                    <Input
+                      placeholder="Name..."
+                      {...field}
+                      value={field.value ?? ""}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -156,6 +164,7 @@ export const UpdateStudio = () => {
                       placeholder="Enter description..."
                       className="textarea textarea-bordered"
                       {...field}
+                      value={field.value ?? ""}
                     />
                   </FormControl>
                   <FormMessage />
@@ -174,6 +183,7 @@ export const UpdateStudio = () => {
                       placeholder="Image URL"
                       className="input input-bordered input-sm w-full max-w-xs"
                       {...field}
+                      value={field.value ?? ""}
                     />
                   </FormControl>
                   <FormMessage />

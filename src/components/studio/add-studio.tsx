@@ -118,7 +118,11 @@ export const AddStudio = () => {
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Name..." {...field} />
+                    <Input
+                      placeholder="Name..."
+                      {...field}
+                      value={field.value ?? ""}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -135,6 +139,7 @@ export const AddStudio = () => {
                       placeholder="Enter description..."
                       className="textarea textarea-bordered"
                       {...field}
+                      value={field.value ?? ""}
                     />
                   </FormControl>
                   <FormMessage />
@@ -153,6 +158,7 @@ export const AddStudio = () => {
                       placeholder="Image URL"
                       className="input input-bordered input-sm w-full max-w-xs"
                       {...field}
+                      value={field.value ?? ""}
                     />
                   </FormControl>
                   <FormMessage />
