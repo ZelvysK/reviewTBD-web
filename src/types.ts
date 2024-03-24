@@ -8,7 +8,7 @@ export interface Studio {
   name: string;
   description: string;
   imageUrl: string;
-  dateCreated: string;
+  dateCreated: Date;
   type: StudioType;
 }
 
@@ -28,7 +28,7 @@ export interface Media {
   name: string;
   description: string;
   coverImageUrl: string;
-  dateCreated: string;
+  dateCreated: Date;
   studioId: string;
   studio?: Studio;
   datePosted: string;

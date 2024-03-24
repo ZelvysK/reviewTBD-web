@@ -23,20 +23,24 @@ import { Button } from "../ui/button";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import { Calendar } from "../ui/calendar";
 
 const schema = z.object({
   type: z.enum(StudioTypes),
   name: z.string().min(3),
   description: z.string().min(4),
   imageUrl: z.string().url(),
-  // dateCreated: z.date({
-  //   required_error: "A date is required.",
-  // }),
+  dateCreated: z.date(),
 });
 
 type UpdateStudioForm = z.infer<typeof schema>;
@@ -90,19 +94,6 @@ export const UpdateStudio = () => {
   return (
     <div className="flex gap-48">
       <div className="form-control w-full max-w-xs">
-        {/* 
-            <div className="label">
-              <span className="label-text">Date created:</span>
-            </div>
-            <Input
-              {...register("dateCreated")}
-              type="date"
-              className="input input-bordered input-sm w-full max-w-xs"
-            />
-            <Button type="submit">Submit</Button>
-          </div>
-        </form> */}
-
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormField
@@ -136,6 +127,7 @@ export const UpdateStudio = () => {
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
               name="name"
@@ -153,6 +145,7 @@ export const UpdateStudio = () => {
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
               name="description"
@@ -171,32 +164,13 @@ export const UpdateStudio = () => {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="imageUrl"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Image URL</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="text"
-                      placeholder="Image URL"
-                      className="input input-bordered input-sm w-full max-w-xs"
-                      {...field}
-                      value={field.value ?? ""}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
 
-            {/* <FormField
+            <FormField
               control={form.control}
               name="dateCreated"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <FormLabel>Date Created</FormLabel>
+                  <FormLabel>Date created</FormLabel>
                   <Popover>
                     <PopoverTrigger asChild>
                       <FormControl>
@@ -221,17 +195,36 @@ export const UpdateStudio = () => {
                         mode="single"
                         selected={field.value}
                         onSelect={field.onChange}
-                        disabled={(date: Date) =>
-                          date > new Date() || date < new Date("1900-01-01")
-                        }
+                        disabled={(date) => date > new Date()}
                         initialFocus
                       />
                     </PopoverContent>
                   </Popover>
+                  <FormDescription />
                   <FormMessage />
                 </FormItem>
               )}
-            /> */}
+            />
+
+            <FormField
+              control={form.control}
+              name="imageUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Image URL</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      placeholder="Image URL"
+                      className="input input-bordered input-sm w-full max-w-xs"
+                      {...field}
+                      value={field.value ?? ""}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             <Button type="submit">Submit</Button>
           </form>

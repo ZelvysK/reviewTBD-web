@@ -1,16 +1,10 @@
 import { z } from "zod";
-import {
-  Media,
-  MediaTypes,
-  PaginatedResult,
-  Studio,
-  StudioTypes,
-} from "../../../types";
+import { Media, MediaTypes, PaginatedResult, Studio } from "../../../types";
 import { useNavigate, useParams } from "react-router-dom";
 import useAxios, { clearCache } from "axios-hooks";
 import { getUrl } from "../../../utils/navigation";
 import toast from "react-hot-toast";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader } from "../../loader";
 import {
@@ -26,22 +20,31 @@ import { useAuth } from "../../../hooks/use-auth";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { register } from "module";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import { Calendar } from "@/components/ui/calendar";
+import { CalendarIcon } from "lucide-react";
 
 const schema = z.object({
   mediaType: z.enum(MediaTypes),
   name: z.string().min(3),
   description: z.string().min(4),
   coverImageUrl: z.string().url(),
-  dateCreated: z.string(),
+  dateCreated: z.date(),
   studioId: z.string(),
 });
 
@@ -95,12 +98,7 @@ export const UpdateMedia = () => {
     }
   };
 
-  // const { handleSubmit, register, control } = useForm<UpdateMediaForm>({
-  //   resolver: zodResolver(schema),
-  //   values: mediaData,
-  // });
-
-  const form = useForm<z.infer<typeof schema>>({
+  const form = useForm<UpdateMediaForm>({
     resolver: zodResolver(schema),
     values: mediaData,
   });
@@ -202,6 +200,47 @@ export const UpdateMedia = () => {
 
             <FormField
               control={form.control}
+              name="dateCreated"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Date created</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-[240px] pl-3 text-left font-normal",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value ? (
+                            format(field.value, "PPP")
+                          ) : (
+                            <span>Pick a date</span>
+                          )}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        disabled={(date) => date > new Date()}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <FormDescription />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
               name="description"
               render={({ field }) => (
                 <FormItem>
@@ -238,15 +277,6 @@ export const UpdateMedia = () => {
                 </FormItem>
               )}
             />
-
-            {/* <div className="label">
-              <span className="label-text">Date created:</span>
-            </div>
-            <input
-              {...register("dateCreated")}
-              type="date"
-              className="input input-bordered input-sm w-full max-w-xs"
-            /> */}
             <Button type="submit">Submit</Button>
           </form>
         </Form>
