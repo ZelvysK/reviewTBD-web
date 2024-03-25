@@ -15,9 +15,9 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
-import { AuthData } from "../../../auth";
 import { useAuth } from "../../../hooks/use-auth";
 import { getUrl } from "../../../utils/navigation";
+import { authAtom } from "@/auth";
 
 const loginSchema = z.object({
   email: z.string().min(3, "Please enter your email"),
@@ -39,7 +39,7 @@ const registerSchema = z.object({
 
 export const Login = () => {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, user } = useAuth();
 
   const [_register, executeRegister] = useAxios(
     {
@@ -74,7 +74,15 @@ export const Login = () => {
       const response = await executeRegister({ data });
 
       if (response.status === 200) {
-        toast.success("Registered successfuly, please login");
+        try {
+          await login(data.email, data.password);
+          navigate("../../user/me");
+          // await navigate(`../../user/update/${user?.id}`);
+        } catch (error) {
+          console.log(error);
+          toast.error("Failed");
+        }
+        toast.success("Registered successfuly, please update your user data!");
       }
     } catch (error) {
       toast.error("Failed");
