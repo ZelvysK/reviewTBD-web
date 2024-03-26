@@ -17,7 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { useAuth } from "../../../hooks/use-auth";
 import { getUrl } from "../../../utils/navigation";
-import { authAtom } from "@/auth";
+import { useEffect } from "react";
 
 const loginSchema = z.object({
   email: z.string().min(3, "Please enter your email"),
@@ -36,6 +36,8 @@ const registerSchema = z.object({
       "Pasword is not secure"
     ),
 });
+
+var firstTime: Boolean;
 
 export const Login = () => {
   const navigate = useNavigate();
@@ -74,20 +76,26 @@ export const Login = () => {
       const response = await executeRegister({ data });
 
       if (response.status === 200) {
+        firstTime = true;
         try {
           await login(data.email, data.password);
-          navigate("../../user/me");
-          // await navigate(`../../user/update/${user?.id}`);
         } catch (error) {
-          console.log(error);
-          toast.error("Failed");
+          toast.error("Failed login");
         }
         toast.success("Registered successfuly, please update your user data!");
       }
     } catch (error) {
+      console.log(error);
       toast.error("Failed");
     }
   };
+
+  useEffect(() => {
+    if (user !== null && firstTime === true) {
+      firstTime = false;
+      navigate(`../../user/update/${user?.id}`);
+    }
+  }, [user]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
@@ -199,6 +207,7 @@ export const Login = () => {
                   </FormItem>
                 )}
               />
+
               <Button type="submit">Register</Button>
             </form>
           </Form>
