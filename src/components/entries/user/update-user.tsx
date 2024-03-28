@@ -1,3 +1,22 @@
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { ErrorMessage } from "@hookform/error-message";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useAxios from "axios-hooks";
@@ -9,25 +28,6 @@ import { useAuth } from "../../../hooks/use-auth";
 import { RoleTypes, User } from "../../../types";
 import { getUrl } from "../../../utils/navigation";
 import { Loader } from "../../loader";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 
 const schema = z.object({
   userName: z.string().min(3),
@@ -41,12 +41,17 @@ type UpdateUserFormData = z.infer<typeof schema>;
 export const UpdateUser = () => {
   const navigate = useNavigate();
   const { userId } = useParams();
-  const { headers, user } = useAuth();
+  const { headers, user, refresh } = useAuth();
 
-  const [{ data, loading, error }] = useAxios<User>({
-    url: getUrl(["user", userId]),
-    headers,
-  });
+  const [{ data, loading, error }] = useAxios<User>(
+    {
+      url: getUrl(["user", userId]),
+      headers,
+    },
+    {
+      manual: !user,
+    }
+  );
 
   const [_, executeUpdate] = useAxios(
     {
@@ -62,6 +67,7 @@ export const UpdateUser = () => {
       const response = await executeUpdate({ data: { id: userId, ...data } });
 
       if (response.status === 200) {
+        await refresh();
         navigate(`../../user/${userId}`);
         toast.success("User updated successfully");
       }
@@ -141,13 +147,14 @@ const UpdateUserForm = ({ user, submitData: submit }: Props) => {
                   <FormControl>
                     <Select
                       onValueChange={field.onChange}
-                      {...field}
                       value={field.value ?? ""}
                     >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select role" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-base-100">
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select role" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
                         <SelectGroup>
                           <SelectLabel>Roles</SelectLabel>
                           {RoleTypes.map((item) => (

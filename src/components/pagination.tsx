@@ -10,7 +10,7 @@ interface Props {
   pageSize?: number;
   totalItems: number;
   currentPage: number;
-  onPageChange: (value: React.SetStateAction<number>) => void;
+  onPageChange: (pageNumber: number) => void;
 }
 
 export const PageList = ({

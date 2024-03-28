@@ -18,11 +18,24 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
-const schema = z.object({
-  currentPassword: z.string(),
-  newPassword: z.string().min(6),
-});
+const schema = z
+  .object({
+    currentPassword: z.string(),
+    newPassword: z.string().min(6),
+    confirmNewPassword: z.string().min(6),
+  })
+  .superRefine(({ newPassword, confirmNewPassword }, ctx) => {
+    if (newPassword !== confirmNewPassword) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "New password and confirm new password fields should match",
+        path: ["confirmNewPassword"],
+      });
+    }
+    return ctx;
+  });
 
 type UpdatePasswordForm = z.infer<typeof schema>;
 
@@ -47,17 +60,23 @@ export const UpdatePassword = () => {
 
   const onSubmit = async (data: UpdatePasswordForm) => {
     try {
-      const response = await executeUpdate({ data: { id: userId, ...data } });
+      console.log(data);
 
-      if (response.status === 200) {
-        navigate(`../../user/${userId}`);
-        toast.success("Password updated successfully");
-      }
+      // const response = await executeUpdate({ data: { id: userId, ...data } });
+
+      // if (response.status === 200) {
+      //   navigate(`../../user/${userId}`);
+      //   toast.success("Password updated successfully");
+      // }
     } catch (error) {
       console.log(error);
       toast.error("Failed");
     }
   };
+
+  const form = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
+  });
 
   if (error) {
     throw new Error(error.message);
@@ -66,10 +85,6 @@ export const UpdatePassword = () => {
   if (!data || loading) {
     return <Loader />;
   }
-
-  const form = useForm<z.infer<typeof schema>>({
-    resolver: zodResolver(schema),
-  });
 
   return (
     <Form {...form}>
@@ -128,6 +143,34 @@ export const UpdatePassword = () => {
               </FormItem>
             )}
           />
+
+          <FormField
+            control={form.control}
+            name="confirmNewPassword"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Confirm new password</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Confirm New password..."
+                    {...field}
+                    value={field.value ?? ""}
+                    type="password"
+                  />
+                </FormControl>
+                <FormMessage>
+                  <ErrorMessage
+                    name="confirmNewPassword"
+                    errors={form.formState.errors}
+                    render={({ message }) => (
+                      <p className="text-error">{message}</p>
+                    )}
+                  />
+                </FormMessage>
+              </FormItem>
+            )}
+          />
+          <Button type="submit">Change password</Button>
         </div>
       </form>
     </Form>

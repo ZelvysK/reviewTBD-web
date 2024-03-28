@@ -92,7 +92,18 @@ export const useAuth = () => {
       navigate("/login");
     }
 
+    const meResponse = await executeMe({
+      headers: {
+        Authorization: `Bearer ${refreshResponse.data.accessToken}`,
+      },
+    });
+
+    if (meResponse.status !== 200) {
+      throw new Error("Failed to fetch user after refresh");
+    }
+
     setAuthData(refreshResponse.data);
+    setUserData(meResponse.data);
     navigate("/");
   };
 

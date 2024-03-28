@@ -41,7 +41,7 @@ var firstTime: Boolean;
 
 export const Login = () => {
   const navigate = useNavigate();
-  const { login, user } = useAuth();
+  const { login } = useAuth();
 
   const [_register, executeRegister] = useAxios(
     {
@@ -89,13 +89,6 @@ export const Login = () => {
       toast.error("Failed");
     }
   };
-
-  useEffect(() => {
-    if (user !== null && firstTime === true) {
-      firstTime = false;
-      navigate(`../../user/update/${user?.id}`);
-    }
-  }, [user]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">

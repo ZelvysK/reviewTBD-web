@@ -79,15 +79,6 @@ export const AddStudio = () => {
   return (
     <div className="flex gap-48">
       <div className="form-control w-full max-w-xs">
-        {/* <div className="label">
-              <span className="label-text">Date created:</span>
-            </div>
-            <input
-              {...register("dateCreated")}
-              type="date"
-              className="input input-bordered input-sm w-full max-w-xs"
-            />
-             */}
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormField
@@ -101,7 +92,7 @@ export const AddStudio = () => {
                       <SelectTrigger>
                         <SelectValue placeholder="Select studio type" />
                       </SelectTrigger>
-                      <SelectContent className="bg-base-100">
+                      <SelectContent>
                         <SelectGroup>
                           <SelectLabel>Studio types</SelectLabel>
                           {StudioTypes.map((item) => (

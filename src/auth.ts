@@ -27,4 +27,5 @@ export type UserData = {
   email: string;
   phoneNumber?: string;
   role: Role;
+  firstTimeLogin?: boolean;
 };
