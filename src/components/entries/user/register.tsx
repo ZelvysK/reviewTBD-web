@@ -138,45 +138,6 @@ export const Register = () => {
                 </FormItem>
               )}
             />
-            {/* <div className="flex flex-col gap-2">
-              <div className="label">
-                <span className="label-text">Username:</span>
-              </div>
-              <input
-                {...register("username")}
-                type="text"
-                placeholder="Username"
-                className="input input-bordered input-sm w-full max-w-xs"
-              /> */}
-
-            {/* <div className="label">
-                <span className="label-text">Email:</span>
-              </div>
-              <input
-                {...register("email")}
-                type="email"
-                placeholder="Email"
-                className="input input-bordered input-sm w-full max-w-xs"
-              />
-
-              <div className="label">
-                <span className="label-text">Password:</span>
-              </div>
-              <input
-                {...register("password")}
-                type="password"
-                placeholder="Password"
-                className="input input-bordered input-sm w-full max-w-xs"
-              />
-              <div className="label">
-                <span className="label-text">Confirm password:</span>
-              </div>
-              <input
-                {...register("password")}
-                type="password"
-                placeholder="Confirm password"
-                className="input input-bordered input-sm w-full max-w-xs"
-              /> */}
 
             <Button type="submit">Register</Button>
           </form>

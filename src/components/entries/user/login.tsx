@@ -25,7 +25,7 @@ const loginSchema = z.object({
 });
 
 const registerSchema = z.object({
-  username: z.string(),
+  // username: z.string(),
   email: z.string().email(),
   password: z
     .string()
@@ -36,8 +36,6 @@ const registerSchema = z.object({
       "Pasword is not secure"
     ),
 });
-
-var firstTime: Boolean;
 
 export const Login = () => {
   const navigate = useNavigate();
@@ -76,7 +74,6 @@ export const Login = () => {
       const response = await executeRegister({ data });
 
       if (response.status === 200) {
-        firstTime = true;
         try {
           await login(data.email, data.password);
         } catch (error) {
@@ -94,7 +91,7 @@ export const Login = () => {
     <div className="flex flex-col items-center justify-center min-h-screen">
       <h1 className="text-3xl font-bold pb-3">Review TDB</h1>
       <Tabs defaultValue="login" className="w-[400px]">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-2 bg-green-950">
           <TabsTrigger value="login">Login</TabsTrigger>
           <TabsTrigger value="register">Register</TabsTrigger>
         </TabsList>
@@ -143,13 +140,14 @@ export const Login = () => {
             </form>
           </Form>
         </TabsContent>
+
         <TabsContent value="register">
           <Form {...registerForm}>
             <form
               onSubmit={registerForm.handleSubmit(onRegister)}
               className="space-y-6"
             >
-              <FormField
+              {/* <FormField
                 control={registerForm.control}
                 name="username"
                 render={({ field }) => (
@@ -164,7 +162,8 @@ export const Login = () => {
                     </FormControl>
                   </FormItem>
                 )}
-              />
+              /> */}
+
               <FormField
                 control={registerForm.control}
                 name="email"
