@@ -8,15 +8,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { ErrorMessage } from "@hookform/error-message";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useAxios from "axios-hooks";
@@ -25,7 +16,7 @@ import toast from "react-hot-toast";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
 import { useAuth } from "../../../hooks/use-auth";
-import { RoleTypes, User } from "../../../types";
+import { User } from "../../../types";
 import { getUrl } from "../../../utils/navigation";
 import { Loader } from "../../loader";
 
@@ -33,7 +24,6 @@ const schema = z.object({
   userName: z.string().min(3),
   email: z.string().email(),
   phoneNumber: z.string().min(5),
-  role: z.enum(RoleTypes),
 });
 
 type UpdateUserFormData = z.infer<typeof schema>;
@@ -88,9 +78,7 @@ export const UpdateUser = () => {
   return (
     <div className="flex gap-48">
       <div className="form-control w-full max-w-xs">
-        {(user?.role === "User" || "Admin") && (
-          <UpdateUserForm user={data} submitData={onSubmit} />
-        )}
+        <UpdateUserForm user={data} submitData={onSubmit} />
       </div>
     </div>
   );
@@ -102,7 +90,7 @@ interface Props {
 }
 
 const UpdateUserForm = ({ user, submitData: submit }: Props) => {
-  const form = useForm<z.infer<typeof schema>>({
+  const form = useForm<UpdateUserFormData>({
     resolver: zodResolver(schema),
     values: user,
   });
@@ -136,49 +124,6 @@ const UpdateUserForm = ({ user, submitData: submit }: Props) => {
               </FormItem>
             )}
           />
-
-          {user.role === "Admin" && (
-            <FormField
-              control={form.control}
-              name="role"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Role</FormLabel>
-                  <FormControl>
-                    <Select
-                      onValueChange={field.onChange}
-                      value={field.value ?? ""}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select role" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectLabel>Roles</SelectLabel>
-                          {RoleTypes.map((item) => (
-                            <SelectItem key={item} value={item}>
-                              {item}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage>
-                    <ErrorMessage
-                      name="role"
-                      errors={form.formState.errors}
-                      render={({ message }) => (
-                        <p className="text-error">{message}</p>
-                      )}
-                    />
-                  </FormMessage>
-                </FormItem>
-              )}
-            />
-          )}
 
           <FormField
             control={form.control}

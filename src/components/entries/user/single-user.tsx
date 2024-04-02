@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 
 export const SingleUser = () => {
   const { userId } = useParams();
-  const { headers } = useAuth();
+  const { headers, user } = useAuth();
   const [{ data, loading, error }] = useAxios<User>({
     url: getUrl(["user", userId]),
     headers,
@@ -34,14 +34,11 @@ export const SingleUser = () => {
         <Link to={`/user/update/${data?.id}`}>
           <Button>Update User </Button>
         </Link>
-        {/* {data.role === "Admin" && (
-          <Link
-            to={`/user/adminupdate/${data.id}`}
-            className="btn btn-active btn-neutral"
-          >
-            Change role
+        {user?.role === "Admin" && (
+          <Link to={`/user/adminupdate/${data?.id}`}>
+            <Button variant="link">Change role</Button>
           </Link>
-        )} */}
+        )}
       </div>
     </div>
   );

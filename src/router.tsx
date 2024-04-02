@@ -9,11 +9,11 @@ import { SingleMedia } from "./components/entries/media/single-media";
 import { AddMedia } from "./components/entries/media/add-media";
 import { UpdateMedia } from "./components/entries/media/update-media";
 import { Login } from "./components/entries/user/login";
-import { Register } from "./components/entries/user/register";
 import { UserList } from "./components/entries/user/user-list";
 import { SingleUser } from "./components/entries/user/single-user";
 import { UpdateUser } from "./components/entries/user/update-user";
 import { UpdatePassword } from "./components/entries/user/update-password";
+import { UpdateAdmin } from "./components/entries/user/update-admin";
 
 type Route = {
   name: string;
@@ -74,8 +74,8 @@ export const router = createBrowserRouter([
         element: <UpdateMedia />,
       },
       {
-        path: "/register",
-        element: <Register />,
+        path: "/user/adminupdate/:userId",
+        element: <UpdateAdmin />,
       },
       {
         path: "/user",

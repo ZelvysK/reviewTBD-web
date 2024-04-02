@@ -17,7 +17,6 @@ import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { useAuth } from "../../../hooks/use-auth";
 import { getUrl } from "../../../utils/navigation";
-import { useEffect } from "react";
 
 const loginSchema = z.object({
   email: z.string().min(3, "Please enter your email"),
@@ -147,23 +146,6 @@ export const Login = () => {
               onSubmit={registerForm.handleSubmit(onRegister)}
               className="space-y-6"
             >
-              {/* <FormField
-                control={registerForm.control}
-                name="username"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Username</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Username..."
-                        {...field}
-                        value={field.value ?? ""}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              /> */}
-
               <FormField
                 control={registerForm.control}
                 name="email"
