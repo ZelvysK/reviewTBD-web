@@ -15,10 +15,11 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
-import { useAuth } from "../../../hooks/use-auth";
 import { User } from "../../../types";
 import { getUrl } from "../../../utils/navigation";
 import { Loader } from "../../loader";
+import { useAuthStore } from "@/hooks/use-auth";
+import { createAuthHeader } from "@/auth";
 
 const schema = z.object({
   userName: z.string().min(3),
@@ -31,12 +32,12 @@ type UpdateUserFormData = z.infer<typeof schema>;
 export const UpdateUser = () => {
   const navigate = useNavigate();
   const { userId } = useParams();
-  const { headers, user, refresh } = useAuth();
+  const { auth, user, refresh } = useAuthStore();
 
   const [{ data, loading, error }] = useAxios<User>(
     {
       url: getUrl(["user", userId]),
-      headers,
+      headers: createAuthHeader(auth),
     },
     {
       manual: !user,
@@ -47,7 +48,7 @@ export const UpdateUser = () => {
     {
       url: getUrl(["user", "update", userId]),
       method: "POST",
-      headers,
+      headers: createAuthHeader(auth),
     },
     { manual: true }
   );

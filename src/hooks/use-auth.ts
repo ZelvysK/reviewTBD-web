@@ -1,117 +1,80 @@
-import useAxios from "axios-hooks";
-import { useAtom } from "jotai";
-import { useEffect } from "react";
-import { AuthData, UserData, authAtom, userAtom } from "../auth";
+import axios from "axios";
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { AuthData, UserData } from "../auth";
 import { getUrl } from "../utils/navigation";
-import { useNavigate } from "react-router-dom";
 
-export const useAuth = () => {
-  const [authData, setAuthData] = useAtom(authAtom);
-  const [userData, setUserData] = useAtom(userAtom);
-  const navigate = useNavigate();
-
-  const headers = {
-    Authorization: `Bearer ${authData?.accessToken}`,
-    Ready: !!authData?.accessToken,
-  };
-
-  const [_user, executeMe] = useAxios<UserData>(
-    {
-      url: getUrl(["user", "me"]),
-    },
-    {
-      manual: true,
-    }
-  );
-
-  const [_login, executeLogin] = useAxios<AuthData>(
-    {
-      url: getUrl("login"),
-      method: "post",
-    },
-    {
-      manual: true,
-    }
-  );
-
-  const [_refresh, executeRefresh] = useAxios<AuthData>(
-    {
-      url: getUrl("refresh"),
-      method: "post",
-    },
-    {
-      manual: true,
-    }
-  );
-
-  useEffect(() => {
-    if (userData === null || authData === null) {
-      navigate("/login");
-    }
-  }, [userData, authData]);
-
-  const logout = () => {
-    setAuthData(null);
-    setUserData(null);
-  };
-
-  const login = async (email: string, password: string) => {
-    const loginResponse = await executeLogin({
-      data: {
-        email,
-        password,
-      },
-    });
-
-    if (loginResponse.status !== 200) {
-      throw new Error("Failed to login");
-    }
-
-    const meResponse = await executeMe({
-      headers: {
-        Authorization: `Bearer ${loginResponse.data.accessToken}`,
-      },
-    });
-
-    if (meResponse.status !== 200) {
-      throw new Error("Failed to fetch user after succesful login");
-    }
-
-    setAuthData(loginResponse.data);
-    setUserData(meResponse.data);
-  };
-
-  const refresh = async () => {
-    const refreshResponse = await executeRefresh({
-      data: {
-        refreshToken: authData?.refreshToken,
-      },
-    });
-
-    if (refreshResponse.status !== 200) {
-      navigate("/login");
-    }
-
-    const meResponse = await executeMe({
-      headers: {
-        Authorization: `Bearer ${refreshResponse.data.accessToken}`,
-      },
-    });
-
-    if (meResponse.status !== 200) {
-      throw new Error("Failed to fetch user after refresh");
-    }
-
-    setAuthData(refreshResponse.data);
-    setUserData(meResponse.data);
-    navigate("/");
-  };
-
-  return {
-    headers,
-    user: userData,
-    logout,
-    login,
-    refresh,
-  };
+type Actions = {
+  logout: () => void;
+  login: (email: string, password: string) => Promise<void>;
+  refresh: () => Promise<void>;
 };
+
+type State = {
+  user: UserData | null | undefined;
+  auth: AuthData | undefined | null;
+};
+
+export const useAuthStore = create(
+  persist<Actions & State>(
+    (set, get) => ({
+      user: undefined,
+      auth: undefined,
+      logout: () => set({ auth: null, user: null }),
+      login: async (email: string, password: string) => {
+        const loginResponse = await axios.post<AuthData>(getUrl("login"), {
+          email,
+          password,
+        });
+
+        if (loginResponse.status !== 200) {
+          throw new Error("Failed to login");
+        }
+
+        const meResponse = await axios.get<UserData>(getUrl(["user", "me"]), {
+          headers: {
+            Authorization: `Bearer ${loginResponse.data.accessToken}`,
+          },
+        });
+
+        if (meResponse.status !== 200) {
+          throw new Error("Failed to fetch user after succesful login");
+        }
+
+        set({
+          auth: loginResponse.data,
+          user: meResponse.data,
+        });
+      },
+      refresh: async () => {
+        const refreshResponse = await axios.post<AuthData>(getUrl("refresh"), {
+          data: {
+            refreshToken: get().auth?.refreshToken,
+          },
+        });
+
+        if (refreshResponse.status !== 200) {
+          throw new Error("Failed to refresh");
+        }
+
+        const meResponse = await axios.get<UserData>(getUrl(["user", "me"]), {
+          headers: {
+            Authorization: `Bearer ${refreshResponse.data.accessToken}`,
+          },
+        });
+
+        if (meResponse.status !== 200) {
+          throw new Error("Failed to fetch user after refresh");
+        }
+
+        set({
+          auth: refreshResponse.data,
+          user: meResponse.data,
+        });
+      },
+    }),
+    {
+      name: "auth-storage",
+    }
+  )
+);

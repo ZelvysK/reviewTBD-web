@@ -15,7 +15,7 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
-import { useAuth } from "../../../hooks/use-auth";
+import { useAuthStore } from "../../../hooks/use-auth";
 import { getUrl } from "../../../utils/navigation";
 
 const loginSchema = z.object({
@@ -38,7 +38,8 @@ const registerSchema = z.object({
 
 export const Login = () => {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  // const { login } = useAuthStore();
+  const { login } = useAuthStore();
 
   const [_register, executeRegister] = useAxios(
     {

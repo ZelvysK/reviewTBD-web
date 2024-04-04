@@ -1,21 +1,6 @@
-import { z } from "zod";
-import { MediaTypes, PaginatedResult, Studio } from "../../../types";
-import { useNavigate } from "react-router-dom";
-import useAxios from "axios-hooks";
-import { getUrl } from "../../../utils/navigation";
-import toast from "react-hot-toast";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useAuth } from "../../../hooks/use-auth";
+import { createAuthHeader } from "@/auth";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Form,
   FormControl,
@@ -26,17 +11,33 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { useAuthStore } from "@/hooks/use-auth";
 import { cn } from "@/lib/utils";
-import { CalendarIcon } from "lucide-react";
-import { Calendar } from "@/components/ui/calendar";
+import { zodResolver } from "@hookform/resolvers/zod";
+import useAxios from "axios-hooks";
 import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { z } from "zod";
+import { MediaTypes, PaginatedResult, Studio } from "../../../types";
+import { getUrl } from "../../../utils/navigation";
 
 const schema = z.object({
   mediaType: z.enum(MediaTypes),
@@ -51,13 +52,13 @@ type CreateMediaFrom = z.infer<typeof schema>;
 
 export const AddMedia = () => {
   const navigate = useNavigate();
-  const { headers } = useAuth();
+  const { auth } = useAuthStore();
 
   const [_, executePost] = useAxios(
     {
       url: getUrl("media"),
       method: "post",
-      headers,
+      headers: createAuthHeader(auth),
     },
     {
       manual: true,
@@ -71,9 +72,9 @@ export const AddMedia = () => {
         limit: 9999,
         offset: 0,
       },
-      headers,
+      headers: createAuthHeader(auth),
     },
-    { useCache: false, manual: !headers.Ready }
+    { useCache: false, manual: !auth?.accessToken }
   );
 
   const options = data?.result;

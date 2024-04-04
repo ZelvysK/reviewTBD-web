@@ -1,3 +1,4 @@
+import { createAuthHeader } from "@/auth";
 import { Loader } from "@/components/loader";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuthStore } from "@/hooks/use-auth";
 import { RoleTypes, User } from "@/types";
 import { getUrl } from "@/utils/navigation";
 import { ErrorMessage } from "@hookform/error-message";
@@ -42,12 +43,12 @@ interface Props {
 export const UpdateAdmin = () => {
   const navigate = useNavigate();
   const { userId } = useParams();
-  const { headers, user, refresh } = useAuth();
+  const { auth, user, refresh } = useAuthStore();
 
   const [{ data, loading, error }] = useAxios<User>(
     {
       url: getUrl(["user", userId]),
-      headers,
+      headers: createAuthHeader(auth),
     },
     {
       manual: !user,
@@ -58,7 +59,7 @@ export const UpdateAdmin = () => {
     {
       url: getUrl(["user", "adminupdate", userId]),
       method: "POST",
-      headers,
+      headers: createAuthHeader(auth),
     },
     { manual: true }
   );

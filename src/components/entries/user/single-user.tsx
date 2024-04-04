@@ -1,17 +1,18 @@
+import { createAuthHeader } from "@/auth";
+import { Button } from "@/components/ui/button";
 import useAxios from "axios-hooks";
 import { Link, useParams } from "react-router-dom";
+import { useAuthStore } from "../../../hooks/use-auth";
+import { User } from "../../../types";
 import { getUrl } from "../../../utils/navigation";
 import { Loader } from "../../loader";
-import { useAuth } from "../../../hooks/use-auth";
-import { User } from "../../../types";
-import { Button } from "@/components/ui/button";
 
 export const SingleUser = () => {
   const { userId } = useParams();
-  const { headers, user } = useAuth();
+  const { auth, user } = useAuthStore();
   const [{ data, loading, error }] = useAxios<User>({
     url: getUrl(["user", userId]),
-    headers,
+    headers: createAuthHeader(auth),
   });
 
   if (error) {

@@ -1,25 +1,4 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import useAxios, { clearCache } from "axios-hooks";
-import { useForm } from "react-hook-form";
-import toast from "react-hot-toast";
-import { useNavigate, useParams } from "react-router-dom";
-import { z } from "zod";
-import { Studio, StudioTypes } from "../../types";
-import { getUrl } from "../../utils/navigation";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Loader } from "../loader";
-import { useAuth } from "../../hooks/use-auth";
-import { Input } from "../ui/input";
-import { Textarea } from "../ui/textarea";
-import { Button } from "../ui/button";
+import { createAuthHeader } from "@/auth";
 import {
   Form,
   FormControl,
@@ -29,11 +8,33 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import useAxios, { clearCache } from "axios-hooks";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
+import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import { useNavigate, useParams } from "react-router-dom";
+import { z } from "zod";
+import { useAuthStore } from "../../hooks/use-auth";
+import { Studio, StudioTypes } from "../../types";
+import { getUrl } from "../../utils/navigation";
+import { Loader } from "../loader";
+import { Button } from "../ui/button";
 import { Calendar } from "../ui/calendar";
+import { Input } from "../ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Textarea } from "../ui/textarea";
 
 const schema = z.object({
   type: z.enum(StudioTypes),
@@ -48,18 +49,18 @@ type UpdateStudioForm = z.infer<typeof schema>;
 export const UpdateStudio = () => {
   const navigate = useNavigate();
   const { studioId } = useParams();
-  const { headers } = useAuth();
+  const { auth } = useAuthStore();
 
   const [{ data, loading, error }] = useAxios<Studio>({
     url: getUrl(["studio", studioId]),
-    headers,
+    headers: createAuthHeader(auth),
   });
 
   const [_, executeUpdate] = useAxios(
     {
       url: getUrl(["studio", studioId]),
       method: "put",
-      headers,
+      headers: createAuthHeader(auth),
     },
     { manual: true }
   );

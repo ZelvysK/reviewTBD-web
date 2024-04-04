@@ -1,10 +1,10 @@
-import { Link, useLocation } from "react-router-dom";
-import { useAuth } from "../hooks/use-auth";
-import { routes } from "../router";
-import { Button } from "./ui/button";
-import { Badge } from "./ui/badge";
-import { RoleType } from "@/types";
 import { cn } from "@/lib/utils";
+import { RoleType } from "@/types";
+import { Link, useLocation } from "react-router-dom";
+import { useAuthStore } from "../hooks/use-auth";
+import { routes } from "../router";
+import { Badge } from "./ui/badge";
+import { Button } from "./ui/button";
 
 const resolveBadge = (role?: RoleType) => {
   if (role === "Admin") {
@@ -15,7 +15,7 @@ const resolveBadge = (role?: RoleType) => {
 };
 
 export const Navigation = () => {
-  const { user, logout } = useAuth();
+  const { user, logout } = useAuthStore();
   const { pathname } = useLocation();
 
   return (
@@ -38,7 +38,12 @@ export const Navigation = () => {
       <div className="flex gap-5 items-center justify-center">
         <Link to={`/user/me`}>Hello, {user?.userName}!</Link>
         <Badge variant={resolveBadge(user?.role)}>{user?.role}</Badge>
-        <Button variant="destructive" onClick={logout}>
+        <Button
+          variant="destructive"
+          onClick={() => {
+            logout();
+          }}
+        >
           Logout
         </Button>
       </div>

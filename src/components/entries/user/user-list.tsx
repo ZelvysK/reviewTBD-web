@@ -2,17 +2,18 @@ import useAxios from "axios-hooks";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { PAGE_SIZE } from "../../../api";
-import { useAuth } from "../../../hooks/use-auth";
+import { useAuthStore } from "../../../hooks/use-auth";
 import { PaginatedResult, User } from "../../../types";
 import { getUrl } from "../../../utils/navigation";
 import { Loader } from "../../loader";
 import { PageList } from "../../pagination";
 
+import { createAuthHeader } from "@/auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useDebounce } from "../../../hooks/use-debounce";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 
 export const UserList = () => {
   const [term, setTerm] = useState<string>();
@@ -47,7 +48,7 @@ interface Props {
 
 const UserTable = ({ term }: Props) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const { headers } = useAuth();
+  const { auth } = useAuthStore();
 
   const [{ data, loading, error }] = useAxios<PaginatedResult<User>>(
     {
@@ -57,9 +58,9 @@ const UserTable = ({ term }: Props) => {
         offset: (currentPage - 1) * PAGE_SIZE,
         term,
       },
-      headers,
+      headers: createAuthHeader(auth),
     },
-    { useCache: false, manual: !headers.Ready }
+    { useCache: false, manual: !auth?.accessToken }
   );
 
   if (error) {

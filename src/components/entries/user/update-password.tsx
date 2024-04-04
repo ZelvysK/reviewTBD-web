@@ -1,24 +1,25 @@
-import { useNavigate, useParams } from "react-router-dom";
-import { z } from "zod";
-import { useAuth } from "../../../hooks/use-auth";
-import useAxios from "axios-hooks";
-import { User } from "../../../types";
-import { getUrl } from "../../../utils/navigation";
-import toast from "react-hot-toast";
-import { Loader } from "../../loader";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { ErrorMessage } from "@hookform/error-message";
+import { createAuthHeader } from "@/auth";
+import { Button } from "@/components/ui/button";
 import {
   Form,
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormControl,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { ErrorMessage } from "@hookform/error-message";
+import { zodResolver } from "@hookform/resolvers/zod";
+import useAxios from "axios-hooks";
+import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import { useNavigate, useParams } from "react-router-dom";
+import { z } from "zod";
+import { useAuthStore } from "../../../hooks/use-auth";
+import { User } from "../../../types";
+import { getUrl } from "../../../utils/navigation";
+import { Loader } from "../../loader";
 
 const schema = z
   .object({
@@ -42,18 +43,18 @@ type UpdatePasswordForm = z.infer<typeof schema>;
 export const UpdatePassword = () => {
   const navigate = useNavigate();
   const { userId } = useParams();
-  const { headers } = useAuth();
+  const { auth } = useAuthStore();
 
   const [{ data, loading, error }] = useAxios<User>({
     url: getUrl(["user", userId]),
-    headers,
+    headers: createAuthHeader(auth),
   });
 
   const [_, executeUpdate] = useAxios(
     {
       url: getUrl(["user", "update", userId]),
       method: "POST",
-      headers,
+      headers: createAuthHeader(auth),
     },
     { manual: true }
   );

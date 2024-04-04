@@ -1,12 +1,17 @@
-import { useAuth } from "@/hooks/use-auth";
+import { useAuthStore } from "@/hooks/use-auth";
 import { useEffect } from "react";
-import { isRouteErrorResponse, useRouteError } from "react-router-dom";
+import {
+  isRouteErrorResponse,
+  useNavigate,
+  useRouteError,
+} from "react-router-dom";
 
 const isUnauthorized = (error: string) => error.includes("401");
 
 export const ErrorBoundary = () => {
   const error = useRouteError();
-  const { refresh } = useAuth();
+  const { refresh } = useAuthStore();
+  const navigate = useNavigate();
 
   let errorMessage: string;
 
@@ -25,6 +30,7 @@ export const ErrorBoundary = () => {
     const handleUnauthrized = async () => {
       if (isUnauthorized(errorMessage)) {
         await refresh();
+        navigate("/");
       }
     };
 

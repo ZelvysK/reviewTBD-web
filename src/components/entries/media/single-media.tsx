@@ -1,10 +1,4 @@
-import useAxios from "axios-hooks";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { Media } from "../../../types";
-import { getUrl } from "../../../utils/navigation";
-import { Loader } from "../../loader";
-import { useAuth } from "../../../hooks/use-auth";
-import { Button } from "@/components/ui/button";
+import { createAuthHeader } from "@/auth";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,21 +10,29 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import useAxios from "axios-hooks";
+import { format } from "date-fns";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useAuthStore } from "../../../hooks/use-auth";
+import { Media } from "../../../types";
+import { getUrl } from "../../../utils/navigation";
+import { Loader } from "../../loader";
 
 export const SingleMedia = () => {
   const navigate = useNavigate();
   const { mediaId } = useParams();
-  const { headers } = useAuth();
+  const { auth } = useAuthStore();
   const [{ data, loading, error }] = useAxios<Media>({
     url: getUrl(["media", mediaId]),
-    headers,
+    headers: createAuthHeader(auth),
   });
 
   const [_delete, executeDelete] = useAxios(
     {
       url: getUrl(["media", mediaId]),
       method: "delete",
-      headers,
+      headers: createAuthHeader(auth),
     },
     {
       manual: true,
@@ -67,7 +69,9 @@ export const SingleMedia = () => {
           {data?.name + " |" + data?.mediaType}
         </h1>
         <div className="font-semibold">{data?.description}</div>
-        <div className="font-semibold">{data?.dateCreated}</div>
+        <div className="font-semibold">
+          {format(data?.dateCreated, "yyyy-MM-dd")}
+        </div>
       </div>
       <div className="flex gap-2">
         <Link to={`/media/update/${data.id}`}>

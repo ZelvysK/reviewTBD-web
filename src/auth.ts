@@ -1,5 +1,3 @@
-import { atomWithStorage } from "jotai/utils";
-
 type TokenType = "Bearer";
 
 export type AuthData = {
@@ -9,15 +7,9 @@ export type AuthData = {
   refreshToken: string;
 };
 
-export const authAtom = atomWithStorage<AuthData | undefined | null>(
-  "auth",
-  undefined
-);
-
-export const userAtom = atomWithStorage<UserData | undefined | null>(
-  "user",
-  undefined
-);
+export const createAuthHeader = (auth: AuthData | undefined | null) => ({
+  Authorization: "Bearer " + auth?.accessToken,
+});
 
 type Role = "User" | "Admin";
 

@@ -1,3 +1,4 @@
+import { createAuthHeader } from "@/auth";
 import {
   Select,
   SelectContent,
@@ -11,11 +12,11 @@ import { useDebounce } from "@/hooks/use-debounce";
 import useAxios from "axios-hooks";
 import { format } from "date-fns";
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { create } from "zustand";
 import { useShallow } from "zustand/react/shallow";
 import { PAGE_SIZE } from "../../api";
-import { useAuth } from "../../hooks/use-auth";
+import { useAuthStore } from "../../hooks/use-auth";
 import { PaginatedResult, Studio, StudioType, StudioTypes } from "../../types";
 import { getUrl } from "../../utils/navigation";
 import { Loader } from "../loader";
@@ -27,14 +28,6 @@ export const StudioList = () => {
   const [term, setTerm] = useState<string>();
   const debouncedTerm = useDebounce(term);
   const [studioType, setStudioType] = useState<StudioType>();
-  const { user } = useAuth();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (user && user.firstTimeLogin) {
-      return navigate(`../../user/update/${user?.id}`);
-    }
-  }, []);
 
   return (
     <div className="bg-secondary/30 shadow-xl rounded-xl flex flex-col gap-2 p-2">
@@ -116,7 +109,7 @@ const useStudioPagination = create<StudioPaginationState>((set) => ({
 }));
 
 const StudioTable = ({ type, term }: Props) => {
-  const { headers } = useAuth();
+  const { auth } = useAuthStore();
   const [currentPage, setTotalItems, totalItems] = useStudioPagination(
     useShallow((state) => [
       state.currentPage,
@@ -133,9 +126,9 @@ const StudioTable = ({ type, term }: Props) => {
         studioType: type,
         term,
       },
-      headers,
+      headers: createAuthHeader(auth),
     },
-    { useCache: false, manual: !headers.Ready }
+    { useCache: false, manual: !auth?.accessToken }
   );
 
   useEffect(() => {

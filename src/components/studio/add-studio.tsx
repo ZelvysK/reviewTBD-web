@@ -1,21 +1,4 @@
-import useAxios from "axios-hooks";
-import { useNavigate } from "react-router-dom";
-import { StudioTypes } from "../../types";
-import { getUrl } from "../../utils/navigation";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import toast from "react-hot-toast";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useAuth } from "../../hooks/use-auth";
+import { createAuthHeader } from "@/auth";
 import {
   Form,
   FormControl,
@@ -25,14 +8,32 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "../ui/input";
-import { Textarea } from "../ui/textarea";
-import { Button } from "../ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { cn } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import useAxios from "axios-hooks";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
+import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { z } from "zod";
+import { useAuthStore } from "../../hooks/use-auth";
+import { StudioTypes } from "../../types";
+import { getUrl } from "../../utils/navigation";
+import { Button } from "../ui/button";
 import { Calendar } from "../ui/calendar";
-import { cn } from "@/lib/utils";
+import { Input } from "../ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Textarea } from "../ui/textarea";
 
 const schema = z.object({
   type: z.enum(StudioTypes),
@@ -46,13 +47,13 @@ type CreateStudioForm = z.infer<typeof schema>;
 
 export const AddStudio = () => {
   const navigate = useNavigate();
-  const { headers } = useAuth();
+  const { auth } = useAuthStore();
 
   const [_, executePost] = useAxios(
     {
       url: getUrl("studio"),
       method: "post",
-      headers,
+      headers: createAuthHeader(auth),
     },
     { manual: true }
   );

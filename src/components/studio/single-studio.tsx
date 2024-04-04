@@ -1,10 +1,4 @@
-import useAxios from "axios-hooks";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { Studio } from "../../types";
-import { getUrl } from "../../utils/navigation";
-import { Loader } from "../loader";
-import { useAuth } from "../../hooks/use-auth";
-import { Button } from "../ui/button";
+import { createAuthHeader } from "@/auth";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,24 +10,32 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import useAxios from "axios-hooks";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useAuthStore } from "../../hooks/use-auth";
+import { Studio } from "../../types";
+import { getUrl } from "../../utils/navigation";
+import { Loader } from "../loader";
+import { Button } from "../ui/button";
+import { format } from "date-fns";
 
 export const SingleStudio = () => {
   const navigate = useNavigate();
-  const { headers } = useAuth();
+  const { auth } = useAuthStore();
   const { studioId } = useParams();
   const [{ data, loading, error }] = useAxios<Studio>(
     {
       url: getUrl(["studio", studioId]),
-      headers,
+      headers: createAuthHeader(auth),
     },
-    { useCache: false, manual: !headers.Ready }
+    { useCache: false, manual: !auth?.accessToken }
   );
 
   const [_delete, executeDelete] = useAxios(
     {
       url: getUrl(["studio", studioId]),
       method: "delete",
-      headers,
+      headers: createAuthHeader(auth),
     },
     { manual: true }
   );
@@ -66,7 +68,9 @@ export const SingleStudio = () => {
       <div>
         <h1 className="text-5xl font-bold">{data?.name + " |" + data?.type}</h1>
         <div className="font-semibold">{data?.description}</div>
-        <div className="font-semibold">{data?.dateCreated}</div>
+        <div className="font-semibold">
+          {format(data?.dateCreated, "yyyy-MM-dd")}
+        </div>
       </div>
       <div className="flex gap-2">
         <Link to={`/studio/update/${data.id}`}>
