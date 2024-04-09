@@ -24,8 +24,22 @@ import { Loader } from "../../loader";
 const schema = z
   .object({
     currentPassword: z.string(),
-    newPassword: z.string().min(6),
-    confirmNewPassword: z.string().min(6),
+    newPassword: z
+      .string()
+      .regex(
+        new RegExp(
+          /^(?=.*[!@#$%^&*()_+}{:;'?/>,.<\[\]\-~`|\\])(?=.*[a-z])(?=.*[A-Z]).{6,}$/
+        ),
+        "Pasword is not secure"
+      ),
+    confirmNewPassword: z
+      .string()
+      .regex(
+        new RegExp(
+          /^(?=.*[!@#$%^&*()_+}{:;'?/>,.<\[\]\-~`|\\])(?=.*[a-z])(?=.*[A-Z]).{6,}$/
+        ),
+        "Pasword is not secure"
+      ),
   })
   .superRefine(({ newPassword, confirmNewPassword }, ctx) => {
     if (newPassword !== confirmNewPassword) {
@@ -63,12 +77,12 @@ export const UpdatePassword = () => {
     try {
       console.log(data);
 
-      // const response = await executeUpdate({ data: { id: userId, ...data } });
+      const response = await executeUpdate({ data: { id: userId, ...data } });
 
-      // if (response.status === 200) {
-      //   navigate(`../../user/${userId}`);
-      //   toast.success("Password updated successfully");
-      // }
+      if (response.status === 200) {
+        navigate(`../../user/${userId}`);
+        toast.success("Password updated successfully");
+      }
     } catch (error) {
       console.log(error);
       toast.error("Failed");

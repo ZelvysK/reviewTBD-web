@@ -11,14 +11,14 @@ export const Layout = () => {
     if (auth === null || auth === undefined) {
       navigate("/login");
     }
-  }, []);
+  }, [auth]);
 
   return (
     <>
       <Navigation />
-      {user?.firstTimeLogin && (
+      {/* {user?.firstTimeLogin && (
         <Navigate to={`../../user/update/${user?.id}`} replace={true} />
-      )}
+      )} */}
       <div className="p-2">
         <Outlet />
       </div>

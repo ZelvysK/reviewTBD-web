@@ -10,30 +10,16 @@ import {
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { zodResolver } from "@hookform/resolvers/zod";
-import useAxios from "axios-hooks";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { useAuthStore } from "../../../hooks/use-auth";
-import { getUrl } from "../../../utils/navigation";
+import { Register } from "./register";
 
 const loginSchema = z.object({
   email: z.string().min(3, "Please enter your email"),
   password: z.string().min(3, "Please enter your password"),
-});
-
-const registerSchema = z.object({
-  // username: z.string(),
-  email: z.string().email(),
-  password: z
-    .string()
-    .regex(
-      new RegExp(
-        /^(?=.*[!@#$%^&*()_+}{:;'?/>,.<\[\]\-~`|\\])(?=.*[a-z])(?=.*[A-Z]).{6,}$/
-      ),
-      "Pasword is not secure"
-    ),
 });
 
 export const Login = () => {
@@ -41,22 +27,8 @@ export const Login = () => {
   // const { login } = useAuthStore();
   const { login } = useAuthStore();
 
-  const [_register, executeRegister] = useAxios(
-    {
-      url: getUrl("register"),
-      method: "post",
-    },
-    {
-      manual: true,
-    }
-  );
-
   const loginForm = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
-  });
-
-  const registerForm = useForm<z.infer<typeof registerSchema>>({
-    resolver: zodResolver(registerSchema),
   });
 
   const onLogin = async (data: z.infer<typeof loginSchema>) => {
@@ -65,24 +37,6 @@ export const Login = () => {
       navigate("../../");
       toast.success("Login successful");
     } catch (error) {
-      toast.error("Failed");
-    }
-  };
-
-  const onRegister = async (data: z.infer<typeof registerSchema>) => {
-    try {
-      const response = await executeRegister({ data });
-
-      if (response.status === 200) {
-        try {
-          await login(data.email, data.password);
-        } catch (error) {
-          toast.error("Failed login");
-        }
-        toast.success("Registered successfuly, please update your user data!");
-      }
-    } catch (error) {
-      console.log(error);
       toast.error("Failed");
     }
   };
@@ -142,50 +96,7 @@ export const Login = () => {
         </TabsContent>
 
         <TabsContent value="register">
-          <Form {...registerForm}>
-            <form
-              onSubmit={registerForm.handleSubmit(onRegister)}
-              className="space-y-6"
-            >
-              <FormField
-                control={registerForm.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        value={field.value ?? ""}
-                        placeholder="Email"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={registerForm.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        value={field.value ?? ""}
-                        type="password"
-                        placeholder="Password"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <Button type="submit">Register</Button>
-            </form>
-          </Form>
+          <Register />
         </TabsContent>
       </Tabs>
     </div>
