@@ -23,6 +23,7 @@ import { Loader } from "../loader";
 import { PageList } from "../pagination";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import { AdminOnly } from "../admin-only";
 
 export const StudioList = () => {
   const [term, setTerm] = useState<string>();
@@ -32,9 +33,11 @@ export const StudioList = () => {
   return (
     <div className="bg-secondary/30 shadow-xl rounded-xl flex flex-col gap-2 p-2">
       <div className="flex gap-2">
-        <Link to={`/studio/create`}>
-          <Button>Add Studio</Button>
-        </Link>
+        <AdminOnly>
+          <Link to={`/studio/create`}>
+            <Button>Add Studio</Button>
+          </Link>
+        </AdminOnly>
         <Input
           type="text"
           value={term ?? ""}

@@ -20,6 +20,7 @@ import { Media, MediaType, MediaTypes, PaginatedResult } from "../../../types";
 import { getUrl } from "../../../utils/navigation";
 import { Loader } from "../../loader";
 import { PageList } from "../../pagination";
+import { AdminOnly } from "@/components/admin-only";
 
 export const MediaList = () => {
   const [term, setTerm] = useState<string>();
@@ -29,9 +30,11 @@ export const MediaList = () => {
   return (
     <div className="bg-secondary/30 shadow-xl rounded-xl flex flex-col gap-2 p-2">
       <div className="flex gap-2">
-        <Link to={`/media/create`}>
-          <Button>Add Media</Button>
-        </Link>
+        <AdminOnly>
+          <Link to={`/media/create`}>
+            <Button>Add Media</Button>
+          </Link>
+        </AdminOnly>
         <Input
           type="text"
           value={term ?? ""}

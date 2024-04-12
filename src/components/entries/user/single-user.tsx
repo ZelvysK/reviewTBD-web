@@ -1,4 +1,5 @@
 import { createAuthHeader } from "@/auth";
+import { AdminOnly } from "@/components/admin-only";
 import { Button } from "@/components/ui/button";
 import useAxios from "axios-hooks";
 import { Link, useParams } from "react-router-dom";
@@ -9,7 +10,7 @@ import { Loader } from "../../loader";
 
 export const SingleUser = () => {
   const { userId } = useParams();
-  const { auth, user } = useAuthStore();
+  const { auth } = useAuthStore();
   const [{ data, loading, error }] = useAxios<User>({
     url: getUrl(["user", userId]),
     headers: createAuthHeader(auth),
@@ -35,11 +36,11 @@ export const SingleUser = () => {
         <Link to={`/user/update/${data?.id}`}>
           <Button>Update User </Button>
         </Link>
-        {user?.role === "Admin" && (
+        <AdminOnly>
           <Link to={`/user/adminupdate/${data?.id}`}>
             <Button variant="link">Change role</Button>
           </Link>
-        )}
+        </AdminOnly>
       </div>
     </div>
   );

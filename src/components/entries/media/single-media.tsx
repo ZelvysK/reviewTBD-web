@@ -18,6 +18,7 @@ import { useAuthStore } from "../../../hooks/use-auth";
 import { Media } from "../../../types";
 import { getUrl } from "../../../utils/navigation";
 import { Loader } from "../../loader";
+import { AdminOnly } from "@/components/admin-only";
 
 export const SingleMedia = () => {
   const navigate = useNavigate();
@@ -41,8 +42,6 @@ export const SingleMedia = () => {
 
   const handleDelete = async () => {
     const response = await executeDelete();
-
-    console.log(response);
 
     if (response.status === 204) {
       navigate("../../");
@@ -73,31 +72,33 @@ export const SingleMedia = () => {
           {format(data?.dateCreated, "yyyy-MM-dd")}
         </div>
       </div>
-      <div className="flex gap-2">
-        <Link to={`/media/update/${data.id}`}>
-          <Button>Update media</Button>
-        </Link>
-        <AlertDialog>
-          <AlertDialogTrigger>
-            <Button variant="outline">Delete media</Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-              <AlertDialogDescription>
-                This action cannot be undone. This will permanently delete this
-                entry and remove its data from our servers.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={handleDelete}>
-                Continue
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      </div>
+      <AdminOnly>
+        <div className="flex gap-2">
+          <Link to={`/media/update/${data.id}`}>
+            <Button>Update media</Button>
+          </Link>
+          <AlertDialog>
+            <AlertDialogTrigger>
+              <Button variant="outline">Delete media</Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete
+                  this entry and remove its data from our servers.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={handleDelete}>
+                  Continue
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
+      </AdminOnly>
     </div>
   );
 };

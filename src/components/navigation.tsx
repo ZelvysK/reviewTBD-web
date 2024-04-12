@@ -23,7 +23,11 @@ export const Navigation = () => {
       <NavbarBrand />
 
       <div className="flex gap-5 items-center justify-center">
-        {routes.map(({ href, name }, index) => {
+        {routes.map(({ href, name, admin }, index) => {
+          if (admin && user?.role !== "Admin") {
+            return null;
+          }
+
           return (
             <span
               className={cn(pathname === href && "text-primary")}
@@ -36,7 +40,7 @@ export const Navigation = () => {
       </div>
 
       <div className="flex gap-5 items-center justify-center">
-        <Link to={`/user/me`}>Hello, {user?.userName}!</Link>
+        <Link to={`/user/${user?.id}`}>Hello, {user?.userName}!</Link>
         <Badge variant={resolveBadge(user?.role)}>{user?.role}</Badge>
         <Button
           variant="destructive"

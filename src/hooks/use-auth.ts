@@ -48,9 +48,7 @@ export const useAuthStore = create(
       },
       refresh: async () => {
         const refreshResponse = await axios.post<AuthData>(getUrl("refresh"), {
-          data: {
-            refreshToken: get().auth?.refreshToken,
-          },
+          refreshToken: get().auth?.refreshToken,
         });
 
         if (refreshResponse.status !== 200) {

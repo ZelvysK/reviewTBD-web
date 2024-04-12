@@ -1,4 +1,4 @@
-import { createAuthHeader } from "@/auth";
+import { AuthData, UserData } from "@/auth";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { useAuthStore } from "@/hooks/use-auth";
 import { getUrl } from "@/utils/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
 import useAxios from "axios-hooks";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -57,23 +58,14 @@ const registerSchema = z
     }
   });
 
-export const Register = () => {
+export const RegisterForm = () => {
   const navigate = useNavigate();
-  const { auth, user, login, refresh } = useAuthStore();
+  const { login } = useAuthStore();
 
   const [_register, executeRegister] = useAxios(
     {
       url: getUrl("register"),
       method: "post",
-    },
-    { manual: true }
-  );
-
-  const [_update, executeUpdate] = useAxios(
-    {
-      url: getUrl(["user", "update", user?.id]),
-      method: "post",
-      headers: createAuthHeader(auth),
     },
     { manual: true }
   );
@@ -86,24 +78,47 @@ export const Register = () => {
     try {
       const registerResponse = await executeRegister({ data });
 
+      const { username, email, password } = data;
+
       if (registerResponse.status === 200) {
-        try {
-          await login(data.email, data.password);
-          navigate("../../");
-        } catch (error) {
-          toast.error("Failed login");
+        const loginResponse = await axios.post<AuthData>(getUrl("login"), {
+          email,
+          password,
+        });
+
+        if (loginResponse.status !== 200) {
+          throw new Error("Failed to login");
         }
-        toast.success("Registered successfuly!");
-        const updateResponse = await executeUpdate({ data });
+
+        const headers = {
+          Authorization: `Bearer ${loginResponse.data.accessToken}`,
+        };
+
+        const meResponse = await axios.get<UserData>(getUrl(["user", "me"]), {
+          headers,
+        });
+
+        if (meResponse.status !== 200) {
+          throw new Error("Failed to fetch user after succesful login");
+        }
+
+        const updateResponse = await axios.post<UserData>(
+          getUrl(["user", "update", meResponse.data.id]),
+          data,
+          {
+            headers,
+          }
+        );
 
         if (updateResponse.status === 200) {
-          await refresh();
-          toast.success("User updated successfully");
+          await login(username, password);
+          toast.success(`Welcome, ${username}!`);
+          navigate("/");
         }
       }
     } catch (error) {
-      console.log(error);
-      toast.error("Failed");
+      console.error(error);
+      toast.error("Oops, something went wrong...");
     }
   };
 

@@ -1,3 +1,4 @@
+import { createAuthHeader } from "@/auth";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -8,6 +9,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useAuthStore } from "@/hooks/use-auth";
 import { ErrorMessage } from "@hookform/error-message";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useAxios from "axios-hooks";
@@ -18,8 +20,6 @@ import { z } from "zod";
 import { User } from "../../../types";
 import { getUrl } from "../../../utils/navigation";
 import { Loader } from "../../loader";
-import { useAuthStore } from "@/hooks/use-auth";
-import { createAuthHeader } from "@/auth";
 
 const schema = z.object({
   userName: z.string().min(3),

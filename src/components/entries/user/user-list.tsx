@@ -1,7 +1,6 @@
 import useAxios from "axios-hooks";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { PAGE_SIZE } from "../../../api";
 import { useAuthStore } from "../../../hooks/use-auth";
 import { PaginatedResult, User } from "../../../types";
 import { getUrl } from "../../../utils/navigation";
@@ -46,6 +45,8 @@ interface Props {
   term?: string;
 }
 
+const USER_PAGE_SIZE = 21;
+
 const UserTable = ({ term }: Props) => {
   const [currentPage, setCurrentPage] = useState(1);
   const { auth } = useAuthStore();
@@ -54,8 +55,8 @@ const UserTable = ({ term }: Props) => {
     {
       url: getUrl("user"),
       params: {
-        limit: PAGE_SIZE,
-        offset: (currentPage - 1) * PAGE_SIZE,
+        limit: USER_PAGE_SIZE,
+        offset: (currentPage - 1) * USER_PAGE_SIZE,
         term,
       },
       headers: createAuthHeader(auth),
@@ -98,6 +99,7 @@ const UserTable = ({ term }: Props) => {
       </div>
 
       <PageList
+        pageSize={USER_PAGE_SIZE}
         totalItems={data.total}
         currentPage={currentPage}
         onPageChange={setCurrentPage}

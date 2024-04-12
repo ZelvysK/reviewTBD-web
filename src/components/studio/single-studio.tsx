@@ -18,6 +18,7 @@ import { getUrl } from "../../utils/navigation";
 import { Loader } from "../loader";
 import { Button } from "../ui/button";
 import { format } from "date-fns";
+import { AdminOnly } from "../admin-only";
 
 export const SingleStudio = () => {
   const navigate = useNavigate();
@@ -72,31 +73,33 @@ export const SingleStudio = () => {
           {format(data?.dateCreated, "yyyy-MM-dd")}
         </div>
       </div>
-      <div className="flex gap-2">
-        <Link to={`/studio/update/${data.id}`}>
-          <Button> Update Studio</Button>
-        </Link>
-        <AlertDialog>
-          <AlertDialogTrigger>
-            <Button variant="outline">Delete studio</Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-              <AlertDialogDescription>
-                This action cannot be undone. This will permanently delete this
-                entry and remove its data from our servers.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={handleDelete}>
-                Continue
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      </div>
+      <AdminOnly>
+        <div className="flex gap-2">
+          <Link to={`/studio/update/${data.id}`}>
+            <Button> Update Studio</Button>
+          </Link>
+          <AlertDialog>
+            <AlertDialogTrigger>
+              <Button variant="outline">Delete studio</Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete
+                  this entry and remove its data from our servers.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={handleDelete}>
+                  Continue
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
+      </AdminOnly>
     </div>
   );
 };
