@@ -40,6 +40,8 @@ const schema = z.object({
   name: z.string().min(3),
   description: z.string().min(4),
   imageUrl: z.string().url(),
+  headquarters: z.string(),
+  founder: z.string(),
   dateCreated: z.date(),
 });
 
@@ -136,6 +138,42 @@ export const AddStudio = () => {
                     <Textarea
                       placeholder="Enter description..."
                       className="textarea textarea-bordered"
+                      {...field}
+                      value={field.value ?? ""}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="headquarters"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Headquarters location</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Headquarters location..."
+                      {...field}
+                      value={field.value ?? ""}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="founder"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Founder</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Founder..."
                       {...field}
                       value={field.value ?? ""}
                     />

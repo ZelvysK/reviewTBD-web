@@ -36,17 +36,25 @@ import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
 import { useAuthStore } from "../../../hooks/use-auth";
-import { Media, MediaTypes, PaginatedResult, Studio } from "../../../types";
+import {
+  Genres,
+  Media,
+  MediaTypes,
+  PaginatedResult,
+  Studio,
+} from "../../../types";
 import { getUrl } from "../../../utils/navigation";
 import { Loader } from "../../loader";
 
 const schema = z.object({
   mediaType: z.enum(MediaTypes),
+  genre: z.enum(Genres),
   name: z.string().min(3),
   description: z.string().min(4),
   coverImageUrl: z.string().url(),
   dateCreated: z.date(),
   studioId: z.string(),
+  publishedBy: z.string(),
 });
 
 type UpdateMediaForm = z.infer<typeof schema>;
@@ -87,6 +95,7 @@ export const UpdateMedia = () => {
 
   const onSubmit = async (data: UpdateMediaForm) => {
     try {
+      console.log(data);
       const response = await executeUpdate({ data: { id: mediaId, ...data } });
 
       if (response.status === 200) {
@@ -151,6 +160,34 @@ export const UpdateMedia = () => {
 
             <FormField
               control={form.control}
+              name="genre"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Genre</FormLabel>
+                  <FormControl>
+                    <Select onValueChange={field.onChange} {...field}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select genre" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-base-100">
+                        <SelectGroup>
+                          <SelectLabel>Genres</SelectLabel>
+                          {Genres.map((item) => (
+                            <SelectItem key={item} value={item}>
+                              {item}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
               name="studioId"
               render={({ field }) => (
                 <FormItem>
@@ -175,6 +212,24 @@ export const UpdateMedia = () => {
                         </SelectGroup>
                       </SelectContent>
                     </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="publishedBy"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Publisher</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Publisher..."
+                      {...field}
+                      value={field.value ?? ""}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

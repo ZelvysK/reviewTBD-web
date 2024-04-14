@@ -36,16 +36,18 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
-import { MediaTypes, PaginatedResult, Studio } from "../../../types";
+import { Genres, MediaTypes, PaginatedResult, Studio } from "../../../types";
 import { getUrl } from "../../../utils/navigation";
 
 const schema = z.object({
   mediaType: z.enum(MediaTypes),
+  genre: z.enum(Genres),
   name: z.string().min(3),
   description: z.string().min(4),
   coverImageUrl: z.string().url(),
   dateCreated: z.date(),
   studioId: z.string(),
+  publishedBy: z.string(),
 });
 
 type CreateMediaFrom = z.infer<typeof schema>;
@@ -133,6 +135,34 @@ export const AddMedia = () => {
 
             <FormField
               control={form.control}
+              name="genre"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Genre</FormLabel>
+                  <FormControl>
+                    <Select onValueChange={field.onChange} {...field}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select genre" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-base-100">
+                        <SelectGroup>
+                          <SelectLabel>Genres</SelectLabel>
+                          {Genres.map((item) => (
+                            <SelectItem key={item} value={item}>
+                              {item}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
               name="studioId"
               render={({ field }) => (
                 <FormItem>
@@ -153,6 +183,24 @@ export const AddMedia = () => {
                         </SelectGroup>
                       </SelectContent>
                     </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="publishedBy"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Publisher</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Publisher..."
+                      {...field}
+                      value={field.value ?? ""}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

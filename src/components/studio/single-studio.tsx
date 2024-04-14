@@ -68,6 +68,9 @@ export const SingleStudio = () => {
       />
       <div>
         <h1 className="text-5xl font-bold">{data?.name + " |" + data?.type}</h1>
+        <div className="font-semibold">
+          {data?.headquarters + " | " + data?.founder}
+        </div>
         <div className="font-semibold">{data?.description}</div>
         <div className="font-semibold">
           {format(data?.dateCreated, "yyyy-MM-dd")}

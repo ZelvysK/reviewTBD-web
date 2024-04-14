@@ -67,6 +67,8 @@ export const SingleMedia = () => {
         <h1 className="text-5xl font-bold">
           {data?.name + " |" + data?.mediaType}
         </h1>
+        <div className="font-bold">{data?.genre}</div>
+        <div className="font-bold">{data?.publishedBy}</div>
         <div className="font-semibold">{data?.description}</div>
         <div className="font-semibold">
           {format(data?.dateCreated, "yyyy-MM-dd")}
