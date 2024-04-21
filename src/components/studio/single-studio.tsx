@@ -1,23 +1,42 @@
+import { createAuthHeader } from "@/auth";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import useAxios from "axios-hooks";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { useAuthStore } from "../../hooks/use-auth";
 import { Studio } from "../../types";
 import { getUrl } from "../../utils/navigation";
 import { Loader } from "../loader";
-import { Modal } from "../modal";
-
-const MODAL_DELETE_ID = "delete-studio-modal";
+import { Button } from "../ui/button";
+import { format } from "date-fns";
+import { AdminOnly } from "../admin-only";
 
 export const SingleStudio = () => {
   const navigate = useNavigate();
+  const { auth } = useAuthStore();
   const { studioId } = useParams();
   const [{ data, loading, error }] = useAxios<Studio>(
-    getUrl(["studio", studioId])
+    {
+      url: getUrl(["studio", studioId]),
+      headers: createAuthHeader(auth),
+    },
+    { useCache: false, manual: !auth?.accessToken }
   );
 
   const [_delete, executeDelete] = useAxios(
     {
       url: getUrl(["studio", studioId]),
       method: "delete",
+      headers: createAuthHeader(auth),
     },
     { manual: true }
   );
@@ -49,26 +68,41 @@ export const SingleStudio = () => {
       />
       <div>
         <h1 className="text-5xl font-bold">{data?.name + " |" + data?.type}</h1>
+        <div className="font-semibold">
+          {data?.headquarters + " | " + data?.founder}
+        </div>
         <div className="font-semibold">{data?.description}</div>
-        <div className="font-semibold">{data?.imageUrl}</div>
-        <div className="font-semibold">{data?.dateCreated}</div>
+        <div className="font-semibold">
+          {format(data?.dateCreated, "yyyy-MM-dd")}
+        </div>
       </div>
-      <div className="flex gap-2">
-        <Link
-          to={`/studio/update/${data.id}`}
-          className="btn btn-active btn-neutral"
-        >
-          Update Studio
-        </Link>
-        <label htmlFor={MODAL_DELETE_ID} className="btn btn-outline btn-error">
-          Delete studio
-        </label>
-      </div>
-      <Modal
-        id={MODAL_DELETE_ID}
-        text="Do you really want to delete the studio?"
-        onConfirm={handleDelete}
-      />
+      <AdminOnly>
+        <div className="flex gap-2">
+          <Link to={`/studio/update/${data.id}`}>
+            <Button> Update Studio</Button>
+          </Link>
+          <AlertDialog>
+            <AlertDialogTrigger>
+              <Button variant="outline">Delete studio</Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete
+                  this entry and remove its data from our servers.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={handleDelete}>
+                  Continue
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
+      </AdminOnly>
     </div>
   );
 };

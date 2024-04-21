@@ -1,24 +1,24 @@
-import { Toaster } from "react-hot-toast";
-import { Outlet } from "react-router-dom";
+import { useAuthStore } from "@/hooks/use-auth";
+import { useEffect } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
 import { Navigation } from "./navigation";
 
 export const Layout = () => {
+  const navigate = useNavigate();
+  const { auth } = useAuthStore();
+
+  useEffect(() => {
+    if (auth === null || auth === undefined) {
+      navigate("/login");
+    }
+  }, [auth]);
+
   return (
     <>
       <Navigation />
       <div className="p-2">
         <Outlet />
       </div>
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          style: {
-            borderRadius: "3px",
-            background: "#333",
-            color: "#fff",
-          },
-        }}
-      />
     </>
   );
 };

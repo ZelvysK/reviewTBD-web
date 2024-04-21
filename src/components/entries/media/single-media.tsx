@@ -1,23 +1,39 @@
+import { createAuthHeader } from "@/auth";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 import useAxios from "axios-hooks";
+import { format } from "date-fns";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { useAuthStore } from "../../../hooks/use-auth";
 import { Media } from "../../../types";
 import { getUrl } from "../../../utils/navigation";
 import { Loader } from "../../loader";
-import { Modal } from "../../modal";
-
-const MODAL_DELETE_ID = "delete-media-modal";
+import { AdminOnly } from "@/components/admin-only";
 
 export const SingleMedia = () => {
   const navigate = useNavigate();
   const { mediaId } = useParams();
-  const [{ data, loading, error }] = useAxios<Media>(
-    getUrl(["media", mediaId])
-  );
+  const { auth } = useAuthStore();
+  const [{ data, loading, error }] = useAxios<Media>({
+    url: getUrl(["media", mediaId]),
+    headers: createAuthHeader(auth),
+  });
 
   const [_delete, executeDelete] = useAxios(
     {
       url: getUrl(["media", mediaId]),
       method: "delete",
+      headers: createAuthHeader(auth),
     },
     {
       manual: true,
@@ -26,8 +42,6 @@ export const SingleMedia = () => {
 
   const handleDelete = async () => {
     const response = await executeDelete();
-
-    console.log(response);
 
     if (response.status === 204) {
       navigate("../../");
@@ -53,26 +67,40 @@ export const SingleMedia = () => {
         <h1 className="text-5xl font-bold">
           {data?.name + " |" + data?.mediaType}
         </h1>
+        <div className="font-bold">{data?.genre}</div>
+        <div className="font-bold">{data?.publishedBy}</div>
         <div className="font-semibold">{data?.description}</div>
-        <div className="font-semibold">{data?.coverImageUrl}</div>
-        <div className="font-semibold">{data?.dateCreated}</div>
+        <div className="font-semibold">
+          {format(data?.dateCreated, "yyyy-MM-dd")}
+        </div>
       </div>
-      <div className="flex gap-2">
-        <Link
-          to={`/media/update/${data.id}`}
-          className="btn btn-active btn-neutral"
-        >
-          Update Studio
-        </Link>
-        <label htmlFor={MODAL_DELETE_ID} className="btn btn-outline btn-error">
-          Delete studio
-        </label>
-      </div>
-      <Modal
-        id={MODAL_DELETE_ID}
-        text={`Do you really want to delete ${data.name}?`}
-        onConfirm={handleDelete}
-      />
+      <AdminOnly>
+        <div className="flex gap-2">
+          <Link to={`/media/update/${data.id}`}>
+            <Button>Update media</Button>
+          </Link>
+          <AlertDialog>
+            <AlertDialogTrigger>
+              <Button variant="outline">Delete media</Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete
+                  this entry and remove its data from our servers.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={handleDelete}>
+                  Continue
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
+      </AdminOnly>
     </div>
   );
 };

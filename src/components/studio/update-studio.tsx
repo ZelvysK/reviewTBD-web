@@ -1,11 +1,13 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import useAxios, { clearCache } from "axios-hooks";
-import { Controller, useForm } from "react-hook-form";
-import toast from "react-hot-toast";
-import { useNavigate, useParams } from "react-router-dom";
-import { z } from "zod";
-import { Studio, StudioTypes } from "../../types";
-import { getUrl } from "../../utils/navigation";
+import { createAuthHeader } from "@/auth";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import {
   Select,
   SelectContent,
@@ -14,15 +16,34 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "../form/select";
+} from "@/components/ui/select";
+import { cn } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import useAxios, { clearCache } from "axios-hooks";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import { useNavigate, useParams } from "react-router-dom";
+import { z } from "zod";
+import { useAuthStore } from "../../hooks/use-auth";
+import { Studio, StudioTypes } from "../../types";
+import { getUrl } from "../../utils/navigation";
 import { Loader } from "../loader";
+import { Button } from "../ui/button";
+import { Calendar } from "../ui/calendar";
+import { Input } from "../ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Textarea } from "../ui/textarea";
 
 const schema = z.object({
   type: z.enum(StudioTypes),
   name: z.string().min(3),
   description: z.string().min(4),
   imageUrl: z.string().url(),
-  dateCreated: z.string(),
+  headquarters: z.string(),
+  founder: z.string(),
+  dateCreated: z.date(),
 });
 
 type UpdateStudioForm = z.infer<typeof schema>;
@@ -30,21 +51,25 @@ type UpdateStudioForm = z.infer<typeof schema>;
 export const UpdateStudio = () => {
   const navigate = useNavigate();
   const { studioId } = useParams();
+  const { auth } = useAuthStore();
 
-  const [{ data, loading, error }] = useAxios<Studio>(
-    getUrl(["studio", studioId])
-  );
+  const [{ data, loading, error }] = useAxios<Studio>({
+    url: getUrl(["studio", studioId]),
+    headers: createAuthHeader(auth),
+  });
 
   const [_, executeUpdate] = useAxios(
     {
       url: getUrl(["studio", studioId]),
       method: "put",
+      headers: createAuthHeader(auth),
     },
     { manual: true }
   );
 
   const onSubmit = async (data: UpdateStudioForm) => {
     try {
+      console.log(data);
       const response = await executeUpdate({ data: { id: studioId, ...data } });
 
       if (response.status === 200) {
@@ -57,7 +82,7 @@ export const UpdateStudio = () => {
     }
   };
 
-  const { handleSubmit, register, control } = useForm<UpdateStudioForm>({
+  const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     values: data,
   });
@@ -73,76 +98,177 @@ export const UpdateStudio = () => {
   return (
     <div className="flex gap-48">
       <div className="form-control w-full max-w-xs">
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="flex flex-col gap-2">
-            <span className="label-text">Studio type:</span>
-            <Controller
-              defaultValue={data.type}
-              control={control}
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <FormField
+              control={form.control}
               name="type"
-              render={({ field }) => {
-                return (
-                  <Select onValueChange={field.onChange} {...field}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select studio type" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-base-100">
-                      <SelectGroup>
-                        <SelectLabel>Studio types</SelectLabel>
-                        {StudioTypes.map((item) => (
-                          <SelectItem key={item} value={item}>
-                            {item}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                );
-              }}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Type</FormLabel>
+                  <FormControl>
+                    <Select
+                      onValueChange={field.onChange}
+                      {...field}
+                      value={field.value ?? ""}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select studio type" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-base-100">
+                        <SelectGroup>
+                          <SelectLabel>Studio types</SelectLabel>
+                          {StudioTypes.map((item) => (
+                            <SelectItem key={item} value={item}>
+                              {item}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
 
-            <div className="label">
-              <span className="label-text">Name:</span>
-            </div>
-            <input
-              {...register("name")}
-              type="text"
-              placeholder="Name"
-              className="input input-bordered input-sm w-full max-w-xs"
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Name..."
+                      {...field}
+                      value={field.value ?? ""}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
 
-            <div className="label">
-              <span className="label-text">Description:</span>
-            </div>
-            <textarea
-              {...register("description")}
-              placeholder="Enter description..."
-              className="textarea textarea-bordered"
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Enter description..."
+                      className="textarea textarea-bordered"
+                      {...field}
+                      value={field.value ?? ""}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
 
-            <div className="label">
-              <span className="label-text">Image URL:</span>
-            </div>
-            <input
-              {...register("imageUrl")}
-              type="text"
-              placeholder="Image URL"
-              className="input input-bordered input-sm w-full max-w-xs"
+            <FormField
+              control={form.control}
+              name="headquarters"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Headquarters location</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Headquarters location..."
+                      {...field}
+                      value={field.value ?? ""}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
 
-            <div className="label">
-              <span className="label-text">Date created:</span>
-            </div>
-            <input
-              {...register("dateCreated")}
-              type="date"
-              className="input input-bordered input-sm w-full max-w-xs"
+            <FormField
+              control={form.control}
+              name="founder"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Founder</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Founder..."
+                      {...field}
+                      value={field.value ?? ""}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-            <button type="submit" className="btn btn-primary">
-              Submit
-            </button>
-          </div>
-        </form>
+
+            <FormField
+              control={form.control}
+              name="dateCreated"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Date created</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-[240px] pl-3 text-left font-normal",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value ? (
+                            format(field.value, "PPP")
+                          ) : (
+                            <span>Pick a date</span>
+                          )}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        disabled={(date) => date > new Date()}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <FormDescription />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="imageUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Image URL</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      placeholder="Image URL"
+                      className="input input-bordered input-sm w-full max-w-xs"
+                      {...field}
+                      value={field.value ?? ""}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <Button type="submit">Submit</Button>
+          </form>
+        </Form>
       </div>
     </div>
   );
