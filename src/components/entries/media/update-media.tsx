@@ -96,6 +96,7 @@ export const UpdateMedia = () => {
   const onSubmit = async (data: UpdateMediaForm) => {
     try {
       console.log(data);
+
       const response = await executeUpdate({ data: { id: mediaId, ...data } });
 
       if (response.status === 200) {

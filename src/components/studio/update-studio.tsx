@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import useAxios, { clearCache } from "axios-hooks";
+import useAxios from "axios-hooks";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -43,7 +43,7 @@ const schema = z.object({
   imageUrl: z.string().url(),
   headquarters: z.string(),
   founder: z.string(),
-  dateCreated: z.date(),
+  dateCreated: z.string(),
 });
 
 type UpdateStudioForm = z.infer<typeof schema>;
@@ -69,15 +69,16 @@ export const UpdateStudio = () => {
 
   const onSubmit = async (data: UpdateStudioForm) => {
     try {
-      console.log(data);
-      const response = await executeUpdate({ data: { id: studioId, ...data } });
+      const response = await executeUpdate({
+        data: { id: studioId, ...data },
+      });
 
       if (response.status === 200) {
-        clearCache();
         navigate(`../../studio/${studioId}`);
         toast.success("Studio updated successfully");
       }
     } catch (error) {
+      console.log(error);
       toast.error("Failed");
     }
   };
@@ -107,11 +108,7 @@ export const UpdateStudio = () => {
                 <FormItem>
                   <FormLabel>Type</FormLabel>
                   <FormControl>
-                    <Select
-                      onValueChange={field.onChange}
-                      {...field}
-                      value={field.value ?? ""}
-                    >
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select studio type" />
                       </SelectTrigger>
@@ -222,7 +219,7 @@ export const UpdateStudio = () => {
                           )}
                         >
                           {field.value ? (
-                            format(field.value, "PPP")
+                            format(field.value, "yyyy-MM-dd")
                           ) : (
                             <span>Pick a date</span>
                           )}
@@ -233,8 +230,12 @@ export const UpdateStudio = () => {
                     <PopoverContent className="w-auto p-0" align="start">
                       <Calendar
                         mode="single"
-                        selected={field.value}
-                        onSelect={field.onChange}
+                        selected={new Date(field.value)}
+                        onSelect={(selectedDate) =>
+                          field.onChange(
+                            format(selectedDate ?? "", "yyyy-MM-dd")
+                          )
+                        }
                         disabled={(date) => date > new Date()}
                         initialFocus
                       />

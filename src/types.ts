@@ -10,7 +10,7 @@ export interface Studio {
   imageUrl: string;
   headquarters: string;
   founder: string;
-  dateCreated: Date;
+  dateCreated: string;
   type: StudioType;
 }
 
