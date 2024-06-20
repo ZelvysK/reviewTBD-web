@@ -1,0 +1,276 @@
+type Query {
+  media(skip: Int, take: Int): MediaCollectionSegment
+  me: User!
+  studios(skip: Int, take: Int): StudiosCollectionSegment
+}
+
+type Mutation {
+  signUp(input: SignUpInput!): SignUpPayload!
+  signIn(input: SignInInput!): SignInPayload!
+  createMedia(input: CreateMediaInput!): CreateMediaPayload!
+  updateMedia(input: UpdateMediaInput!): UpdateMediaPayload!
+  deleteMedia(input: DeleteMediaInput!): DeleteMediaPayload!
+  createStudio(input: CreateStudioInput!): CreateStudioPayload!
+  updateStudio(input: UpdateStudioInput!): UpdateStudioPayload!
+  deleteStudio(input: DeleteStudioInput!): DeleteStudioPayload!
+}
+
+enum ApplyPolicy {
+  BEFORE_RESOLVER
+  AFTER_RESOLVER
+  VALIDATION
+}
+
+"""
+A segment of a collection.
+"""
+type MediaCollectionSegment {
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+
+  """
+  A flattened list of the items.
+  """
+  items: [Media!]
+}
+
+"""
+A segment of a collection.
+"""
+type StudiosCollectionSegment {
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+
+  """
+  A flattened list of the items.
+  """
+  items: [Studio!]
+}
+
+"""
+Information about the offset pagination.
+"""
+type CollectionSegmentInfo {
+  """
+  Indicates whether more items exist following the set defined by the clients arguments.
+  """
+  hasNextPage: Boolean!
+
+  """
+  Indicates whether more items exist prior the set defined by the clients arguments.
+  """
+  hasPreviousPage: Boolean!
+}
+
+type Media {
+  id: UUID!
+  mediaType: MediaType!
+  genre: Genre!
+  name: String!
+  coverImageUrl: String
+  description: String
+  studioId: UUID!
+  dateFounded: Date!
+  createdAt: DateTime!
+  createdBy: String!
+  modifiedAt: DateTime
+  modifiedBy: String
+}
+
+type Studio {
+  id: UUID!
+  name: String!
+  description: String!
+  imageUrl: String!
+  headquarters: String!
+  founder: String!
+  type: StudioType!
+  createdAt: DateTime!
+  createdBy: String!
+  modifiedAt: DateTime
+  modifiedBy: String
+}
+
+input UpdateMediaInput {
+  id: UUID!
+  mediaType: MediaType!
+  genre: Genre!
+  name: String!
+  coverImageUrl: String!
+  description: String!
+  studioId: UUID!
+  publishedBy: String!
+  dateFounded: Date!
+}
+
+input CreateMediaInput {
+  mediaType: MediaType!
+  genre: Genre!
+  name: String!
+  coverImageUrl: String
+  description: String
+  studioId: UUID!
+  dateFounded: Date!
+}
+
+enum MediaType {
+  ANIME
+  GAME
+  MOVIE
+}
+
+input SignInInput {
+  email: String!
+  password: String!
+}
+
+type FirebaseLoginResponse {
+  localId: String!
+  email: String!
+  displayName: String!
+  idToken: String!
+  registered: Boolean!
+  refreshToken: String!
+  expiresIn: String!
+}
+
+input SignUpInput {
+  email: String!
+  password: String!
+  displayName: String!
+}
+
+type FirebaseRegisterResponse {
+  kind: String!
+  idToken: String!
+  email: String!
+  refreshToken: String!
+  expiresIn: String!
+  localId: String!
+}
+
+scalar UUID @specifiedBy(url: "https://tools.ietf.org/html/rfc4122")
+
+input CreateStudioInput {
+  name: String!
+  description: String!
+  imageUrl: String!
+  headquarters: String!
+  founder: String!
+  dateFounded: Date!
+  type: StudioType!
+}
+
+input UpdateStudioInput {
+  id: UUID!
+  name: String!
+  description: String!
+  imageUrl: String!
+  headquarters: String!
+  founder: String!
+  dateFounded: Date!
+  type: StudioType!
+}
+
+type User {
+  id: UUID!
+  name: String!
+  email: String!
+  remoteId: String!
+  role: UserRole!
+  createdAt: DateTime!
+  createdBy: String!
+  modifiedAt: DateTime
+  modifiedBy: String
+}
+
+enum Genre {
+  ACTION
+  ADVENTURE
+  ANIMATION
+  ARCADE
+  COMEDY
+  CRIME
+  CYBERPUNK
+  DEATH_GAME
+  DRAMA
+  FANTASY
+  HISTORICAL
+  HORROR
+  MYSTERY
+  ROMANCE
+  ROLE_PLAYING
+  SATIRE
+  SCIENCE_FICTION
+  SIMULATION
+  STRATEGY
+  SPECULATIVE
+  THRILLER
+  ISEKAI
+  WESTERN
+}
+
+"""
+The `Date` scalar represents an ISO-8601 compliant date type.
+"""
+scalar Date
+
+"""
+The `DateTime` scalar represents an ISO-8601 compliant date time type.
+"""
+scalar DateTime @specifiedBy(url: "https://www.graphql-scalars.com/date-time")
+
+enum StudioType {
+  ANIME
+  GAME
+  MOVIE
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+type SignUpPayload {
+  auth: FirebaseRegisterResponse
+}
+
+type SignInPayload {
+  auth: FirebaseLoginResponse
+}
+
+type CreateMediaPayload {
+  media: Media
+}
+
+type UpdateMediaPayload {
+  media: Media
+}
+
+input DeleteMediaInput {
+  id: UUID!
+}
+
+type DeleteMediaPayload {
+  media: Media
+}
+
+type CreateStudioPayload {
+  studio: Studio
+}
+
+type UpdateStudioPayload {
+  studio: Studio
+}
+
+input DeleteStudioInput {
+  id: UUID!
+}
+
+type DeleteStudioPayload {
+  studio: Studio
+}

@@ -26,7 +26,7 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
-import { useAuthStore } from "../../hooks/use-auth";
+import { useAuthStore } from "../../hooks/use-auth-store";
 import { Studio, StudioTypes } from "../../types";
 import { getUrl } from "../../utils/navigation";
 import { Loader } from "../loader";
@@ -49,7 +49,6 @@ const schema = z.object({
 type UpdateStudioForm = z.infer<typeof schema>;
 
 export const UpdateStudio = () => {
-  const navigate = useNavigate();
   const { studioId } = useParams();
   const { auth } = useAuthStore();
 
@@ -64,7 +63,7 @@ export const UpdateStudio = () => {
       method: "put",
       headers: createAuthHeader(auth),
     },
-    { manual: true }
+    { manual: true },
   );
 
   const onSubmit = async (data: UpdateStudioForm) => {
@@ -74,7 +73,6 @@ export const UpdateStudio = () => {
       });
 
       if (response.status === 200) {
-        navigate(`../../studio/${studioId}`);
         toast.success("Studio updated successfully");
       }
     } catch (error) {
@@ -215,7 +213,7 @@ export const UpdateStudio = () => {
                           variant={"outline"}
                           className={cn(
                             "w-[240px] pl-3 text-left font-normal",
-                            !field.value && "text-muted-foreground"
+                            !field.value && "text-muted-foreground",
                           )}
                         >
                           {field.value ? (
@@ -233,7 +231,7 @@ export const UpdateStudio = () => {
                         selected={new Date(field.value)}
                         onSelect={(selectedDate) =>
                           field.onChange(
-                            format(selectedDate ?? "", "yyyy-MM-dd")
+                            format(selectedDate ?? "", "yyyy-MM-dd"),
                           )
                         }
                         disabled={(date) => date > new Date()}

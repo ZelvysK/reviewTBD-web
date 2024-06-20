@@ -14,14 +14,13 @@ import { Button } from "@/components/ui/button";
 import useAxios from "axios-hooks";
 import { format } from "date-fns";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { useAuthStore } from "../../../hooks/use-auth";
+import { useAuthStore } from "../../../hooks/use-auth-store";
 import { Media } from "../../../types";
 import { getUrl } from "../../../utils/navigation";
 import { Loader } from "../../loader";
 import { AdminOnly } from "@/components/admin-only";
 
 export const SingleMedia = () => {
-  const navigate = useNavigate();
   const { mediaId } = useParams();
   const { auth } = useAuthStore();
   const [{ data, loading, error }] = useAxios<Media>({
@@ -37,14 +36,13 @@ export const SingleMedia = () => {
     },
     {
       manual: true,
-    }
+    },
   );
 
   const handleDelete = async () => {
     const response = await executeDelete();
 
     if (response.status === 204) {
-      navigate("../../");
     }
   };
 

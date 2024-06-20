@@ -3,7 +3,7 @@ import { AdminOnly } from "@/components/admin-only";
 import { Button } from "@/components/ui/button";
 import useAxios from "axios-hooks";
 import { Link, useParams } from "react-router-dom";
-import { useAuthStore } from "../../../hooks/use-auth";
+import { useAuthStore } from "../../../hooks/use-auth-store";
 import { User } from "../../../types";
 import { getUrl } from "../../../utils/navigation";
 import { Loader } from "../../loader";

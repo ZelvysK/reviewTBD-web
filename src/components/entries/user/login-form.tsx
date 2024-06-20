@@ -8,11 +8,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useAuthStore } from "@/hooks/use-auth";
+import { useAuth } from "@/hooks/use-auth-store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+
 import { z } from "zod";
 
 const loginSchema = z.object({
@@ -21,8 +21,7 @@ const loginSchema = z.object({
 });
 
 export const LoginForm = () => {
-  const navigate = useNavigate();
-  const { login } = useAuthStore();
+  const { login } = useAuth();
 
   const loginForm = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -30,8 +29,11 @@ export const LoginForm = () => {
 
   const onLogin = async (data: z.infer<typeof loginSchema>) => {
     try {
-      await login(data.email, data.password);
-      navigate("/");
+      await login({
+        email: data.email,
+        password: data.password,
+      });
+
       toast.success("Welcome back!");
     } catch (error) {
       toast.error("Failed");

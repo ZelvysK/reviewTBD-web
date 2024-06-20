@@ -30,7 +30,6 @@ const schema = z.object({
 type UpdateUserFormData = z.infer<typeof schema>;
 
 export const UpdateUser = () => {
-  const navigate = useNavigate();
   const { userId } = useParams();
   const { auth, user, refresh } = useAuthStore();
 
@@ -41,7 +40,7 @@ export const UpdateUser = () => {
     },
     {
       manual: !user,
-    }
+    },
   );
 
   const [_, executeUpdate] = useAxios(
@@ -50,7 +49,7 @@ export const UpdateUser = () => {
       method: "POST",
       headers: createAuthHeader(auth),
     },
-    { manual: true }
+    { manual: true },
   );
 
   const onSubmit = async (data: UpdateUserFormData) => {
@@ -59,7 +58,7 @@ export const UpdateUser = () => {
 
       if (response.status === 200) {
         await refresh();
-        navigate(`../../user/${userId}`);
+
         toast.success("User updated successfully");
       }
     } catch (error) {

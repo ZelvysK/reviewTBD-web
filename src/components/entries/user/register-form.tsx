@@ -9,14 +9,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useAuthStore } from "@/hooks/use-auth";
 import { getUrl } from "@/utils/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import useAxios from "axios-hooks";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+
 import { z } from "zod";
 
 const registerSchema = z
@@ -27,17 +26,17 @@ const registerSchema = z
       .string()
       .regex(
         new RegExp(
-          /^(?=.*[!@#$%^&*()_+}{:;'?/>,.<\[\]\-~`|\\])(?=.*[a-z])(?=.*[A-Z]).{6,}$/
+          /^(?=.*[!@#$%^&*()_+}{:;'?/>,.<[\]\-~`|\\])(?=.*[a-z])(?=.*[A-Z]).{6,}$/,
         ),
-        "Pasword is not secure"
+        "Pasword is not secure",
       ),
     confirmPassword: z
       .string()
       .regex(
         new RegExp(
-          /^(?=.*[!@#$%^&*()_+}{:;'?/>,.<\[\]\-~`|\\])(?=.*[a-z])(?=.*[A-Z]).{6,}$/
+          /^(?=.*[!@#$%^&*()_+}{:;'?/>,.<[\]\-~`|\\])(?=.*[a-z])(?=.*[A-Z]).{6,}$/,
         ),
-        "Pasword is not secure"
+        "Pasword is not secure",
       ),
     phoneNumber: z
       .string()
@@ -45,7 +44,7 @@ const registerSchema = z
       .max(15)
       .regex(
         new RegExp(/^\+(?:[0-9]●?){6,14}[0-9]$/),
-        "Phone number is invalid"
+        "Phone number is invalid",
       ),
   })
   .superRefine(({ password, confirmPassword }, ctx) => {
@@ -59,15 +58,14 @@ const registerSchema = z
   });
 
 export const RegisterForm = () => {
-  const navigate = useNavigate();
-  const { login } = useAuthStore();
+  // const { login } = useAuth();
 
-  const [_register, executeRegister] = useAxios(
+  const [, executeRegister] = useAxios(
     {
       url: getUrl("register"),
       method: "post",
     },
-    { manual: true }
+    { manual: true },
   );
 
   const registerForm = useForm<z.infer<typeof registerSchema>>({
@@ -107,13 +105,12 @@ export const RegisterForm = () => {
           data,
           {
             headers,
-          }
+          },
         );
 
         if (updateResponse.status === 200) {
-          await login(username, password);
+          // await login(username, password);
           toast.success(`Welcome, ${username}!`);
-          navigate("/");
         }
       }
     } catch (error) {

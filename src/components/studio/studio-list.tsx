@@ -16,7 +16,7 @@ import { Link } from "react-router-dom";
 import { create } from "zustand";
 import { useShallow } from "zustand/react/shallow";
 import { PAGE_SIZE } from "../../api";
-import { useAuthStore } from "../../hooks/use-auth";
+import { useAuthStore } from "../../hooks/use-auth-store";
 import { PaginatedResult, Studio, StudioType, StudioTypes } from "../../types";
 import { getUrl } from "../../utils/navigation";
 import { Loader } from "../loader";
@@ -118,7 +118,7 @@ const StudioTable = ({ type, term }: Props) => {
       state.currentPage,
       state.setTotalItems,
       state.totalItems,
-    ])
+    ]),
   );
   const [{ data, loading, error }] = useAxios<PaginatedResult<Studio>>(
     {
@@ -131,7 +131,7 @@ const StudioTable = ({ type, term }: Props) => {
       },
       headers: createAuthHeader(auth),
     },
-    { useCache: false, manual: !auth?.accessToken }
+    { useCache: false, manual: !auth?.accessToken },
   );
 
   useEffect(() => {

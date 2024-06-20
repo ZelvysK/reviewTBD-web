@@ -41,7 +41,6 @@ interface Props {
 }
 
 export const UpdateAdmin = () => {
-  const navigate = useNavigate();
   const { userId } = useParams();
   const { auth, user, refresh } = useAuthStore();
 
@@ -52,7 +51,7 @@ export const UpdateAdmin = () => {
     },
     {
       manual: !user,
-    }
+    },
   );
 
   const [_, executeUpdate] = useAxios(
@@ -61,7 +60,7 @@ export const UpdateAdmin = () => {
       method: "POST",
       headers: createAuthHeader(auth),
     },
-    { manual: true }
+    { manual: true },
   );
 
   const onSubmit = async (data: UpdateAdminFormData) => {
@@ -70,7 +69,7 @@ export const UpdateAdmin = () => {
 
       if (response.status === 200) {
         await refresh();
-        navigate(`../../user/${userId}`);
+
         toast.success("User updated successfully");
       }
     } catch (error) {

@@ -35,7 +35,7 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
-import { useAuthStore } from "../../../hooks/use-auth";
+import { useAuthStore } from "../../../hooks/use-auth-store";
 import {
   Genres,
   Media,
@@ -60,7 +60,6 @@ const schema = z.object({
 type UpdateMediaForm = z.infer<typeof schema>;
 
 export const UpdateMedia = () => {
-  const navigate = useNavigate();
   const { mediaId } = useParams();
   const { auth } = useAuthStore();
 
@@ -75,7 +74,7 @@ export const UpdateMedia = () => {
       method: "put",
       headers: createAuthHeader(auth),
     },
-    { manual: true }
+    { manual: true },
   );
 
   const [{ data: studioData }] = useAxios<PaginatedResult<Studio>>(
@@ -88,7 +87,7 @@ export const UpdateMedia = () => {
       },
       headers: createAuthHeader(auth),
     },
-    { useCache: false, manual: !auth?.accessToken }
+    { useCache: false, manual: !auth?.accessToken },
   );
 
   const options = studioData?.result;
@@ -101,7 +100,7 @@ export const UpdateMedia = () => {
 
       if (response.status === 200) {
         clearCache();
-        navigate(`../../media/${mediaId}`);
+
         toast.success("Media updated successfully");
       }
     } catch (error) {
@@ -268,7 +267,7 @@ export const UpdateMedia = () => {
                           variant={"outline"}
                           className={cn(
                             "w-[240px] pl-3 text-left font-normal",
-                            !field.value && "text-muted-foreground"
+                            !field.value && "text-muted-foreground",
                           )}
                         >
                           {field.value ? (

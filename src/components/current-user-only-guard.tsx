@@ -9,7 +9,6 @@ interface Props {
 export const CurrentUserOnlyGuard = ({ children }: Props) => {
   const { userId } = useParams();
   const { user } = useAuthStore();
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (user?.role && user.role === "Admin") {
@@ -17,7 +16,6 @@ export const CurrentUserOnlyGuard = ({ children }: Props) => {
     }
 
     if (user?.id && user.id !== userId) {
-      navigate("/");
     }
   }, [user]);
 

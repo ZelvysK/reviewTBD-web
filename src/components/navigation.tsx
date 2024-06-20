@@ -1,10 +1,9 @@
-import { cn } from "@/lib/utils";
 import { RoleType } from "@/types";
-import { Link, useLocation } from "react-router-dom";
-import { useAuthStore } from "../hooks/use-auth";
+import { useAuthStore } from "../hooks/use-auth-store";
 import { routes } from "../router";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
+import { Link } from "@tanstack/react-router";
 
 const resolveBadge = (role?: RoleType) => {
   if (role === "Admin") {
@@ -16,25 +15,21 @@ const resolveBadge = (role?: RoleType) => {
 
 export const Navigation = () => {
   const { user, logout } = useAuthStore();
-  const { pathname } = useLocation();
 
   return (
     <div className="flex bg-secondary/60 p-5 gap-5 items-center justify-between">
       <NavbarBrand />
 
       <div className="flex gap-5 items-center justify-center">
-        {routes.map(({ href, name, admin }, index) => {
+        {routes.map(({ href, name, admin }, idx) => {
           if (admin && user?.role !== "Admin") {
             return null;
           }
 
           return (
-            <span
-              className={cn(pathname === href && "text-primary")}
-              key={index}
-            >
-              <Link to={href}>{name}</Link>
-            </span>
+            <Link key={idx} className="[&.active]:text-primary" to={href}>
+              {name}
+            </Link>
           );
         })}
       </div>

@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import useAxios from "axios-hooks";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { useAuthStore } from "../../hooks/use-auth";
+import { useAuthStore } from "../../hooks/use-auth-store";
 import { Studio } from "../../types";
 import { getUrl } from "../../utils/navigation";
 import { Loader } from "../loader";
@@ -21,7 +21,6 @@ import { format } from "date-fns";
 import { AdminOnly } from "../admin-only";
 
 export const SingleStudio = () => {
-  const navigate = useNavigate();
   const { auth } = useAuthStore();
   const { studioId } = useParams();
   const [{ data, loading, error }] = useAxios<Studio>(
@@ -29,7 +28,7 @@ export const SingleStudio = () => {
       url: getUrl(["studio", studioId]),
       headers: createAuthHeader(auth),
     },
-    { useCache: false, manual: !auth?.accessToken }
+    { useCache: false, manual: !auth?.accessToken },
   );
 
   const [_delete, executeDelete] = useAxios(
@@ -38,7 +37,7 @@ export const SingleStudio = () => {
       method: "delete",
       headers: createAuthHeader(auth),
     },
-    { manual: true }
+    { manual: true },
   );
 
   const handleDelete = async () => {
@@ -47,7 +46,6 @@ export const SingleStudio = () => {
     console.log(response);
 
     if (response.status === 204) {
-      navigate("../../");
     }
   };
 

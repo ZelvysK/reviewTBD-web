@@ -24,9 +24,9 @@ import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+
 import { z } from "zod";
-import { useAuthStore } from "../../hooks/use-auth";
+import { useAuthStore } from "../../hooks/use-auth-store";
 import { StudioTypes } from "../../types";
 import { getUrl } from "../../utils/navigation";
 import { Button } from "../ui/button";
@@ -48,7 +48,6 @@ const schema = z.object({
 type CreateStudioForm = z.infer<typeof schema>;
 
 export const AddStudio = () => {
-  const navigate = useNavigate();
   const { auth } = useAuthStore();
 
   const [_, executePost] = useAxios(
@@ -57,7 +56,7 @@ export const AddStudio = () => {
       method: "post",
       headers: createAuthHeader(auth),
     },
-    { manual: true }
+    { manual: true },
   );
 
   const onSubmit = async (data: CreateStudioForm) => {
@@ -67,7 +66,6 @@ export const AddStudio = () => {
       const { id } = response.data;
 
       if (response.status === 201) {
-        navigate(`../../studio/${id}`);
         toast.success("Studio added successfully");
       }
     } catch (error) {
@@ -196,7 +194,7 @@ export const AddStudio = () => {
                           variant={"outline"}
                           className={cn(
                             "w-[240px] pl-3 text-left font-normal",
-                            !field.value && "text-muted-foreground"
+                            !field.value && "text-muted-foreground",
                           )}
                         >
                           {field.value ? (

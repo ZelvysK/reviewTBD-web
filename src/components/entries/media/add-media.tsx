@@ -34,7 +34,7 @@ import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+
 import { z } from "zod";
 import { Genres, MediaTypes, PaginatedResult, Studio } from "../../../types";
 import { getUrl } from "../../../utils/navigation";
@@ -53,7 +53,6 @@ const schema = z.object({
 type CreateMediaFrom = z.infer<typeof schema>;
 
 export const AddMedia = () => {
-  const navigate = useNavigate();
   const { auth } = useAuthStore();
 
   const [_, executePost] = useAxios(
@@ -64,7 +63,7 @@ export const AddMedia = () => {
     },
     {
       manual: true,
-    }
+    },
   );
 
   const [{ data }] = useAxios<PaginatedResult<Studio>>(
@@ -76,7 +75,7 @@ export const AddMedia = () => {
       },
       headers: createAuthHeader(auth),
     },
-    { useCache: false, manual: !auth?.accessToken }
+    { useCache: false, manual: !auth?.accessToken },
   );
 
   const options = data?.result;
@@ -88,7 +87,6 @@ export const AddMedia = () => {
       const { id } = response.data;
 
       if (response.status === 201) {
-        navigate(`../../media/${id}`);
         toast.success("Media added successfully");
       }
     } catch (error) {
@@ -238,7 +236,7 @@ export const AddMedia = () => {
                           variant={"outline"}
                           className={cn(
                             "w-[240px] pl-3 text-left font-normal",
-                            !field.value && "text-muted-foreground"
+                            !field.value && "text-muted-foreground",
                           )}
                         >
                           {field.value ? (

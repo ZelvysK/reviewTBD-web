@@ -1,7 +1,7 @@
 import useAxios from "axios-hooks";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useAuthStore } from "../../../hooks/use-auth";
+import { useAuthStore } from "../../../hooks/use-auth-store";
 import { PaginatedResult, User } from "../../../types";
 import { getUrl } from "../../../utils/navigation";
 import { Loader } from "../../loader";
@@ -61,7 +61,7 @@ const UserTable = ({ term }: Props) => {
       },
       headers: createAuthHeader(auth),
     },
-    { useCache: false, manual: !auth?.accessToken }
+    { useCache: false, manual: !auth?.accessToken },
   );
 
   if (error) {

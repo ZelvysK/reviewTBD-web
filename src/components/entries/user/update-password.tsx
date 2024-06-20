@@ -16,7 +16,7 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
-import { useAuthStore } from "../../../hooks/use-auth";
+import { useAuthStore } from "../../../hooks/use-auth-store";
 import { User } from "../../../types";
 import { getUrl } from "../../../utils/navigation";
 import { Loader } from "../../loader";
@@ -28,17 +28,17 @@ const schema = z
       .string()
       .regex(
         new RegExp(
-          /^(?=.*[!@#$%^&*()_+}{:;'?/>,.<\[\]\-~`|\\])(?=.*[a-z])(?=.*[A-Z]).{6,}$/
+          /^(?=.*[!@#$%^&*()_+}{:;'?/>,.<\[\]\-~`|\\])(?=.*[a-z])(?=.*[A-Z]).{6,}$/,
         ),
-        "Pasword is not secure"
+        "Pasword is not secure",
       ),
     confirmNewPassword: z
       .string()
       .regex(
         new RegExp(
-          /^(?=.*[!@#$%^&*()_+}{:;'?/>,.<\[\]\-~`|\\])(?=.*[a-z])(?=.*[A-Z]).{6,}$/
+          /^(?=.*[!@#$%^&*()_+}{:;'?/>,.<\[\]\-~`|\\])(?=.*[a-z])(?=.*[A-Z]).{6,}$/,
         ),
-        "Pasword is not secure"
+        "Pasword is not secure",
       ),
   })
   .superRefine(({ newPassword, confirmNewPassword }, ctx) => {
@@ -55,7 +55,6 @@ const schema = z
 type UpdatePasswordForm = z.infer<typeof schema>;
 
 export const UpdatePassword = () => {
-  const navigate = useNavigate();
   const { userId } = useParams();
   const { auth } = useAuthStore();
 
@@ -70,7 +69,7 @@ export const UpdatePassword = () => {
       method: "POST",
       headers: createAuthHeader(auth),
     },
-    { manual: true }
+    { manual: true },
   );
 
   const onSubmit = async (data: UpdatePasswordForm) => {
@@ -80,7 +79,6 @@ export const UpdatePassword = () => {
       const response = await executeUpdate({ data: { id: userId, ...data } });
 
       if (response.status === 200) {
-        navigate(`../../user/${userId}`);
         toast.success("Password updated successfully");
       }
     } catch (error) {

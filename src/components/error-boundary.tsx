@@ -11,7 +11,6 @@ const isUnauthorized = (error: string) => error.includes("401");
 export const ErrorBoundary = () => {
   const error = useRouteError();
   const { refresh } = useAuthStore();
-  const navigate = useNavigate();
 
   let errorMessage: string;
 
@@ -30,7 +29,6 @@ export const ErrorBoundary = () => {
     const handleUnauthrized = async () => {
       if (isUnauthorized(errorMessage)) {
         await refresh();
-        navigate("/");
       }
     };
 

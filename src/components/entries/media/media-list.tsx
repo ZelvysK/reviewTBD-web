@@ -15,12 +15,13 @@ import useAxios from "axios-hooks";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { PAGE_SIZE } from "../../../api";
-import { useAuthStore } from "../../../hooks/use-auth";
+import { useAuthStore } from "../../../hooks/use-auth-store";
 import { Media, MediaType, MediaTypes, PaginatedResult } from "../../../types";
 import { getUrl } from "../../../utils/navigation";
 import { Loader } from "../../loader";
 import { PageList } from "../../pagination";
 import { AdminOnly } from "@/components/admin-only";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export const MediaList = () => {
   const [term, setTerm] = useState<string>();
@@ -96,7 +97,7 @@ const MediaTable = ({ type, term }: Props) => {
       },
       headers: createAuthHeader(auth),
     },
-    { useCache: false, manual: !auth?.accessToken }
+    { useCache: false, manual: !auth?.accessToken },
   );
 
   if (error) {
@@ -108,18 +109,36 @@ const MediaTable = ({ type, term }: Props) => {
   }
   return (
     <>
-      {data.result.map((item) => {
-        return (
-          <Link
-            to={`/media/${item.id}`}
-            key={item.id}
-            className="flex gap-2 w-fit"
-          >
-            <div className="font-bold">{item.name}</div>
-            <div>| {item.mediaType}</div>
-          </Link>
-        );
-      })}
+      <div className="grid grid-cols-4">
+        {data.result.map((item) => {
+          return (
+            <div>
+              <Link
+                to={`/media/${item.id}`}
+                key={item.id}
+                className="flex gap-2 w-fit"
+              >
+                <div className="grid grid-col-2 gap-4 p-2 rounded-md border-white">
+                  <div className="flex justify-center col-span-2">
+                    <span className="font-bold">{item.name}</span>
+                  </div>
+                  <div className="flex justify-center col-span-2">
+                    {item.genre + " - " + item.mediaType}
+                  </div>
+
+                  <img
+                    className="rounded-xl h-80 w-52"
+                    src={item.coverImageUrl}
+                  />
+                  <ScrollArea className="h-80 w-52 rounded-md border">
+                    {item.description}
+                  </ScrollArea>
+                </div>
+              </Link>
+            </div>
+          );
+        })}
+      </div>
       <PageList
         totalItems={data.total}
         currentPage={currentPage}

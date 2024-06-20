@@ -1,0 +1,346 @@
+/* eslint-disable */
+import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
+export type Maybe<T> = T | null;
+export type InputMaybe<T> = Maybe<T>;
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
+export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
+/** All built-in and custom scalars, mapped to their actual values */
+export type Scalars = {
+  ID: { input: string; output: string; }
+  String: { input: string; output: string; }
+  Boolean: { input: boolean; output: boolean; }
+  Int: { input: number; output: number; }
+  Float: { input: number; output: number; }
+  /** The `Date` scalar represents an ISO-8601 compliant date type. */
+  Date: { input: Date; output: Date; }
+  /** The `DateTime` scalar represents an ISO-8601 compliant date time type. */
+  DateTime: { input: any; output: any; }
+  UUID: { input: any; output: any; }
+};
+
+export enum ApplyPolicy {
+  AfterResolver = 'AFTER_RESOLVER',
+  BeforeResolver = 'BEFORE_RESOLVER',
+  Validation = 'VALIDATION'
+}
+
+/** Information about the offset pagination. */
+export type CollectionSegmentInfo = {
+  __typename?: 'CollectionSegmentInfo';
+  /** Indicates whether more items exist following the set defined by the clients arguments. */
+  hasNextPage: Scalars['Boolean']['output'];
+  /** Indicates whether more items exist prior the set defined by the clients arguments. */
+  hasPreviousPage: Scalars['Boolean']['output'];
+};
+
+export type CreateMediaInput = {
+  coverImageUrl?: InputMaybe<Scalars['String']['input']>;
+  dateFounded: Scalars['Date']['input'];
+  description?: InputMaybe<Scalars['String']['input']>;
+  genre: Genre;
+  mediaType: MediaType;
+  name: Scalars['String']['input'];
+  studioId: Scalars['UUID']['input'];
+};
+
+export type CreateMediaPayload = {
+  __typename?: 'CreateMediaPayload';
+  media?: Maybe<Media>;
+};
+
+export type CreateStudioInput = {
+  dateFounded: Scalars['Date']['input'];
+  description: Scalars['String']['input'];
+  founder: Scalars['String']['input'];
+  headquarters: Scalars['String']['input'];
+  imageUrl: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  type: StudioType;
+};
+
+export type CreateStudioPayload = {
+  __typename?: 'CreateStudioPayload';
+  studio?: Maybe<Studio>;
+};
+
+export type DeleteMediaInput = {
+  id: Scalars['UUID']['input'];
+};
+
+export type DeleteMediaPayload = {
+  __typename?: 'DeleteMediaPayload';
+  media?: Maybe<Media>;
+};
+
+export type DeleteStudioInput = {
+  id: Scalars['UUID']['input'];
+};
+
+export type DeleteStudioPayload = {
+  __typename?: 'DeleteStudioPayload';
+  studio?: Maybe<Studio>;
+};
+
+export type FirebaseLoginResponse = {
+  __typename?: 'FirebaseLoginResponse';
+  displayName: Scalars['String']['output'];
+  email: Scalars['String']['output'];
+  expiresIn: Scalars['String']['output'];
+  idToken: Scalars['String']['output'];
+  localId: Scalars['String']['output'];
+  refreshToken: Scalars['String']['output'];
+  registered: Scalars['Boolean']['output'];
+};
+
+export type FirebaseRegisterResponse = {
+  __typename?: 'FirebaseRegisterResponse';
+  email: Scalars['String']['output'];
+  expiresIn: Scalars['String']['output'];
+  idToken: Scalars['String']['output'];
+  kind: Scalars['String']['output'];
+  localId: Scalars['String']['output'];
+  refreshToken: Scalars['String']['output'];
+};
+
+export enum Genre {
+  Action = 'ACTION',
+  Adventure = 'ADVENTURE',
+  Animation = 'ANIMATION',
+  Arcade = 'ARCADE',
+  Comedy = 'COMEDY',
+  Crime = 'CRIME',
+  Cyberpunk = 'CYBERPUNK',
+  DeathGame = 'DEATH_GAME',
+  Drama = 'DRAMA',
+  Fantasy = 'FANTASY',
+  Historical = 'HISTORICAL',
+  Horror = 'HORROR',
+  Isekai = 'ISEKAI',
+  Mystery = 'MYSTERY',
+  RolePlaying = 'ROLE_PLAYING',
+  Romance = 'ROMANCE',
+  Satire = 'SATIRE',
+  ScienceFiction = 'SCIENCE_FICTION',
+  Simulation = 'SIMULATION',
+  Speculative = 'SPECULATIVE',
+  Strategy = 'STRATEGY',
+  Thriller = 'THRILLER',
+  Western = 'WESTERN'
+}
+
+export type Media = {
+  __typename?: 'Media';
+  coverImageUrl?: Maybe<Scalars['String']['output']>;
+  createdAt: Scalars['DateTime']['output'];
+  createdBy: Scalars['String']['output'];
+  dateFounded: Scalars['Date']['output'];
+  description?: Maybe<Scalars['String']['output']>;
+  genre: Genre;
+  id: Scalars['UUID']['output'];
+  mediaType: MediaType;
+  modifiedAt?: Maybe<Scalars['DateTime']['output']>;
+  modifiedBy?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  studioId: Scalars['UUID']['output'];
+};
+
+/** A segment of a collection. */
+export type MediaCollectionSegment = {
+  __typename?: 'MediaCollectionSegment';
+  /** A flattened list of the items. */
+  items?: Maybe<Array<Media>>;
+  /** Information to aid in pagination. */
+  pageInfo: CollectionSegmentInfo;
+};
+
+export enum MediaType {
+  Anime = 'ANIME',
+  Game = 'GAME',
+  Movie = 'MOVIE'
+}
+
+export type Mutation = {
+  __typename?: 'Mutation';
+  createMedia: CreateMediaPayload;
+  createStudio: CreateStudioPayload;
+  deleteMedia: DeleteMediaPayload;
+  deleteStudio: DeleteStudioPayload;
+  signIn: SignInPayload;
+  signUp: SignUpPayload;
+  updateMedia: UpdateMediaPayload;
+  updateStudio: UpdateStudioPayload;
+};
+
+
+export type MutationCreateMediaArgs = {
+  input: CreateMediaInput;
+};
+
+
+export type MutationCreateStudioArgs = {
+  input: CreateStudioInput;
+};
+
+
+export type MutationDeleteMediaArgs = {
+  input: DeleteMediaInput;
+};
+
+
+export type MutationDeleteStudioArgs = {
+  input: DeleteStudioInput;
+};
+
+
+export type MutationSignInArgs = {
+  input: SignInInput;
+};
+
+
+export type MutationSignUpArgs = {
+  input: SignUpInput;
+};
+
+
+export type MutationUpdateMediaArgs = {
+  input: UpdateMediaInput;
+};
+
+
+export type MutationUpdateStudioArgs = {
+  input: UpdateStudioInput;
+};
+
+export type Query = {
+  __typename?: 'Query';
+  me: User;
+  media?: Maybe<MediaCollectionSegment>;
+  studios?: Maybe<StudiosCollectionSegment>;
+};
+
+
+export type QueryMediaArgs = {
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  take?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QueryStudiosArgs = {
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  take?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type SignInInput = {
+  email: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+};
+
+export type SignInPayload = {
+  __typename?: 'SignInPayload';
+  auth?: Maybe<FirebaseLoginResponse>;
+};
+
+export type SignUpInput = {
+  displayName: Scalars['String']['input'];
+  email: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+};
+
+export type SignUpPayload = {
+  __typename?: 'SignUpPayload';
+  auth?: Maybe<FirebaseRegisterResponse>;
+};
+
+export type Studio = {
+  __typename?: 'Studio';
+  createdAt: Scalars['DateTime']['output'];
+  createdBy: Scalars['String']['output'];
+  description: Scalars['String']['output'];
+  founder: Scalars['String']['output'];
+  headquarters: Scalars['String']['output'];
+  id: Scalars['UUID']['output'];
+  imageUrl: Scalars['String']['output'];
+  modifiedAt?: Maybe<Scalars['DateTime']['output']>;
+  modifiedBy?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  type: StudioType;
+};
+
+export enum StudioType {
+  Anime = 'ANIME',
+  Game = 'GAME',
+  Movie = 'MOVIE'
+}
+
+/** A segment of a collection. */
+export type StudiosCollectionSegment = {
+  __typename?: 'StudiosCollectionSegment';
+  /** A flattened list of the items. */
+  items?: Maybe<Array<Studio>>;
+  /** Information to aid in pagination. */
+  pageInfo: CollectionSegmentInfo;
+};
+
+export type UpdateMediaInput = {
+  coverImageUrl: Scalars['String']['input'];
+  dateFounded: Scalars['Date']['input'];
+  description: Scalars['String']['input'];
+  genre: Genre;
+  id: Scalars['UUID']['input'];
+  mediaType: MediaType;
+  name: Scalars['String']['input'];
+  publishedBy: Scalars['String']['input'];
+  studioId: Scalars['UUID']['input'];
+};
+
+export type UpdateMediaPayload = {
+  __typename?: 'UpdateMediaPayload';
+  media?: Maybe<Media>;
+};
+
+export type UpdateStudioInput = {
+  dateFounded: Scalars['Date']['input'];
+  description: Scalars['String']['input'];
+  founder: Scalars['String']['input'];
+  headquarters: Scalars['String']['input'];
+  id: Scalars['UUID']['input'];
+  imageUrl: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  type: StudioType;
+};
+
+export type UpdateStudioPayload = {
+  __typename?: 'UpdateStudioPayload';
+  studio?: Maybe<Studio>;
+};
+
+export type User = {
+  __typename?: 'User';
+  createdAt: Scalars['DateTime']['output'];
+  createdBy: Scalars['String']['output'];
+  email: Scalars['String']['output'];
+  id: Scalars['UUID']['output'];
+  modifiedAt?: Maybe<Scalars['DateTime']['output']>;
+  modifiedBy?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  remoteId: Scalars['String']['output'];
+  role: UserRole;
+};
+
+export enum UserRole {
+  Admin = 'ADMIN',
+  User = 'USER'
+}
+
+export type SignInMutationVariables = Exact<{
+  input: SignInInput;
+}>;
+
+
+export type SignInMutation = { __typename?: 'Mutation', signIn: { __typename?: 'SignInPayload', auth?: { __typename?: 'FirebaseLoginResponse', email: string, idToken: string, refreshToken: string, expiresIn: string, localId: string, displayName: string, registered: boolean } | null } };
+
+
+export const SignInDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SignIn"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"SignInInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"signIn"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"auth"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"idToken"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"refreshToken"}},{"kind":"Field","name":{"kind":"Name","value":"expiresIn"}},{"kind":"Field","name":{"kind":"Name","value":"localId"}},{"kind":"Field","name":{"kind":"Name","value":"displayName"}},{"kind":"Field","name":{"kind":"Name","value":"registered"}}]}}]}}]}}]} as unknown as DocumentNode<SignInMutation, SignInMutationVariables>;
