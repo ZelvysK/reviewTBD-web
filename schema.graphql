@@ -84,16 +84,19 @@ type Media {
 type Studio {
   id: UUID!
   name: String!
-  description: String!
-  imageUrl: String!
-  headquarters: String!
+  description: String
+  imageUrl: String
   founder: String!
-  type: StudioType!
+  headquarters: String!
+  studioType: StudioType!
+  dateEstablished: Date!
   createdAt: DateTime!
   createdBy: String!
   modifiedAt: DateTime
   modifiedBy: String
 }
+
+scalar UUID @specifiedBy(url: "https://tools.ietf.org/html/rfc4122")
 
 input UpdateMediaInput {
   id: UUID!
@@ -128,52 +131,36 @@ input SignInInput {
   password: String!
 }
 
-type FirebaseLoginResponse {
-  localId: String!
-  email: String!
-  displayName: String!
-  idToken: String!
-  registered: Boolean!
-  refreshToken: String!
-  expiresIn: String!
-}
-
 input SignUpInput {
   email: String!
   password: String!
   displayName: String!
 }
 
-type FirebaseRegisterResponse {
-  kind: String!
-  idToken: String!
-  email: String!
+type AuthData {
+  token: String!
   refreshToken: String!
-  expiresIn: String!
-  localId: String!
 }
-
-scalar UUID @specifiedBy(url: "https://tools.ietf.org/html/rfc4122")
 
 input CreateStudioInput {
   name: String!
-  description: String!
-  imageUrl: String!
+  description: String
+  imageUrl: String
   headquarters: String!
   founder: String!
-  dateFounded: Date!
-  type: StudioType!
+  dateEstablished: Date!
+  studioType: StudioType!
 }
 
 input UpdateStudioInput {
   id: UUID!
   name: String!
-  description: String!
-  imageUrl: String!
+  description: String
+  imageUrl: String
   headquarters: String!
   founder: String!
-  dateFounded: Date!
-  type: StudioType!
+  dateEstablished: Date!
+  studioType: StudioType!
 }
 
 type User {
@@ -236,11 +223,11 @@ enum UserRole {
 }
 
 type SignUpPayload {
-  auth: FirebaseRegisterResponse
+  auth: AuthData
 }
 
 type SignInPayload {
-  auth: FirebaseLoginResponse
+  auth: AuthData
 }
 
 type CreateMediaPayload {

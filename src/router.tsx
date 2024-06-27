@@ -1,25 +1,3 @@
-type Route = {
-  name: string;
-  href: string;
-  admin?: true;
-};
-
-export const routes: Route[] = [
-  {
-    name: "Studios",
-    href: "/",
-  },
-  {
-    name: "Media",
-    href: "/media",
-  },
-  {
-    name: "Users",
-    href: "/user",
-    admin: true,
-  },
-];
-
 // export const router = createBrowserRouter([
 //   {
 //     path: "/",

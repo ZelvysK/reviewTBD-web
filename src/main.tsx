@@ -1,5 +1,10 @@
 import { ThemeProvider } from "@/components/theme-provider";
-import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
+import {
+  ApolloClient,
+  ApolloProvider,
+  InMemoryCache,
+  createHttpLink,
+} from "@apollo/client";
 import Axios from "axios";
 import { configure } from "axios-hooks";
 import React from "react";
@@ -9,6 +14,8 @@ import { BASE_URL } from "./api";
 import "./index.css";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
+import { setContext } from "@apollo/client/link/context";
+import { useAuthStore } from "./hooks/use-auth-store";
 
 declare module "@tanstack/react-router" {
   interface Register {
@@ -22,8 +29,23 @@ const axios = Axios.create({
 
 configure({ axios, cache: false });
 
-const client = new ApolloClient({
+const httpLink = createHttpLink({
   uri: "https://localhost:7203/graphql",
+});
+
+const authLink = setContext((_, { headers }) => {
+  const token = useAuthStore.getState().auth?.token;
+
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : "",
+    },
+  };
+});
+
+const client = new ApolloClient({
+  link: authLink.concat(httpLink),
   cache: new InMemoryCache(),
 });
 

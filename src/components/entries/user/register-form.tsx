@@ -1,4 +1,3 @@
-import { AuthData, UserData } from "@/auth";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -9,18 +8,15 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { getUrl } from "@/utils/navigation";
+import { useAuth } from "@/hooks/use-auth-store";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
-import useAxios from "axios-hooks";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-
 import { z } from "zod";
 
 const registerSchema = z
   .object({
-    username: z.string(),
+    displayName: z.string(),
     email: z.string().email(),
     password: z
       .string()
@@ -38,35 +34,19 @@ const registerSchema = z
         ),
         "Pasword is not secure",
       ),
-    phoneNumber: z
-      .string()
-      .min(7)
-      .max(15)
-      .regex(
-        new RegExp(/^\+(?:[0-9]●?){6,14}[0-9]$/),
-        "Phone number is invalid",
-      ),
   })
   .superRefine(({ password, confirmPassword }, ctx) => {
     if (confirmPassword !== password) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: "The passwords did not match",
+        message: "The passwords do not match",
         path: ["confirmPassword"],
       });
     }
   });
 
 export const RegisterForm = () => {
-  // const { login } = useAuth();
-
-  const [, executeRegister] = useAxios(
-    {
-      url: getUrl("register"),
-      method: "post",
-    },
-    { manual: true },
-  );
+  const { register } = useAuth();
 
   const registerForm = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
@@ -74,48 +54,14 @@ export const RegisterForm = () => {
 
   const onRegister = async (data: z.infer<typeof registerSchema>) => {
     try {
-      const registerResponse = await executeRegister({ data });
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { confirmPassword, ...rest } = data;
 
-      const { username, email, password } = data;
+      await register(rest);
 
-      if (registerResponse.status === 200) {
-        const loginResponse = await axios.post<AuthData>(getUrl("login"), {
-          email,
-          password,
-        });
-
-        if (loginResponse.status !== 200) {
-          throw new Error("Failed to login");
-        }
-
-        const headers = {
-          Authorization: `Bearer ${loginResponse.data.accessToken}`,
-        };
-
-        const meResponse = await axios.get<UserData>(getUrl(["user", "me"]), {
-          headers,
-        });
-
-        if (meResponse.status !== 200) {
-          throw new Error("Failed to fetch user after succesful login");
-        }
-
-        const updateResponse = await axios.post<UserData>(
-          getUrl(["user", "update", meResponse.data.id]),
-          data,
-          {
-            headers,
-          },
-        );
-
-        if (updateResponse.status === 200) {
-          // await login(username, password);
-          toast.success(`Welcome, ${username}!`);
-        }
-      }
+      toast.success("Welcome!");
     } catch (error) {
-      console.error(error);
-      toast.error("Oops, something went wrong...");
+      toast.error("Failed");
     }
   };
 
@@ -125,24 +71,6 @@ export const RegisterForm = () => {
         onSubmit={registerForm.handleSubmit(onRegister)}
         className="space-y-6"
       >
-        <FormField
-          control={registerForm.control}
-          name="username"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Username</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  value={field.value ?? ""}
-                  placeholder="Username"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
         <FormField
           control={registerForm.control}
           name="email"
@@ -160,25 +88,23 @@ export const RegisterForm = () => {
             </FormItem>
           )}
         />
-
         <FormField
           control={registerForm.control}
-          name="phoneNumber"
+          name="displayName"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Phone Number</FormLabel>
+              <FormLabel>Username</FormLabel>
               <FormControl>
                 <Input
                   {...field}
                   value={field.value ?? ""}
-                  placeholder="Phone number"
+                  placeholder="Username"
                 />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-
         <FormField
           control={registerForm.control}
           name="password"
@@ -197,7 +123,6 @@ export const RegisterForm = () => {
             </FormItem>
           )}
         />
-
         <FormField
           control={registerForm.control}
           name="confirmPassword"
@@ -216,7 +141,6 @@ export const RegisterForm = () => {
             </FormItem>
           )}
         />
-
         <Button type="submit">Register</Button>
       </form>
     </Form>

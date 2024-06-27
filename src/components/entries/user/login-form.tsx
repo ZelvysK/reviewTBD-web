@@ -12,11 +12,10 @@ import { useAuth } from "@/hooks/use-auth-store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-
 import { z } from "zod";
 
 const loginSchema = z.object({
-  email: z.string().min(3, "Please enter your email"),
+  email: z.string().email("Please enter a valid email"),
   password: z.string().min(3, "Please enter your password"),
 });
 
@@ -29,10 +28,7 @@ export const LoginForm = () => {
 
   const onLogin = async (data: z.infer<typeof loginSchema>) => {
     try {
-      await login({
-        email: data.email,
-        password: data.password,
-      });
+      await login(data);
 
       toast.success("Welcome back!");
     } catch (error) {

@@ -27,6 +27,12 @@ export enum ApplyPolicy {
   Validation = 'VALIDATION'
 }
 
+export type AuthData = {
+  __typename?: 'AuthData';
+  refreshToken: Scalars['String']['output'];
+  token: Scalars['String']['output'];
+};
+
 /** Information about the offset pagination. */
 export type CollectionSegmentInfo = {
   __typename?: 'CollectionSegmentInfo';
@@ -52,13 +58,13 @@ export type CreateMediaPayload = {
 };
 
 export type CreateStudioInput = {
-  dateFounded: Scalars['Date']['input'];
-  description: Scalars['String']['input'];
+  dateEstablished: Scalars['Date']['input'];
+  description?: InputMaybe<Scalars['String']['input']>;
   founder: Scalars['String']['input'];
   headquarters: Scalars['String']['input'];
-  imageUrl: Scalars['String']['input'];
+  imageUrl?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
-  type: StudioType;
+  studioType: StudioType;
 };
 
 export type CreateStudioPayload = {
@@ -82,27 +88,6 @@ export type DeleteStudioInput = {
 export type DeleteStudioPayload = {
   __typename?: 'DeleteStudioPayload';
   studio?: Maybe<Studio>;
-};
-
-export type FirebaseLoginResponse = {
-  __typename?: 'FirebaseLoginResponse';
-  displayName: Scalars['String']['output'];
-  email: Scalars['String']['output'];
-  expiresIn: Scalars['String']['output'];
-  idToken: Scalars['String']['output'];
-  localId: Scalars['String']['output'];
-  refreshToken: Scalars['String']['output'];
-  registered: Scalars['Boolean']['output'];
-};
-
-export type FirebaseRegisterResponse = {
-  __typename?: 'FirebaseRegisterResponse';
-  email: Scalars['String']['output'];
-  expiresIn: Scalars['String']['output'];
-  idToken: Scalars['String']['output'];
-  kind: Scalars['String']['output'];
-  localId: Scalars['String']['output'];
-  refreshToken: Scalars['String']['output'];
 };
 
 export enum Genre {
@@ -240,7 +225,7 @@ export type SignInInput = {
 
 export type SignInPayload = {
   __typename?: 'SignInPayload';
-  auth?: Maybe<FirebaseLoginResponse>;
+  auth?: Maybe<AuthData>;
 };
 
 export type SignUpInput = {
@@ -251,22 +236,23 @@ export type SignUpInput = {
 
 export type SignUpPayload = {
   __typename?: 'SignUpPayload';
-  auth?: Maybe<FirebaseRegisterResponse>;
+  auth?: Maybe<AuthData>;
 };
 
 export type Studio = {
   __typename?: 'Studio';
   createdAt: Scalars['DateTime']['output'];
   createdBy: Scalars['String']['output'];
-  description: Scalars['String']['output'];
+  dateEstablished: Scalars['Date']['output'];
+  description?: Maybe<Scalars['String']['output']>;
   founder: Scalars['String']['output'];
   headquarters: Scalars['String']['output'];
   id: Scalars['UUID']['output'];
-  imageUrl: Scalars['String']['output'];
+  imageUrl?: Maybe<Scalars['String']['output']>;
   modifiedAt?: Maybe<Scalars['DateTime']['output']>;
   modifiedBy?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
-  type: StudioType;
+  studioType: StudioType;
 };
 
 export enum StudioType {
@@ -302,14 +288,14 @@ export type UpdateMediaPayload = {
 };
 
 export type UpdateStudioInput = {
-  dateFounded: Scalars['Date']['input'];
-  description: Scalars['String']['input'];
+  dateEstablished: Scalars['Date']['input'];
+  description?: InputMaybe<Scalars['String']['input']>;
   founder: Scalars['String']['input'];
   headquarters: Scalars['String']['input'];
   id: Scalars['UUID']['input'];
-  imageUrl: Scalars['String']['input'];
+  imageUrl?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
-  type: StudioType;
+  studioType: StudioType;
 };
 
 export type UpdateStudioPayload = {
@@ -340,7 +326,30 @@ export type SignInMutationVariables = Exact<{
 }>;
 
 
-export type SignInMutation = { __typename?: 'Mutation', signIn: { __typename?: 'SignInPayload', auth?: { __typename?: 'FirebaseLoginResponse', email: string, idToken: string, refreshToken: string, expiresIn: string, localId: string, displayName: string, registered: boolean } | null } };
+export type SignInMutation = { __typename?: 'Mutation', signIn: { __typename?: 'SignInPayload', auth?: { __typename?: 'AuthData', token: string, refreshToken: string } | null } };
+
+export type SignUpMutationVariables = Exact<{
+  input: SignUpInput;
+}>;
 
 
-export const SignInDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SignIn"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"SignInInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"signIn"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"auth"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"idToken"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"refreshToken"}},{"kind":"Field","name":{"kind":"Name","value":"expiresIn"}},{"kind":"Field","name":{"kind":"Name","value":"localId"}},{"kind":"Field","name":{"kind":"Name","value":"displayName"}},{"kind":"Field","name":{"kind":"Name","value":"registered"}}]}}]}}]}}]} as unknown as DocumentNode<SignInMutation, SignInMutationVariables>;
+export type SignUpMutation = { __typename?: 'Mutation', signUp: { __typename?: 'SignUpPayload', auth?: { __typename?: 'AuthData', token: string, refreshToken: string } | null } };
+
+export type MeQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MeQuery = { __typename?: 'Query', me: { __typename?: 'User', id: any, name: string, email: string, role: UserRole } };
+
+export type GetStudiosQueryVariables = Exact<{
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  take?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type GetStudiosQuery = { __typename?: 'Query', studios?: { __typename?: 'StudiosCollectionSegment', pageInfo: { __typename?: 'CollectionSegmentInfo', hasNextPage: boolean, hasPreviousPage: boolean }, items?: Array<{ __typename?: 'Studio', id: any, name: string, description?: string | null, imageUrl?: string | null, headquarters: string, founder: string, studioType: StudioType, dateEstablished: Date }> | null } | null };
+
+
+export const SignInDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SignIn"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"SignInInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"signIn"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"auth"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"token"}},{"kind":"Field","name":{"kind":"Name","value":"refreshToken"}}]}}]}}]}}]} as unknown as DocumentNode<SignInMutation, SignInMutationVariables>;
+export const SignUpDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SignUp"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"SignUpInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"signUp"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"auth"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"token"}},{"kind":"Field","name":{"kind":"Name","value":"refreshToken"}}]}}]}}]}}]} as unknown as DocumentNode<SignUpMutation, SignUpMutationVariables>;
+export const MeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"role"}}]}}]}}]} as unknown as DocumentNode<MeQuery, MeQueryVariables>;
+export const GetStudiosDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetStudios"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"skip"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"take"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"studios"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"skip"},"value":{"kind":"Variable","name":{"kind":"Name","value":"skip"}}},{"kind":"Argument","name":{"kind":"Name","value":"take"},"value":{"kind":"Variable","name":{"kind":"Name","value":"take"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"hasPreviousPage"}}]}},{"kind":"Field","name":{"kind":"Name","value":"items"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"imageUrl"}},{"kind":"Field","name":{"kind":"Name","value":"headquarters"}},{"kind":"Field","name":{"kind":"Name","value":"founder"}},{"kind":"Field","name":{"kind":"Name","value":"studioType"}},{"kind":"Field","name":{"kind":"Name","value":"dateEstablished"}}]}}]}}]}}]} as unknown as DocumentNode<GetStudiosQuery, GetStudiosQueryVariables>;

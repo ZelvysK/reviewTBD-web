@@ -1,11 +1,11 @@
-import { useAuthStore } from "@/hooks/use-auth";
+import { useUser } from "@/hooks/use-user-store";
 
 interface Props {
   children: React.ReactNode;
 }
 
 export const AdminOnly = ({ children }: Props) => {
-  const { user } = useAuthStore();
+  const { user } = useUser();
 
-  return user?.role === "Admin" ? children : null;
+  return user?.role === "ADMIN" ? children : null;
 };
