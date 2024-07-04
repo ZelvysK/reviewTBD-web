@@ -16,7 +16,7 @@ const documents = {
     "\n  mutation SignIn($input: SignInInput!) {\n    signIn(input: $input) {\n      auth {\n        token\n        refreshToken\n      }\n    }\n  }\n": types.SignInDocument,
     "\n  mutation SignUp($input: SignUpInput!) {\n    signUp(input: $input) {\n      auth {\n        token\n        refreshToken\n      }\n    }\n  }\n": types.SignUpDocument,
     "\n  query Me {\n    me {\n      id\n      name\n      email\n      role\n    }\n  }\n": types.MeDocument,
-    "\n  query GetStudios($skip: Int, $take: Int) {\n    studios(skip: $skip, take: $take) {\n      pageInfo {\n        hasNextPage\n        hasPreviousPage\n      }\n      items {\n        id\n        name\n        description\n        imageUrl\n        headquarters\n        founder\n        studioType\n        dateEstablished\n      }\n    }\n  }\n": types.GetStudiosDocument,
+    "\n  query GetStudios($skip: Int, $take: Int, $input: GetStudiosInput!) {\n    studios(skip: $skip, take: $take, input: $input) {\n      pageInfo {\n        hasNextPage\n        hasPreviousPage\n      }\n      items {\n        id\n        name\n        description\n        imageUrl\n        headquarters\n        founder\n        studioType\n        dateEstablished\n      }\n      totalCount\n    }\n  }\n": types.GetStudiosDocument,
 };
 
 /**
@@ -48,7 +48,7 @@ export function gql(source: "\n  query Me {\n    me {\n      id\n      name\n   
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query GetStudios($skip: Int, $take: Int) {\n    studios(skip: $skip, take: $take) {\n      pageInfo {\n        hasNextPage\n        hasPreviousPage\n      }\n      items {\n        id\n        name\n        description\n        imageUrl\n        headquarters\n        founder\n        studioType\n        dateEstablished\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetStudios($skip: Int, $take: Int) {\n    studios(skip: $skip, take: $take) {\n      pageInfo {\n        hasNextPage\n        hasPreviousPage\n      }\n      items {\n        id\n        name\n        description\n        imageUrl\n        headquarters\n        founder\n        studioType\n        dateEstablished\n      }\n    }\n  }\n"];
+export function gql(source: "\n  query GetStudios($skip: Int, $take: Int, $input: GetStudiosInput!) {\n    studios(skip: $skip, take: $take, input: $input) {\n      pageInfo {\n        hasNextPage\n        hasPreviousPage\n      }\n      items {\n        id\n        name\n        description\n        imageUrl\n        headquarters\n        founder\n        studioType\n        dateEstablished\n      }\n      totalCount\n    }\n  }\n"): (typeof documents)["\n  query GetStudios($skip: Int, $take: Int, $input: GetStudiosInput!) {\n    studios(skip: $skip, take: $take, input: $input) {\n      pageInfo {\n        hasNextPage\n        hasPreviousPage\n      }\n      items {\n        id\n        name\n        description\n        imageUrl\n        headquarters\n        founder\n        studioType\n        dateEstablished\n      }\n      totalCount\n    }\n  }\n"];
 
 export function gql(source: string) {
   return (documents as any)[source] ?? {};

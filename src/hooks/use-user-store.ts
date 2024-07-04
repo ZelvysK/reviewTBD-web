@@ -1,6 +1,7 @@
 import { gql } from "@/__generated__";
 import { MeQuery } from "@/__generated__/graphql";
 import { useQuery } from "@apollo/client";
+import { useNavigate } from "@tanstack/react-router";
 import { create } from "zustand";
 
 type User = MeQuery["me"];
@@ -30,10 +31,16 @@ export const ME_QUERY = gql(/* GraphQL */ `
 
 export const useUser = () => {
   const { user, setUser } = useUserStore();
+  const navigate = useNavigate();
 
   useQuery(ME_QUERY, {
     skip: !!user,
     onCompleted: ({ me }) => setUser(me),
+    onError: () => {
+      navigate({
+        to: "/login",
+      });
+    },
   });
 
   return { user };

@@ -8,8 +8,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useAuth } from "@/hooks/use-auth-store";
+import { useAuthStore } from "@/hooks/use-auth-store";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { z } from "zod";
@@ -46,7 +47,8 @@ const registerSchema = z
   });
 
 export const RegisterForm = () => {
-  const { register } = useAuth();
+  const { register } = useAuthStore();
+  const navigate = useNavigate();
 
   const registerForm = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
@@ -58,6 +60,9 @@ export const RegisterForm = () => {
       const { confirmPassword, ...rest } = data;
 
       await register(rest);
+      navigate({
+        to: "/about",
+      });
 
       toast.success("Welcome!");
     } catch (error) {

@@ -1,7 +1,11 @@
 type Query {
   media(skip: Int, take: Int): MediaCollectionSegment
   me: User!
-  studios(skip: Int, take: Int): StudiosCollectionSegment
+  studios(
+    skip: Int
+    take: Int
+    input: GetStudiosInput!
+  ): StudiosCollectionSegment
 }
 
 type Mutation {
@@ -49,6 +53,7 @@ type StudiosCollectionSegment {
   A flattened list of the items.
   """
   items: [Studio!]
+  totalCount: Int!
 }
 
 """
@@ -173,6 +178,11 @@ type User {
   createdBy: String!
   modifiedAt: DateTime
   modifiedBy: String
+}
+
+input GetStudiosInput {
+  term: String
+  studioType: StudioType
 }
 
 enum Genre {

@@ -14,8 +14,8 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as LoginImport } from './routes/login'
 import { Route as LayoutImport } from './routes/_layout'
 import { Route as IndexImport } from './routes/index'
-import { Route as LayoutStudiosImport } from './routes/_layout/studios'
 import { Route as LayoutAboutImport } from './routes/_layout/about'
+import { Route as LayoutStudiosIndexImport } from './routes/_layout/studios/index'
 
 // Create/Update Routes
 
@@ -34,13 +34,13 @@ const IndexRoute = IndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const LayoutStudiosRoute = LayoutStudiosImport.update({
-  path: '/studios',
+const LayoutAboutRoute = LayoutAboutImport.update({
+  path: '/about',
   getParentRoute: () => LayoutRoute,
 } as any)
 
-const LayoutAboutRoute = LayoutAboutImport.update({
-  path: '/about',
+const LayoutStudiosIndexRoute = LayoutStudiosIndexImport.update({
+  path: '/studios/',
   getParentRoute: () => LayoutRoute,
 } as any)
 
@@ -76,11 +76,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutAboutImport
       parentRoute: typeof LayoutImport
     }
-    '/_layout/studios': {
-      id: '/_layout/studios'
+    '/_layout/studios/': {
+      id: '/_layout/studios/'
       path: '/studios'
       fullPath: '/studios'
-      preLoaderRoute: typeof LayoutStudiosImport
+      preLoaderRoute: typeof LayoutStudiosIndexImport
       parentRoute: typeof LayoutImport
     }
   }
@@ -92,7 +92,7 @@ export const routeTree = rootRoute.addChildren({
   IndexRoute,
   LayoutRoute: LayoutRoute.addChildren({
     LayoutAboutRoute,
-    LayoutStudiosRoute,
+    LayoutStudiosIndexRoute,
   }),
   LoginRoute,
 })
@@ -117,7 +117,7 @@ export const routeTree = rootRoute.addChildren({
       "filePath": "_layout.tsx",
       "children": [
         "/_layout/about",
-        "/_layout/studios"
+        "/_layout/studios/"
       ]
     },
     "/login": {
@@ -127,8 +127,8 @@ export const routeTree = rootRoute.addChildren({
       "filePath": "_layout/about.tsx",
       "parent": "/_layout"
     },
-    "/_layout/studios": {
-      "filePath": "_layout/studios.tsx",
+    "/_layout/studios/": {
+      "filePath": "_layout/studios/index.tsx",
       "parent": "/_layout"
     }
   }
