@@ -6,10 +6,10 @@ import { TableHeader } from "./-components/table-header";
 import { useStudioTableStore } from "./-components/use-studio-table-store";
 
 export const Route = createFileRoute("/_layout/studios/")({
-  component: () => <StudioList />,
+  component: () => <StudiosPage />,
 });
 
-export const StudioList = () => {
+export const StudiosPage = () => {
   const tableStore = useStudioTableStore((state) => ({
     totalCount: state.totalCount,
     pageNumber: state.pageNumber,
