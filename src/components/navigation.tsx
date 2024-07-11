@@ -17,9 +17,6 @@ export const Navigation = () => {
     <div className="flex bg-secondary/60 p-5 gap-5 items-center justify-between">
       <NavbarBrand />
       <div className="flex gap-5 items-center justify-center">
-        <Link className="[&.active]:text-primary" to={"/about"}>
-          About
-        </Link>
         <Link className="[&.active]:text-primary" to={"/studios"}>
           Studios
         </Link>

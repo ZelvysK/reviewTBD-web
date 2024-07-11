@@ -11,7 +11,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { studioTypeOptions } from "./types";
 import { useStudioTableStore } from "./use-studio-table-store";
+import { Link } from "@tanstack/react-router";
 
 export const TableHeader = () => {
   const { term, setTerm, studioType, setStudioType } = useStudioTableStore(
@@ -23,19 +25,12 @@ export const TableHeader = () => {
     }),
   );
 
-  const studioTypeOptions = Object.entries(StudioType).map(
-    ([label, value]) => ({
-      label,
-      value,
-    }),
-  );
-
   return (
     <div className="flex gap-2">
       <AdminOnly>
-        {/* <Link to={`/studio/create`}> */}
-        <Button>Add Studio</Button>
-        {/* </Link> */}
+        <Link to="/studios/create">
+          <Button>Add Studio</Button>
+        </Link>
       </AdminOnly>
       <Input
         type="text"

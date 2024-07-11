@@ -14,9 +14,11 @@ const Layout = () => {
   }
 
   return (
-    <div className="p-2">
+    <>
       <Navigation />
-      <Outlet />
-    </div>
+      <div className="flex flex-col gap-8 container py-6 mx-auto">
+        <Outlet />
+      </div>
+    </>
   );
 };

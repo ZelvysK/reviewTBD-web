@@ -16,7 +16,11 @@ const documents = {
     "\n  mutation SignIn($input: SignInInput!) {\n    signIn(input: $input) {\n      auth {\n        token\n        refreshToken\n      }\n    }\n  }\n": types.SignInDocument,
     "\n  mutation SignUp($input: SignUpInput!) {\n    signUp(input: $input) {\n      auth {\n        token\n        refreshToken\n      }\n    }\n  }\n": types.SignUpDocument,
     "\n  query Me {\n    me {\n      id\n      name\n      email\n      role\n    }\n  }\n": types.MeDocument,
-    "\n  query GetStudios($skip: Int, $take: Int, $input: GetStudiosInput!) {\n    studios(skip: $skip, take: $take, input: $input) {\n      pageInfo {\n        hasNextPage\n        hasPreviousPage\n      }\n      items {\n        id\n        name\n        description\n        imageUrl\n        headquarters\n        founder\n        studioType\n        dateEstablished\n      }\n      totalCount\n    }\n  }\n": types.GetStudiosDocument,
+    "\n  mutation UpdateStudio($input: UpdateStudioInput!) {\n    updateStudio(input: $input) {\n      studio {\n        id\n      }\n    }\n  }\n": types.UpdateStudioDocument,
+    "\n  mutation DeleteStudio($input: DeleteStudioInput!) {\n    deleteStudio(input: $input) {\n      studio {\n        id\n      }\n    }\n  }\n": types.DeleteStudioDocument,
+    "\n  query GetStudios($skip: Int, $take: Int, $input: GetStudiosInput!) {\n    studios(skip: $skip, take: $take, input: $input) {\n      pageInfo {\n        hasNextPage\n        hasPreviousPage\n      }\n      items {\n        id\n        name\n        studioType\n        dateEstablished\n      }\n      totalCount\n    }\n  }\n": types.GetStudiosDocument,
+    "\n  query GetStudioById($id: UUID!) {\n    studioById(id: $id) {\n      id\n      name\n      description\n      imageUrl\n      headquarters\n      founder\n      studioType\n      dateEstablished\n    }\n  }\n": types.GetStudioByIdDocument,
+    "\n  mutation CreateStudio($input: CreateStudioInput!) {\n    createStudio(input: $input) {\n      studio {\n        id\n      }\n    }\n  }\n": types.CreateStudioDocument,
 };
 
 /**
@@ -48,7 +52,23 @@ export function gql(source: "\n  query Me {\n    me {\n      id\n      name\n   
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query GetStudios($skip: Int, $take: Int, $input: GetStudiosInput!) {\n    studios(skip: $skip, take: $take, input: $input) {\n      pageInfo {\n        hasNextPage\n        hasPreviousPage\n      }\n      items {\n        id\n        name\n        description\n        imageUrl\n        headquarters\n        founder\n        studioType\n        dateEstablished\n      }\n      totalCount\n    }\n  }\n"): (typeof documents)["\n  query GetStudios($skip: Int, $take: Int, $input: GetStudiosInput!) {\n    studios(skip: $skip, take: $take, input: $input) {\n      pageInfo {\n        hasNextPage\n        hasPreviousPage\n      }\n      items {\n        id\n        name\n        description\n        imageUrl\n        headquarters\n        founder\n        studioType\n        dateEstablished\n      }\n      totalCount\n    }\n  }\n"];
+export function gql(source: "\n  mutation UpdateStudio($input: UpdateStudioInput!) {\n    updateStudio(input: $input) {\n      studio {\n        id\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation UpdateStudio($input: UpdateStudioInput!) {\n    updateStudio(input: $input) {\n      studio {\n        id\n      }\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation DeleteStudio($input: DeleteStudioInput!) {\n    deleteStudio(input: $input) {\n      studio {\n        id\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation DeleteStudio($input: DeleteStudioInput!) {\n    deleteStudio(input: $input) {\n      studio {\n        id\n      }\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query GetStudios($skip: Int, $take: Int, $input: GetStudiosInput!) {\n    studios(skip: $skip, take: $take, input: $input) {\n      pageInfo {\n        hasNextPage\n        hasPreviousPage\n      }\n      items {\n        id\n        name\n        studioType\n        dateEstablished\n      }\n      totalCount\n    }\n  }\n"): (typeof documents)["\n  query GetStudios($skip: Int, $take: Int, $input: GetStudiosInput!) {\n    studios(skip: $skip, take: $take, input: $input) {\n      pageInfo {\n        hasNextPage\n        hasPreviousPage\n      }\n      items {\n        id\n        name\n        studioType\n        dateEstablished\n      }\n      totalCount\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query GetStudioById($id: UUID!) {\n    studioById(id: $id) {\n      id\n      name\n      description\n      imageUrl\n      headquarters\n      founder\n      studioType\n      dateEstablished\n    }\n  }\n"): (typeof documents)["\n  query GetStudioById($id: UUID!) {\n    studioById(id: $id) {\n      id\n      name\n      description\n      imageUrl\n      headquarters\n      founder\n      studioType\n      dateEstablished\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation CreateStudio($input: CreateStudioInput!) {\n    createStudio(input: $input) {\n      studio {\n        id\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation CreateStudio($input: CreateStudioInput!) {\n    createStudio(input: $input) {\n      studio {\n        id\n      }\n    }\n  }\n"];
 
 export function gql(source: string) {
   return (documents as any)[source] ?? {};

@@ -6,6 +6,7 @@ type Query {
     take: Int
     input: GetStudiosInput!
   ): StudiosCollectionSegment
+  studioById(id: UUID!): Studio
 }
 
 type Mutation {

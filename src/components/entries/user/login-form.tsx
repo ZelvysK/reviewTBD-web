@@ -32,7 +32,7 @@ export const LoginForm = () => {
     try {
       await login(data);
       navigate({
-        to: "/about",
+        to: "/studios",
       });
 
       toast.success("Welcome back!");

@@ -61,7 +61,7 @@ export const RegisterForm = () => {
 
       await register(rest);
       navigate({
-        to: "/about",
+        to: "/studios",
       });
 
       toast.success("Welcome!");

@@ -7,7 +7,7 @@ import { format } from "date-fns";
 import { useShallow } from "zustand/react/shallow";
 import { useStudioTableStore } from "./use-studio-table-store";
 
-const STUDIOS_QUERY = gql(/* GraphQL */ `
+export const STUDIOS_QUERY = gql(/* GraphQL */ `
   query GetStudios($skip: Int, $take: Int, $input: GetStudiosInput!) {
     studios(skip: $skip, take: $take, input: $input) {
       pageInfo {
@@ -17,10 +17,6 @@ const STUDIOS_QUERY = gql(/* GraphQL */ `
       items {
         id
         name
-        description
-        imageUrl
-        headquarters
-        founder
         studioType
         dateEstablished
       }
@@ -42,6 +38,7 @@ export const StudioTable = ({ term }: Props) => {
     ]),
   );
   const { data, error, loading } = useQuery(STUDIOS_QUERY, {
+    fetchPolicy: "network-only",
     variables: {
       skip: (pageNumber - 1) * PAGE_SIZE,
       take: PAGE_SIZE,
@@ -75,7 +72,8 @@ export const StudioTable = ({ term }: Props) => {
       {studios.map((item) => {
         return (
           <Link
-            to={`/studio/${item.id}`}
+            to="/studios/$studioId"
+            params={{ studioId: item.id }}
             key={item.id}
             className="flex gap-2 bg-secondary/50 rounded-md p-2 hover:opacity-80 transition-all duration-200"
           >
