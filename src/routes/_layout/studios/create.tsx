@@ -14,6 +14,12 @@ const CREATE_STUDIO_MUTATION = gql(/* GraphQL */ `
       studio {
         id
       }
+      errors {
+        ... on EntityByNameAlreadyExistsError {
+          code
+          message
+        }
+      }
     }
   }
 `);
@@ -29,9 +35,11 @@ const CreateStudioPage = () => {
     });
 
     const createdStudioId = response.data?.createStudio?.studio?.id;
+    const firstError = response.data?.createStudio?.errors?.[0];
 
-    if (response.errors || !createdStudioId) {
-      toast.error("Failed to create studio 🥲");
+    if (firstError || !createdStudioId) {
+      toast.error(firstError?.message ?? "Failed to create studio 🥲");
+      return;
     }
 
     toast.success("Studio created successfully");

@@ -20,6 +20,9 @@ export const Navigation = () => {
         <Link className="[&.active]:text-primary" to={"/studios"}>
           Studios
         </Link>
+        <Link className="[&.active]:text-primary" to={"/media"}>
+          Media
+        </Link>
       </div>
       <div className="flex gap-5 items-center justify-center">
         <Link to={`/user/${user.id}`}>Hello, {user.name}!</Link>

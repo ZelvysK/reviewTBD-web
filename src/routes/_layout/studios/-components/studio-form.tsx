@@ -33,7 +33,6 @@ import { CalendarIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { studioTypeOptions } from "./types";
-import { useEffect } from "react";
 
 const schema = z.object({
   studioType: z.nativeEnum(StudioType),

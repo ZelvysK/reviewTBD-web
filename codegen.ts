@@ -15,6 +15,10 @@ const config: CodegenConfig = {
             input: "Date",
             output: "Date",
           },
+          UUID: {
+            input: "string",
+            output: "string",
+          },
         },
       },
     },

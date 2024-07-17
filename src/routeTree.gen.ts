@@ -15,9 +15,13 @@ import { Route as LoginImport } from './routes/login'
 import { Route as LayoutImport } from './routes/_layout'
 import { Route as IndexImport } from './routes/index'
 import { Route as LayoutStudiosIndexImport } from './routes/_layout/studios/index'
+import { Route as LayoutMediaIndexImport } from './routes/_layout/media/index'
 import { Route as LayoutStudiosCreateImport } from './routes/_layout/studios/create'
+import { Route as LayoutMediaCreateImport } from './routes/_layout/media/create'
 import { Route as LayoutStudiosStudioIdIndexImport } from './routes/_layout/studios/$studioId/index'
+import { Route as LayoutMediaMediaIdIndexImport } from './routes/_layout/media/$mediaId/index'
 import { Route as LayoutStudiosStudioIdEditImport } from './routes/_layout/studios/$studioId/edit'
+import { Route as LayoutMediaMediaIdEditImport } from './routes/_layout/media/$mediaId/edit'
 
 // Create/Update Routes
 
@@ -41,8 +45,18 @@ const LayoutStudiosIndexRoute = LayoutStudiosIndexImport.update({
   getParentRoute: () => LayoutRoute,
 } as any)
 
+const LayoutMediaIndexRoute = LayoutMediaIndexImport.update({
+  path: '/media/',
+  getParentRoute: () => LayoutRoute,
+} as any)
+
 const LayoutStudiosCreateRoute = LayoutStudiosCreateImport.update({
   path: '/studios/create',
+  getParentRoute: () => LayoutRoute,
+} as any)
+
+const LayoutMediaCreateRoute = LayoutMediaCreateImport.update({
+  path: '/media/create',
   getParentRoute: () => LayoutRoute,
 } as any)
 
@@ -53,8 +67,18 @@ const LayoutStudiosStudioIdIndexRoute = LayoutStudiosStudioIdIndexImport.update(
   } as any,
 )
 
+const LayoutMediaMediaIdIndexRoute = LayoutMediaMediaIdIndexImport.update({
+  path: '/media/$mediaId/',
+  getParentRoute: () => LayoutRoute,
+} as any)
+
 const LayoutStudiosStudioIdEditRoute = LayoutStudiosStudioIdEditImport.update({
   path: '/studios/$studioId/edit',
+  getParentRoute: () => LayoutRoute,
+} as any)
+
+const LayoutMediaMediaIdEditRoute = LayoutMediaMediaIdEditImport.update({
+  path: '/media/$mediaId/edit',
   getParentRoute: () => LayoutRoute,
 } as any)
 
@@ -83,11 +107,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginImport
       parentRoute: typeof rootRoute
     }
+    '/_layout/media/create': {
+      id: '/_layout/media/create'
+      path: '/media/create'
+      fullPath: '/media/create'
+      preLoaderRoute: typeof LayoutMediaCreateImport
+      parentRoute: typeof LayoutImport
+    }
     '/_layout/studios/create': {
       id: '/_layout/studios/create'
       path: '/studios/create'
       fullPath: '/studios/create'
       preLoaderRoute: typeof LayoutStudiosCreateImport
+      parentRoute: typeof LayoutImport
+    }
+    '/_layout/media/': {
+      id: '/_layout/media/'
+      path: '/media'
+      fullPath: '/media'
+      preLoaderRoute: typeof LayoutMediaIndexImport
       parentRoute: typeof LayoutImport
     }
     '/_layout/studios/': {
@@ -97,11 +135,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutStudiosIndexImport
       parentRoute: typeof LayoutImport
     }
+    '/_layout/media/$mediaId/edit': {
+      id: '/_layout/media/$mediaId/edit'
+      path: '/media/$mediaId/edit'
+      fullPath: '/media/$mediaId/edit'
+      preLoaderRoute: typeof LayoutMediaMediaIdEditImport
+      parentRoute: typeof LayoutImport
+    }
     '/_layout/studios/$studioId/edit': {
       id: '/_layout/studios/$studioId/edit'
       path: '/studios/$studioId/edit'
       fullPath: '/studios/$studioId/edit'
       preLoaderRoute: typeof LayoutStudiosStudioIdEditImport
+      parentRoute: typeof LayoutImport
+    }
+    '/_layout/media/$mediaId/': {
+      id: '/_layout/media/$mediaId/'
+      path: '/media/$mediaId'
+      fullPath: '/media/$mediaId'
+      preLoaderRoute: typeof LayoutMediaMediaIdIndexImport
       parentRoute: typeof LayoutImport
     }
     '/_layout/studios/$studioId/': {
@@ -119,9 +171,13 @@ declare module '@tanstack/react-router' {
 export const routeTree = rootRoute.addChildren({
   IndexRoute,
   LayoutRoute: LayoutRoute.addChildren({
+    LayoutMediaCreateRoute,
     LayoutStudiosCreateRoute,
+    LayoutMediaIndexRoute,
     LayoutStudiosIndexRoute,
+    LayoutMediaMediaIdEditRoute,
     LayoutStudiosStudioIdEditRoute,
+    LayoutMediaMediaIdIndexRoute,
     LayoutStudiosStudioIdIndexRoute,
   }),
   LoginRoute,
@@ -146,25 +202,45 @@ export const routeTree = rootRoute.addChildren({
     "/_layout": {
       "filePath": "_layout.tsx",
       "children": [
+        "/_layout/media/create",
         "/_layout/studios/create",
+        "/_layout/media/",
         "/_layout/studios/",
+        "/_layout/media/$mediaId/edit",
         "/_layout/studios/$studioId/edit",
+        "/_layout/media/$mediaId/",
         "/_layout/studios/$studioId/"
       ]
     },
     "/login": {
       "filePath": "login.tsx"
     },
+    "/_layout/media/create": {
+      "filePath": "_layout/media/create.tsx",
+      "parent": "/_layout"
+    },
     "/_layout/studios/create": {
       "filePath": "_layout/studios/create.tsx",
+      "parent": "/_layout"
+    },
+    "/_layout/media/": {
+      "filePath": "_layout/media/index.tsx",
       "parent": "/_layout"
     },
     "/_layout/studios/": {
       "filePath": "_layout/studios/index.tsx",
       "parent": "/_layout"
     },
+    "/_layout/media/$mediaId/edit": {
+      "filePath": "_layout/media/$mediaId/edit.tsx",
+      "parent": "/_layout"
+    },
     "/_layout/studios/$studioId/edit": {
       "filePath": "_layout/studios/$studioId/edit.tsx",
+      "parent": "/_layout"
+    },
+    "/_layout/media/$mediaId/": {
+      "filePath": "_layout/media/$mediaId/index.tsx",
       "parent": "/_layout"
     },
     "/_layout/studios/$studioId/": {
