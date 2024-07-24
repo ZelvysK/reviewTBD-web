@@ -44,6 +44,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { STUDIOS_QUERY } from "../../studios/-components/studio-table";
 import { genreOptions, mediaTypeOptions } from "./types";
+import { StudioSelect } from "./studio-select";
 
 const schema = z.object({
   mediaType: z.nativeEnum(MediaType),
@@ -95,6 +96,7 @@ export const MediaForm = ({ onSubmit, initialData }: Props) => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <StudioSelect />
         <FormField
           control={form.control}
           name="studioId"

@@ -19,13 +19,14 @@ const documents = {
     "\n  mutation UpdateMedia($input: UpdateMediaInput!) {\n    updateMedia(input: $input) {\n      media {\n        id\n      }\n    }\n  }\n": types.UpdateMediaDocument,
     "\n  mutation DeleteMedia($input: DeleteMediaInput!) {\n    deleteMedia(input: $input) {\n      media {\n        id\n      }\n    }\n  }\n": types.DeleteMediaDocument,
     "\n  query GetMedia($skip: Int, $take: Int, $input: GetMediaInput!) {\n    media(skip: $skip, take: $take, input: $input) {\n      pageInfo {\n        hasNextPage\n        hasPreviousPage\n      }\n      items {\n        id\n        mediaType\n        genre\n        name\n        dateEstablished\n      }\n      totalCount\n    }\n  }\n": types.GetMediaDocument,
+    "\n  query GetStudioOptions($skip: Int, $take: Int, $input: GetStudiosInput!) {\n    studios(skip: $skip, take: $take, input: $input) {\n      pageInfo {\n        hasNextPage\n      }\n      items {\n        id\n        name\n      }\n    }\n  }\n": types.GetStudioOptionsDocument,
     "\n  query GetMediaById($id: UUID!) {\n    mediaById(id: $id) {\n      id\n      name\n      description\n      coverImageUrl\n      genre\n      mediaType\n      studioId\n      dateEstablished\n    }\n  }\n": types.GetMediaByIdDocument,
     "\n  mutation CreateMedia($input: CreateMediaInput!) {\n    createMedia(input: $input) {\n      media {\n        id\n      }\n    }\n  }\n": types.CreateMediaDocument,
     "\n  mutation UpdateStudio($input: UpdateStudioInput!) {\n    updateStudio(input: $input) {\n      studio {\n        id\n      }\n    }\n  }\n": types.UpdateStudioDocument,
     "\n  mutation DeleteStudio($input: DeleteStudioInput!) {\n    deleteStudio(input: $input) {\n      studio {\n        id\n      }\n    }\n  }\n": types.DeleteStudioDocument,
     "\n  query GetStudios($skip: Int, $take: Int, $input: GetStudiosInput!) {\n    studios(skip: $skip, take: $take, input: $input) {\n      pageInfo {\n        hasNextPage\n        hasPreviousPage\n      }\n      items {\n        id\n        name\n        studioType\n        dateEstablished\n      }\n      totalCount\n    }\n  }\n": types.GetStudiosDocument,
     "\n  query GetStudioById($id: UUID!) {\n    studioById(id: $id) {\n      id\n      name\n      description\n      imageUrl\n      headquarters\n      founder\n      studioType\n      dateEstablished\n    }\n  }\n": types.GetStudioByIdDocument,
-    "\n  mutation CreateStudio($input: CreateStudioInput!) {\n    createStudio(input: $input) {\n      studio {\n        id\n      }\n      errors {\n        ... on EntityByNameAlreadyExistsError {\n          code\n          message\n        }\n      }\n    }\n  }\n": types.CreateStudioDocument,
+    "\n  mutation CreateStudio($input: CreateStudioInput!) {\n    createStudio(input: $input) {\n      studio {\n        id\n      }\n      errors {\n        ... on GqError {\n          code\n          message\n        }\n      }\n    }\n  }\n": types.CreateStudioDocument,
 };
 
 /**
@@ -69,6 +70,10 @@ export function gql(source: "\n  query GetMedia($skip: Int, $take: Int, $input: 
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function gql(source: "\n  query GetStudioOptions($skip: Int, $take: Int, $input: GetStudiosInput!) {\n    studios(skip: $skip, take: $take, input: $input) {\n      pageInfo {\n        hasNextPage\n      }\n      items {\n        id\n        name\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetStudioOptions($skip: Int, $take: Int, $input: GetStudiosInput!) {\n    studios(skip: $skip, take: $take, input: $input) {\n      pageInfo {\n        hasNextPage\n      }\n      items {\n        id\n        name\n      }\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function gql(source: "\n  query GetMediaById($id: UUID!) {\n    mediaById(id: $id) {\n      id\n      name\n      description\n      coverImageUrl\n      genre\n      mediaType\n      studioId\n      dateEstablished\n    }\n  }\n"): (typeof documents)["\n  query GetMediaById($id: UUID!) {\n    mediaById(id: $id) {\n      id\n      name\n      description\n      coverImageUrl\n      genre\n      mediaType\n      studioId\n      dateEstablished\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -93,7 +98,7 @@ export function gql(source: "\n  query GetStudioById($id: UUID!) {\n    studioBy
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  mutation CreateStudio($input: CreateStudioInput!) {\n    createStudio(input: $input) {\n      studio {\n        id\n      }\n      errors {\n        ... on EntityByNameAlreadyExistsError {\n          code\n          message\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation CreateStudio($input: CreateStudioInput!) {\n    createStudio(input: $input) {\n      studio {\n        id\n      }\n      errors {\n        ... on EntityByNameAlreadyExistsError {\n          code\n          message\n        }\n      }\n    }\n  }\n"];
+export function gql(source: "\n  mutation CreateStudio($input: CreateStudioInput!) {\n    createStudio(input: $input) {\n      studio {\n        id\n      }\n      errors {\n        ... on GqError {\n          code\n          message\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation CreateStudio($input: CreateStudioInput!) {\n    createStudio(input: $input) {\n      studio {\n        id\n      }\n      errors {\n        ... on GqError {\n          code\n          message\n        }\n      }\n    }\n  }\n"];
 
 export function gql(source: string) {
   return (documents as any)[source] ?? {};

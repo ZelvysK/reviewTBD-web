@@ -15,7 +15,7 @@ const CREATE_STUDIO_MUTATION = gql(/* GraphQL */ `
         id
       }
       errors {
-        ... on EntityByNameAlreadyExistsError {
+        ... on GqError {
           code
           message
         }
@@ -23,6 +23,10 @@ const CREATE_STUDIO_MUTATION = gql(/* GraphQL */ `
     }
   }
 `);
+
+const errorMap: Record<string, string> = {
+  ENTITY_ALREADY_EXISTS: "Sorry, studio with this name already exists... 😒",
+};
 
 const CreateStudioPage = () => {
   const navigate = Route.useNavigate();
@@ -38,7 +42,9 @@ const CreateStudioPage = () => {
     const firstError = response.data?.createStudio?.errors?.[0];
 
     if (firstError || !createdStudioId) {
-      toast.error(firstError?.message ?? "Failed to create studio 🥲");
+      toast.error(
+        errorMap[firstError?.code ?? ""] ?? "Failed to create studio 🥲",
+      );
       return;
     }
 

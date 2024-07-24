@@ -27,7 +27,7 @@ enum ApplyPolicy {
   VALIDATION
 }
 
-type EntityByNameAlreadyExistsError implements ErrorWithCode {
+type GqError implements Error {
   message: String!
   code: String!
 }
@@ -64,8 +64,8 @@ type StudiosCollectionSegment {
   totalCount: Int!
 }
 
-interface ErrorWithCode {
-  code: String!
+interface Error {
+  message: String!
 }
 
 """
@@ -248,45 +248,66 @@ enum UserRole {
   ADMIN
 }
 
+union SignUpError = GqError
+
 type SignUpPayload {
   auth: AuthData
+  errors: [SignUpError!]
 }
+
+union SignInError = GqError
 
 type SignInPayload {
   auth: AuthData
+  errors: [SignInError!]
 }
+
+union CreateMediaError = GqError
 
 type CreateMediaPayload {
   media: Media
+  errors: [CreateMediaError!]
 }
+
+union UpdateMediaError = GqError
 
 type UpdateMediaPayload {
   media: Media
+  errors: [UpdateMediaError!]
 }
 
 input DeleteMediaInput {
   id: UUID!
 }
 
+union DeleteMediaError = GqError
+
 type DeleteMediaPayload {
   media: Media
+  errors: [DeleteMediaError!]
 }
 
-union CreateStudioError = EntityByNameAlreadyExistsError
+union CreateStudioError = GqError
 
 type CreateStudioPayload {
   studio: Studio
   errors: [CreateStudioError!]
 }
 
+union UpdateStudioError = GqError
+
 type UpdateStudioPayload {
   studio: Studio
+  errors: [UpdateStudioError!]
 }
 
 input DeleteStudioInput {
   id: UUID!
 }
 
+union DeleteStudioError = GqError
+
 type DeleteStudioPayload {
   studio: Studio
+  errors: [DeleteStudioError!]
 }
